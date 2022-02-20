@@ -57,3 +57,23 @@ for i in range(len(a)):
     assert fa(w[i]) == a[i]
 
 
+
+# Fast polynomial multiplicaton using FFT
+print("\n---------")
+print("---Fast polynomial multiplication using FFT")
+
+n = 8
+# q needs to be a prime, s.t. q-1 is divisible by n
+assert (q-1)%n==0
+print("q =", q, "n = ", n)
+
+fa=P([1,2,3,4])
+fb=P([1,2,3,4])
+fc_expected = fa*fb
+print("fc expected result:", fc_expected) # expected result
+print("fc expected coef", fc_expected.coefficients())
+
+fc, c_evals = poly_mul(fa, fb, F, n)
+print("c_evals=(a_evals*b_evals)=", c_evals)
+print("fc:", fc)
+assert fc_expected == fc

@@ -40,3 +40,23 @@ def fft(F, n):
     ft_inv = ft^-1
     return w, ft, ft_inv
 
+
+# Fast polynomial multiplicaton using FFT
+def poly_mul(fa, fb, F, n):
+    w, ft, ft_inv = fft(F, n)
+
+    # compute evaluation points from polynomials fa & fb at the roots of unity
+    a_evals = []
+    b_evals = []
+    for i in range(n):
+        a_evals.append(fa(w[i]))
+        b_evals.append(fb(w[i]))
+
+    # multiply elements in a_evals by b_evals
+    c_evals = map(operator.mul, a_evals, b_evals)
+    c_evals = vector(c_evals)
+
+    # using FFT, convert the c_evals into fc(x)
+    fc_coef = c_evals*ft_inv
+    fc2=P(fc_coef.list())
+    return fc2, c_evals
