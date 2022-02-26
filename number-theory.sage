@@ -32,6 +32,12 @@ def gcd(a, b):
 
     return g*b
 
+def gcd_recursive(a, b):
+    if mod(a, b)==0:
+        return b
+    return gcd_recursive(b, mod(a,b))
+
+
 # Extended Euclidean algorithm
 # Inputs: a, b
 # Outputs: r, x, y, such that r = gcd(a, b) = x*a + y*b
@@ -53,6 +59,13 @@ def egcd(a, b):
     y = t_
     
     return d, x, y
+
+def egcd_recursive(a, b):
+    if b==0:
+        return a, 1, 0
+
+    g, x, y = egcd_recursive(b, a%b)
+    return g, y, x - (a//b) * y
 
 # Inverse modulo N, using the Extended Euclidean algorithm
 def inv_mod(a, N):

@@ -18,9 +18,12 @@ assert crt(a_i, m_i, M) == 42
 assert gcd(21, 12) == 3
 assert gcd(1_426_668_559_730, 810_653_094_756) == 1_417_082
 
+assert gcd_recursive(21, 12) == 3
+
 #####
 # Extended Euclidean algorithm tests
 assert egcd(7, 19) == (1, -8, 3)
+assert egcd_recursive(7, 19) == (1, -8, 3)
 
 #####
 # Inverse modulo N tests
