@@ -4,13 +4,11 @@ load("number-theory.sage")
 # Chinese Remainder Theorem tests
 a_i = [5, 3, 10]
 m_i = [7, 11, 13]
-M = 1001
-assert crt(a_i, m_i, M) == 894
+assert crt(a_i, m_i) == 894
 
 a_i = [3, 8]
 m_i = [13, 17]
-M = 221
-assert crt(a_i, m_i, M) == 42
+assert crt(a_i, m_i) == 42
 
 
 #####

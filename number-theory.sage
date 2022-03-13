@@ -1,7 +1,11 @@
 # Chinese Remainder Theorem
-def crt(a_i, m_i, M):
+def crt(a_i, m_i):
     if len(a_i)!=len(m_i):
         raise Exception("error, a_i and m_i must be of the same length")
+
+    M=1
+    for i in range(len(m_i)):
+        M = M * m_i[i]
 
     x = 0
     for i in range(len(a_i)):

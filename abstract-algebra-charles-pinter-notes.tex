@@ -285,7 +285,7 @@ Quotient group construction is useful as a way of actually manufacturing all the
 \section{Rings}
 
 \begin{definition}[Ring]
-    A set $A$ with operations called \emph{addition} and \emph{multiplication} which satisfy the following axions:
+    A set $A$ with operations called \emph{addition} and \emph{multiplication} which satisfy the following axioms:
     \begin{enumerate}[i.]
 	\item $A$ with addition alone is an abelian group.
 	\item Multiplication is associative.
@@ -348,7 +348,7 @@ Every field is an integral domain, but the converse is not true (eg. $\mathbb{Z}
     If there is no such positive integer $n$, $A$ has characteristic $0$.
 \end{definition}
 
-\section{Factoring into primes}
+\section{Elements of number theory}
 
 \begin{definition}[Euclid's lemma]
     Let $m$ and $n$ be integers, and let $p$ be a prime. If $p|(mn)$, then either $p|m$ or $p|n$.
@@ -366,9 +366,6 @@ Every field is an integral domain, but the converse is not true (eg. $\mathbb{Z}
 
 From the last two theorems: every integer $m$ can be factored into primes, and the prime factors of $m$ are unique (except for the order).
 
-
-\section{Elements of number theory}
-
 \begin{theorem}[Little theorem of Fermat]
     Let $p$ be a prime. Then,
     $$a^{p-1} \equiv 1 \pmod p, \forall a \not\equiv 0 \pmod p$$
@@ -381,7 +378,7 @@ From the last two theorems: every integer $m$ can be factored into primes, and t
 \end{theorem}
 
 \begin{theorem}[Euler's theorem]
-    If $a$ and $n$ are relatively prime, $a^{\phi(n)} \equiv 1 \pmod n$.
+    If $a$ and $n$ are relatively prime, $$a^{\phi(n)} \equiv 1 \pmod n$$
 \end{theorem}
 
 
