@@ -1,5 +1,8 @@
 from hashlib import sha256
 
+# Implementation of Sigma protocol & OR proofs
+
+
 def hash_two_points(a, b):
     h = sha256((str(a)+str(b)).encode('utf-8'))
     return int(h.hexdigest(), 16)

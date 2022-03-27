@@ -1,5 +1,7 @@
 import unittest, operator
-load("crypto.sage")
+load("sigma.sage")
+
+# Tests for Sigma protocol & OR proofs
 
 
 # ethereum elliptic curve
