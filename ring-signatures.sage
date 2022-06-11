@@ -2,6 +2,8 @@ from hashlib import sha256
 
 # Ring Signatures
 # bLSAG: Back’s Linkable Spontaneous Anonymous Group signatures
+# A Rust implementation of this scheme can be found at:
+# https://github.com/arnaucube/ring-signatures-rs
 
 def hashToPoint(a):
     # TODO use a proper hash-to-point
@@ -54,12 +56,11 @@ class Prover(object):
         c = [None] * len(R)
         # c_{pi+1}
         pi1 = mod(pi + 1, len(R))
-        c[pi1] = hash(R, m, a * self.g, a * hashToPoint(R[pi]), self.q)
+        c[pi1] = hash(R, m, a * self.g, hashToPoint(R[pi]) * a, self.q)
 
         key_image = self.w * hashToPoint(self.K)
 
         # do c_{i+1} from i=pi+1 to pi-1:
-        #  for j in range(0, len(R)-1):
         for j in range(0, len(R)-1):
             i = mod(pi1+j, len(R))
             i1 = mod(pi1+j +1, len(R))

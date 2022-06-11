@@ -1,6 +1,9 @@
 import unittest, operator
 load("ring-signatures.sage")
 
+# A Rust implementation of this scheme can be found at:
+# https://github.com/arnaucube/ring-signatures-rs
+
 # ethereum elliptic curve
 p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
 a = 0
@@ -19,13 +22,13 @@ assert g * q == 0
 
 
 class TestRingSignatures(unittest.TestCase):
-        def test_blSAG_ring_of_5(self):
-                test_blSAG(5, 3)
-        def test_blSAG_ring_of_20(self):
-                test_blSAG(20, 14)
+        def test_bLSAG_ring_of_5(self):
+                test_bLSAG(5, 3)
+        def test_bLSAG_ring_of_20(self):
+                test_bLSAG(20, 14)
 
-def test_blSAG(ring_size, pi):
-        print(f"[blSAG] Testing with a ring of {ring_size} keys")
+def test_bLSAG(ring_size, pi):
+        print(f"[bLSAG] Testing with a ring of {ring_size} keys")
         prover = Prover(F, g)
         n = ring_size
         R = [None] * n
