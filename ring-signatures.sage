@@ -80,7 +80,7 @@ def verify(g, R, m, key_image, sig):
     assert len(R) == len(r)
 
     # check that key_image \in G (EC), by l * key_image == 0
-    assert q * key_image == 0 # in sage 0 EC point is interpreted as (0:1:0)
+    assert q * key_image == 0 # in sage 0 EC point is represented as (0:1:0)
 
 
     # for i \in 1,2,...,n
