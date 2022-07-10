@@ -99,9 +99,9 @@ class IPA_halo(object):
         self.h = E.random_element() # TMP
         self.gs = random_values(E, d)
         self.hs = random_values(E, d)
-        print("  h=", self.h)
-        print("  G=", self.gs)
-        print("  H=", self.hs)
+        #  print("  h=", self.h)
+        #  print("  G=", self.gs)
+        #  print("  H=", self.hs)
 
     def commit(self, a, r):
         P = inner_product_point(a, self.gs) + r * self.h
@@ -183,15 +183,12 @@ class IPA_halo(object):
         # L, R are the "cross-terms" of the inner product
         return a[0], b[0], G[0], l, r, L, R
 
-    def verify(self, P, a, v, x_powers, r, u, U, lj, rj, L, R, b_ipa, G_ipa):
+    def verify(self, P, a, v, x_powers, r, u, U, lj, rj, L, R):
         print("methid verify()")
-        #  b = x_powers
-        #  G = self.gs
-        b = b_ipa # TODO b_0 & G_0 will be computed by the client
-        G = G_ipa
 
-        #  k = int(math.log(self.d, 2))
-        #  s = build_s_from_us(u, k)
+        s = build_s_from_us(u, self.d)
+        b = inner_product_field(s, x_powers)
+        G = inner_product_point(s, self.gs)
 
         # synthetic blinding factor
         # r' = r + ∑ ( lⱼ uⱼ² + rⱼ uⱼ⁻²)
@@ -221,14 +218,31 @@ class IPA_halo(object):
         return Q_0 == Q_1
 
 
-#  def build_s_from_us(u, k):
-#      s = None*k
-#      for i in range(k):
-#          e = 1
-#          for j in range(k):
-#              e = e*u[j]
-#          #  s[i] = 
-#      return s
+# s = (
+#   u₁⁻¹ u₂⁻¹ … uₖ⁻¹,
+#   u₁   u₂⁻¹ … uₖ⁻¹,
+#   u₁⁻¹ u₂   … uₖ⁻¹,
+#   u₁   u₂   … uₖ⁻¹,
+#   ⋮    ⋮      ⋮
+#   u₁   u₂   … uₖ
+# )
+def build_s_from_us(u, d):
+    k = int(math.log(d, 2))
+    s = [1]*d
+    t = d
+    for j in reversed(range(k)):
+        t = t/2
+        c = 0
+        for i in range(d):
+            if c<t:
+                s[i] = s[i] * u[j]^(-1)
+            else:
+                s[i] = s[i] * u[j]
+            c = c+1
+            if c>=t*2:
+                c=0
+
+    return s
 
 
 

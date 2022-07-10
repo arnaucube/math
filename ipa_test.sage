@@ -153,7 +153,7 @@ class TestIPA_halo(unittest.TestCase):
             print("P", P)
             print("a_ipa", a_ipa)
             print("\n Verify:")
-            verif = ipa.verify(P, a_ipa, v, x_powers, r, u, U, lj, rj, L, R, b_ipa, G_ipa)
+            verif = ipa.verify(P, a_ipa, v, x_powers, r, u, U, lj, rj, L, R)
             assert verif == True
 
 

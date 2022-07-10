@@ -1,3 +1,3 @@
 # math
 
-Notes, scripts and documents done while reading.
+Notes, code and documents done while reading books and papers.
