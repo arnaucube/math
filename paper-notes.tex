@@ -193,6 +193,47 @@ where $\sigma_j$ is the fixed polynomial permutation, and $\phi_{j, i} \in \math
 \framebox{WIP}
 \vspace{1cm}
 
+\section{BLS signatures}
+Notes taken while reading about BLS signatures \cite{bls-sig-eth2}.
+
+\paragraph{Key generation}
+$sk \in \mathbb{Z}_q$, $pk = [sk] \cdot g_1$, where $g_1 \in G_1$, and is the generator.
+
+\paragraph{Signature}
+$$\sigma = [sk] \cdot H(m)$$
+where $H$ is a function that maps to a point in $G_2$. So $H(m), \sigma \in G_2$.
+
+\paragraph{Verification}
+$$e(g_1, \sigma) == e(pk, H(m))$$
+
+Unfold:
+$$e(pk, H(m)) = e([sk] \cdot g_1, H(m) = e(g_1, H(m))^{sk} = e(g_1, [sk] \cdot H(m)) = e(g_1, \sigma))$$
+
+\paragraph{Aggregation}
+Signatures aggregation:
+$$\sigma_{aggr} = \sigma_1 + \sigma_2 + \ldots + \sigma_n$$
+where $\sigma_{aggr} \in G_2$, and an aggregated signatures is indistinguishible from a non-aggregated signature.
+
+\paragraph{Public keys aggregation}
+$$pk_{aggr} = pk_1 + pk_2 + \ldots + pk_n$$
+where $pk_{aggr} \in G_1$, and an aggregated public keys is indistinguishible from a non-aggregated public key.
+
+
+\paragraph{Verification of aggregated signatures}
+Identical to verification of a normal signature as long as we use the same corresponding aggregated public key:
+$$e(g_1, \sigma_{aggr})==e(pk_{aggr}, H(m))$$
+
+Unfold:
+$$e(pk_{aggr}, H(m))=e(pk_1 + pk_2 + \ldots + pk_n, H(m))=$$
+$$=e([sk_1] \cdot g_1 + [sk_2] \cdot g_1 + \ldots + [sk_n] \cdot g_1, H(m))=$$
+$$=e([sk_1 + sk_2 + \ldots + sk_n] \cdot g_1, H(m))=$$
+$$=e(g_1, H(m))^{(sk_1 + sk_2 + \ldots + sk_n)}=$$
+$$=e(g_1, [sk_1 + sk_2 + \ldots + sk_n] \cdot H(m))=$$
+$$=e(g_1, [sk_1] \cdot H(m) + [sk_2] \cdot H(m) + \ldots + [sk_n] \cdot H(m))=$$
+$$=e(g_1, \sigma_1 + \sigma_2 + \ldots + \sigma_n)=e(g_1, \sigma_{aggr})$$
+
+
+
 
 \bibliography{paper-notes.bib}
 \bibliographystyle{unsrt}
