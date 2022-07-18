@@ -24,7 +24,7 @@ def print_ring(a):
         print(i, a[i])
     print("")
 
-class Prover(object):
+class Prover:
     def __init__(self, F, g):
         self.F = F # Z_p
         self.g = g # elliptic curve generator

@@ -6,7 +6,7 @@
 
 # IPA_bulletproofs implements the IPA version from the Bulletproofs paper: https://eprint.iacr.org/2017/1066.pdf
 # https://doc-internal.dalek.rs/bulletproofs/notes/inner_product_proof/index.html
-class IPA_bulletproofs(object):
+class IPA_bulletproofs:
     def __init__(self, F, E, g, d):
         self.g = g
         self.F = F
@@ -89,7 +89,7 @@ class IPA_bulletproofs(object):
         return C == D
 
 # IPA_halo implements the modified IPA from the Halo paper: https://eprint.iacr.org/2019/1021.pdf
-class IPA_halo(object):
+class IPA_halo:
     def __init__(self, F, E, g, d):
         self.g = g
         self.F = F

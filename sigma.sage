@@ -14,9 +14,9 @@ def generic_verify(g, X, A, c, z):
 # Sigma protocol interactive
 ###
 
-class Prover_interactive(object):
+class Prover_interactive:
     def __init__(self, F, g):
-        self.F = F # Z_p
+        self.F = F # Z_q
         self.g = g # elliptic curve generator
 
     def new_key(self):
@@ -32,7 +32,7 @@ class Prover_interactive(object):
     def gen_proof(self, c):
         return int(self.a) + int(c) * int(self.w)
 
-class Verifier_interactive(object):
+class Verifier_interactive:
     def __init__(self, F, g):
         self.F = F
         self.g = g
@@ -49,7 +49,7 @@ class Verifier_interactive(object):
 ###
 # Sigma protocol non-interactive
 ###
-class Prover(object):
+class Prover:
     def __init__(self, F, g):
         self.F = F # Z_p
         self.g = g # elliptic curve generator
@@ -67,7 +67,7 @@ class Prover(object):
         return A, z
 
 
-class Verifier(object):
+class Verifier:
     def __init__(self, F, g):
         self.F = F
         self.g = g
@@ -76,7 +76,7 @@ class Verifier(object):
         c = hash_two_points(A, X)
         return self.g * int(z) == X * c + A
 
-class Simulator(object):
+class Simulator:
     def __init__(self, F, g):
         self.F = F
         self.g = g
@@ -92,7 +92,7 @@ class Simulator(object):
 # OR proof (with 2 parties)
 ###
 
-class ORProver_2parties(object):
+class ORProver_2parties:
     def __init__(self, F, g):
         self.F = F # Z_p
         self.g = g # elliptic curve generator
@@ -126,7 +126,7 @@ class ORProver_2parties(object):
         # a real-world implementation would be shuffled
         return [c, self.c_1], [z, self.z_1]
 
-class ORVerifier_2parties(object):
+class ORVerifier_2parties:
     def __init__(self, F, g):
         self.F = F
         self.g = g
@@ -145,7 +145,7 @@ class ORVerifier_2parties(object):
 # OR proof (with n parties)
 ###
 
-class ORProver(object):
+class ORProver:
     def __init__(self, F, g):
         self.F = F # Z_p
         self.g = g # elliptic curve generator
@@ -190,7 +190,7 @@ class ORProver(object):
         # a real-world implementation would be shuffled
         return self.cs, self.zs
 
-class ORVerifier(object):
+class ORVerifier:
     def __init__(self, F, g):
         self.F = F
         self.g = g
