@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\usepackage{xcolor}
+
+% prevent warnings of underfull \hbox:
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Def}[section]
+\newtheorem{theorem}[definition]{Thm}
+
+
+\title{Notes on Sonic}
+\author{arnaucube}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	Notes taken while reading Sonic paper \cite{cryptoeprint:2019/099}. Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+
+	The notes are not complete, don't include all the steps neither all the proofs.
+\end{abstract}
+
+\tableofcontents
+
+
+\section{Sonic}
+
+\subsection{Structured Reference String}
+$\{ \{g^{x^i}\}_{i=-d}^d, \{ g^{\alpha x^i} \}_{i=-d, i \neq 0}^d, \{ h^{x^i}, h^{\alpha x^i} \}_{i=-d}^d, e(g, h^\alpha) \}$
+
+\subsection{System of constraints}
+Multiplication constraint: $a \cdot b = c$
+
+$Q$ linear constraints:
+$$
+a \cdot u_q + b \cdot v_q + c \cdot w_q = k_q
+$$
+
+with $u_q, v_q, w_q \in \mathbb{F}^n$, and $k_q \in \mathbb{F}_p$.
+
+\vspace{0.5cm}
+Example: $x^2 + y^2 = z$
+
+$$a = (x, y), \qquad b = (x, y), \qquad c = (x^2, y^2)$$
+\begin{enumerate}[i.]
+    \item $(x, y) \cdot (1, 0) + (x, y) \cdot (-1, 0) + (x^2, y^2) \cdot (0, 0) = 0 \longrightarrow x - x = 0$
+    \item $(x, y) \cdot (0, 1) + (x, y) \cdot (0, -1) + (x^2, y^2) \cdot (0, 0) = 0 \longrightarrow y - y = 0$
+    \item $(x, y) \cdot (0, 0) + (x, y) \cdot (0, 0) + (x^2, y^2) \cdot (1, 1) = z \longrightarrow x^2 + y^2 = z$
+\end{enumerate}
+
+So,
+$$u_1 = (1, 0) \quad v_1=(-1, 0) \quad w_1=(0, 0) \quad k_1=0$$
+$$u_2 = (0, 1) \quad v_2=(0, -1) \quad w_2=(0, 0) \quad k_2=0$$
+$$u_3 = (0, 0) \quad v_3=(0, 0) \quad w_3=(1, 1) \quad k_2=z$$
+
+\vspace{1cm}
+
+Compress n multiplication constraints into an equation in formal indeterminate $Y$:
+$$\sum_{i=1}^n (a_i b_i - c_i) \cdot Y^i = 0$$
+encode into negative exponents of $Y$:
+$$\sum_{i=1}^n (a_i b_i - c_i) \cdot Y^-i = 0$$
+
+Also, compress the $Q$ linear constraints, scaling by $Y^n$ to preserve linear independence:
+$$
+\sum_{q=1}^Q (a \cdot u_q + b \cdot v_q + c \cdot w_q - k_q) \cdot Y^{q+n} = 0
+$$
+
+Polys:
+
+\begin{align}
+\nonumber & u_i(Y) = \sum_{q=1}^Q Y^{q+n} \cdot u_{q, i}\\
+\nonumber & v_i(Y) = \sum_{q=1}^Q Y^{q+n} \cdot v_{q, i}\\
+\nonumber & w_i(Y) = -Y^i - Y^{-1} + \sum_{q=1}^Q Y^{q+n} \cdot w_{q, i}\\
+\nonumber & k(Y) = \sum_{q=1}^Q Y^{q+n} \cdot k_q
+\end{align}
+
+Combine the multiplicative and linear constraints to:
+
+\begin{align}
+\nonumber & a \cdot u(Y) + b \cdot v(Y) + c \cdot w(Y)
++ \sum_{i=1}^n a_i b_i (Y^i + Y^{-i}) - k(Y) = 0
+\end{align}
+
+where $a \cdot u(Y) + b \cdot v(Y) + c \cdot w(Y)$ is embeded into the constant term of the polynomial $t(X, Y)$.
+
+
+Define $r(X, Y)$ s.t. $r(X, Y) = r(XY, 1)$.
+
+$$\Longrightarrow r(X, Y) = \sum_{i=1}^n (a_i X^i Y^i + b_i X^{-i} Y^{-i} + c_i X^{-i-n} Y^{-i-n})$$
+
+$$s(X, Y) = \sum_{i=1}^n (u_i(Y) X^{-i} + v_i(Y) X^i + w_i(Y) X^{i+n})$$
+
+$$r'(X, Y) = r(X, Y) + s(X, Y)$$
+$$t(X, Y) = r(X, Y) + r'(X, Y) - k(Y)$$
+
+The coefficient of $X^0$ in $t(X, Y)$ is the left-hand side of the equation.
+
+Sonic demonstrates that the constant term of $t(X, Y)$ is zero, thus demonstrating that our constraint system is satisfied.
+
+
+\subsubsection{The basic Sonic protocol}
+
+\begin{enumerate}[1.]
+    \item Prover constructs $r(X, Y)$ using their hidden witness
+    \item Prover commits to $r(X, 1)$, setting the maximum degree to n
+    \item Verifier sends random challenge $y$
+    \item Prover commits to $t(X, y)$. The commitment scheme ensures that $t(X, y)$ has no constant term.
+    \item Verifier sends random challenge $z$
+    \item Prover opens commitments to $r(z, 1), r(z, y), t(z, y)$
+    \item Verifier calculates $r'(z, y)$, and checks that
+	$$r(z, y) \cdot r'(z, y) - k(y) == t(z, y)$$
+\end{enumerate}
+
+Steps $3$ and $5$ can be made non-interactive by the Fiat-Shamir transformation.
+
+\subsubsection{Polynomial Commitment Scheme}
+Sonic uses an adaptation of KZG \cite{kzg-tmp}, want:
+
+\begin{enumerate}[i.]
+    \item \emph{evaluation binding}, i.e. given a commitment $F$, an adversary cannot open F to two different evaluations $v_1$ and $v_2$
+    \item \emph{bounded polynomial extractable}, i.e. any algebraic adversary that opens a commitment $F$ knows an opening $f(X)$ with powers $-d \leq i \leq max, i \neq 0$.
+\end{enumerate}
+
+\vspace{0.5cm}
+PC scheme (adaptation of KZG):
+
+\begin{enumerate}[i.]
+    \item Commit(info, $f(X)$) $\longrightarrow F$:
+	$$F = g^{\alpha \cdot x^{d-max}} \cdot f(x)$$
+    \item Open(info, $F$, $z$, $f(x)$) $\longrightarrow (f(z), W)$:
+	$$w(X) = \frac{f(X) - f(z)}{X-z}$$
+	$$W = g^{w(x)}$$
+    \item Verify(info, $F$, $z$, $(v, W)$) $\longrightarrow 0/1$:\\
+	Check:
+	$$e(W, h^{\alpha \cdot x}) \cdot
+	e(g^v W^{-z}, h^{\alpha})
+	== e(F, h^{x^{-d+max}})$$
+\end{enumerate}
+
+\subsection{Succint signatures of correct computation}
+Signature of correct computation to ensure that an element $s=s(z, y)$ for a known polynomial
+$$s(X, Y) = \sum_{i, j = -d}^d s_{i, j} \cdot X^i \cdot Y^i$$
+
+Use the structure of $s(X, Y)$ to prove its correct calculation using a \emph{permutation argument} $\longrightarrow$ \emph{grand-product argument} inspired by Bayer and Groth, and Bootle et al.
+
+Restrict to constraint systems where $s(X, Y)$ can be expressed as the sum of $M$ polynomials. Where $j-th$ poly is of the form:
+$$
+\Psi_j(X, Y) =
+    \sum_{i=1}^n \psi_{j, \sigma_{j, i}}
+    \cdot X^i \cdot Y^{\sigma_{j, i}}
+$$
+
+where $\sigma_j$ is the fixed polynomial permutation, and $\phi_{j, i} \in \mathbb{F}$ are the coefficients.
+
+\vspace{1cm}
+\framebox{WIP}
+\vspace{1cm}
+
+
+
+\bibliography{paper-notes.bib}
+\bibliographystyle{unsrt}
+
+\end{document}

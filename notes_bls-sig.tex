@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\usepackage{xcolor}
+
+% prevent warnings of underfull \hbox:
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Def}[section]
+\newtheorem{theorem}[definition]{Thm}
+
+
+\title{Notes on BLS Signatures}
+\author{arnaucube}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	Notes taken while reading about BLS signatures \cite{bls-sig-eth2}. Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+
+	The notes are not complete, don't include all the steps neither all the proofs.
+\end{abstract}
+
+% \tableofcontents
+
+\section{BLS signatures}
+
+\paragraph{Key generation}
+$sk \in \mathbb{Z}_q$, $pk = [sk] \cdot g_1$, where $g_1 \in G_1$, and is the generator.
+
+\paragraph{Signature}
+$$\sigma = [sk] \cdot H(m)$$
+where $H$ is a function that maps to a point in $G_2$. So $H(m), \sigma \in G_2$.
+
+\paragraph{Verification}
+$$e(g_1, \sigma) == e(pk, H(m))$$
+
+Unfold:
+$$e(pk, H(m)) = e([sk] \cdot g_1, H(m) = e(g_1, H(m))^{sk} = e(g_1, [sk] \cdot H(m)) = e(g_1, \sigma))$$
+
+\paragraph{Aggregation}
+Signatures aggregation:
+$$\sigma_{aggr} = \sigma_1 + \sigma_2 + \ldots + \sigma_n$$
+where $\sigma_{aggr} \in G_2$, and an aggregated signatures is indistinguishible from a non-aggregated signature.
+
+\vspace{0.5cm}
+Public keys aggregation:
+$$pk_{aggr} = pk_1 + pk_2 + \ldots + pk_n$$
+where $pk_{aggr} \in G_1$, and an aggregated public keys is indistinguishible from a non-aggregated public key.
+
+
+\paragraph{Verification of aggregated signatures}
+Identical to verification of a normal signature as long as we use the same corresponding aggregated public key:
+$$e(g_1, \sigma_{aggr})==e(pk_{aggr}, H(m))$$
+
+Unfold:
+$$\fbox{e(pk_{aggr}, H(m))}= e(pk_1 + pk_2 + \ldots + pk_n, H(m)) =$$
+$$=e([sk_1] \cdot g_1 + [sk_2] \cdot g_1 + \ldots + [sk_n] \cdot g_1, H(m))=$$
+$$=e([sk_1 + sk_2 + \ldots + sk_n] \cdot g_1, H(m))=$$
+$$=e(g_1, H(m))^{(sk_1 + sk_2 + \ldots + sk_n)}=$$
+$$=e(g_1, [sk_1 + sk_2 + \ldots + sk_n] \cdot H(m))=$$
+$$=e(g_1, [sk_1] \cdot H(m) + [sk_2] \cdot H(m) + \ldots + [sk_n] \cdot H(m))=$$
+$$=e(g_1, \sigma_1 + \sigma_2 + \ldots + \sigma_n)= \fbox{e(g_1, \sigma_{aggr})}$$
+
+
+Note: in the current notes $pk \in G_1$ and $\sigma, H(m) \in G_2$, but we could use $\sigma, H(m) \in G_1$ and $pk \in G_2$.
+
+\bibliography{paper-notes.bib}
+\bibliographystyle{unsrt}
+
+\end{document}

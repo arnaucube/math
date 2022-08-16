@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\usepackage{xcolor}
+
+% prevent warnings of underfull \hbox:
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Def}[section]
+\newtheorem{theorem}[definition]{Thm}
+
+
+\title{Notes on Halo}
+\author{arnaucube}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	Notes taken while reading Halo paper \cite{cryptoeprint:2019/1021}. Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+
+	The notes are not complete, don't include all the steps neither all the proofs.
+\end{abstract}
+
+\tableofcontents
+
+\section{modified IPA (from Halo paper)}
+Notes taken while reading about the modified Inner Product Argument (IPA) from the Halo paper \cite{cryptoeprint:2019/1021}.
+
+\subsection{Notation}
+\begin{description}
+    \item[Scalar mul] $[a]G$, where $a$ is a scalar and $G \in \mathbb{G}$
+    \item[Inner product] $<\overrightarrow{a}, \overrightarrow{b}> = a_0 b_0 + a_1 b_1 + \ldots + a_{n-1} b_{n-1}$
+    \item[Multiscalar mul] $<\overrightarrow{a}, \overrightarrow{b}> = [a_0] G_0 + [a_1] G_1 + \ldots [a_{n-1}] G_{n-1}$
+\end{description}
+
+
+\subsection{Transparent setup}
+$\overrightarrow{G} \in^r \mathbb{G}^d$, $H \in^r \mathbb{G}$
+
+Prover wants to commit to $p(x)=a_0$
+\subsection{Protocol}
+Prover:
+$$P=<\overrightarrow{a}, \overrightarrow{G}> + [r]H$$
+$$v=<\overrightarrow{a}, \{1, x, x^2, \ldots, x^{d-1} \} >$$
+
+where $\{1, x, x^2, \ldots, x^{d-1} \} = \overrightarrow{b}$.
+
+We can see that computing $v$ is the equivalent to evaluating $p(x)$ at $x$ ($p(x)=v$).
+
+We will prove:
+\begin{enumerate}[i.]
+    \item polynomial $p(X) = \sum a_i X^i$\\
+	$p(x) = v$ (that $p(X)$ evaluates $x$ to $v$).
+    \item $deg(p(X)) \leq d-1$
+\end{enumerate}
+
+
+Both parties know $P$, point $x$ and claimed evaluation $v$. For $U \in^r \mathbb{G}$,
+
+$$P' = P + [v] U = <\overrightarrow{a}, G> + [r]H + [v] U$$
+
+Now, for $k$ rounds ($d=2^k$, from $j=k$ to $j=1$):
+\begin{itemize}
+    \item random blinding factors: $l_j, r_j \in \mathbb{F}_p$
+    \item
+	$$L_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
+	$$L_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
+    \item Verifier sends random challenge $u_j \in \mathbb{I}$
+    \item Prover computes the halved vectors for next round:
+	$$\overrightarrow{a} \leftarrow \overrightarrow{a}_{hi} \cdot u_j^{-1} + \overrightarrow{a}_{lo} \cdot u_j$$
+	$$\overrightarrow{b} \leftarrow \overrightarrow{b}_{lo} \cdot u_j^{-1} + \overrightarrow{b}_{hi} \cdot u_j$$
+	$$\overrightarrow{G} \leftarrow \overrightarrow{G}_{lo} \cdot u_j^{-1} + \overrightarrow{G}_{hi} \cdot u_j$$
+\end{itemize}
+
+After final round, $\overrightarrow{a}, \overrightarrow{b}, \overrightarrow{G}$ are each of length 1.
+
+Verifier can compute
+$$G = \overrightarrow{G}_0 = < \overrightarrow{s}, \overrightarrow{G} >$$
+and $$b = \overrightarrow{b}_0 = < \overrightarrow{s}, \overrightarrow{b} >$$
+where $\overrightarrow{s}$ is the binary counting structure:
+
+\begin{align*}
+    &s = (u_1^{-1} ~ u_2^{-1} \cdots ~u_k^{-1},\\
+    &~~~~~~u_1 ~~~ u_2^{-1} ~\cdots ~u_k^{-1},\\
+    &~~~~~~u_1^{-1} ~~ u_2 ~~\cdots ~u_k^{-1},\\
+    &~~~~~~~~~~~~~~\vdots\\
+    &~~~~~~u_1 ~~~~ u_2 ~~\cdots ~u_k)
+\end{align*}
+
+
+And verifier checks:
+$$[a]G + [r'] H + [ab] U == P' + \sum_{j=1}^k ( [u_j^2] L_j + [u_j^{-2}] R_j)$$
+
+where the synthetic blinding factor $r'$ is $r' = r + \sum_{j=1}^k (l_j u_j^2 + r_j u_j^{-2})$.
+
+\vspace{1cm}
+
+Unfold:
+
+$$
+\textcolor{brown}{[a]G} + \textcolor{cyan}{[r'] H} + \textcolor{magenta}{[ab] U}
+==
+\textcolor{blue}{P'} + \sum_{j=1}^k ( \textcolor{violet}{[u_j^2] L_j} + \textcolor{orange}{[u_j^{-2}] R_j})
+$$
+
+\begin{align*}
+&Right~side = \textcolor{blue}{P'} + \sum_{j=1}^k ( \textcolor{violet}{[u_j^2] L_j} + \textcolor{orange}{[u_j^{-2}] R_j})\\
+&= \textcolor{blue}{< \overrightarrow{a}, \overrightarrow{G}> + [r] H + [v] U}\\
+&+ \sum_{j=1}^k (\\
+&\textcolor{violet}{[u_j^2] \cdot <\overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [<\overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U}\\
+&\textcolor{orange}{+ [u_j^{-2}] \cdot <\overrightarrow{a}_{hi}, \overrightarrow{G}_{lo}> + [r_j] H + [<\overrightarrow{a}_{hi}, \overrightarrow{b}_{lo}>] U}
+)
+\end{align*}
+
+\begin{align*}
+&Left~side = \textcolor{brown}{[a]G} + \textcolor{cyan}{[r'] H} + \textcolor{magenta}{[ab] U}\\
+& = \textcolor{brown}{< \overrightarrow{a}, \overrightarrow{G} >}\\
+&+ \textcolor{cyan}{[r + \sum_{j=1}^k (l_j \cdot u_j^2 + r_j u_j^{-2})] \cdot H}\\
+&+ \textcolor{magenta}{< \overrightarrow{a}, \overrightarrow{b} > U}
+\end{align*}
+
+
+\section{Amortization Strategy}
+TODO
+
+\bibliography{paper-notes.bib}
+\bibliographystyle{unsrt}
+
+\end{document}
