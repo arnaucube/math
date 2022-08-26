@@ -181,7 +181,7 @@ class IPA_halo:
         # a, b, G have length=1
         # l, r are random blinding factors
         # L, R are the "cross-terms" of the inner product
-        return a[0], b[0], G[0], l, r, L, R
+        return a[0], l, r, L, R
 
     def verify(self, P, a, v, x_powers, r, u, U, lj, rj, L, R):
         print("methid verify()")
@@ -358,7 +358,7 @@ class TestUtils(unittest.TestCase):
 
 
 class TestIPA_bulletproofs(unittest.TestCase):
-        def test_inner_product(self):
+        def test_inner_product_argument(self):
             d = 8
             ipa = IPA_bulletproofs(Fq, E, g, d)
 
@@ -373,9 +373,6 @@ class TestIPA_bulletproofs(unittest.TestCase):
             print("commit", P)
             v = ipa.evaluate(a, b)
             print("v", v)
-
-            # verifier
-            #  r = int(ipa.F.random_element())
 
             # verifier generate random challenges {uᵢ} ∈ 𝕀 and U ∈ 𝔾
             U = ipa.E.random_element()
@@ -418,7 +415,7 @@ class TestIPA_halo(unittest.TestCase):
             vc_c = vc_a + vc_b
             assert vc_c == expected_vc_c
 
-        def test_inner_product(self):
+        def test_inner_product_argument(self):
             d = 8
             ipa = IPA_halo(Fq, E, g, d)
 
@@ -428,7 +425,7 @@ class TestIPA_halo(unittest.TestCase):
             x = ipa.F(3)
             x_powers = powers_of(x, ipa.d) # = b
             
-            # verifier
+            # blinding factor
             r = int(ipa.F.random_element())
 
             # prover
@@ -438,6 +435,8 @@ class TestIPA_halo(unittest.TestCase):
             print("v", v)
 
             # verifier generate random challenges {uᵢ} ∈ 𝕀 and U ∈ 𝔾
+            # This might be obtained from the hash of the transcript
+            # (Fiat-Shamir heuristic for non-interactive version)
             U = ipa.E.random_element()
             k = int(math.log(ipa.d, 2))
             u = [None] * k
@@ -449,7 +448,7 @@ class TestIPA_halo(unittest.TestCase):
             P = P + int(v) * U
 
             # prover
-            a_ipa, b_ipa, G_ipa, lj, rj, L, R = ipa.ipa(a, x_powers, u, U)
+            a_ipa, lj, rj, L, R = ipa.ipa(a, x_powers, u, U)
 
             # verifier
             print("P", P)

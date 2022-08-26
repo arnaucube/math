@@ -105,21 +105,25 @@ print("nth roots of unity:", w)
 print("Vandermonde matrix:")
 print(ft)
 
-a = vector([3,4,5,9])
-print("a:", a)
+fa_eval = vector([3,4,5,9])
+print("fa_eval:", fa_eval)
 
 # interpolate f_a(x)
-fa_coef = ft_inv * a
+fa_coef = ft_inv * fa_eval
 print("fa_coef:", fa_coef)
 
 P.<x> = PolynomialRing(F)
 fa = P(list(fa_coef))
 print("f_a(x):", fa)
 
-# check that evaluating fa(x) at the roots of unity returns the expected values of a
-for i in range(len(a)):
-    assert fa(w[i]) == a[i]
+# check that evaluating fa(x) at the roots of unity returns the expected values of fa_eval
+for i in range(len(fa_eval)):
+    assert fa(w[i]) == fa_eval[i]
 
+# go from coefficient form to evaluation form
+fa_eval2 = ft * fa_coef
+print("fa_eval'", fa_eval)
+assert fa_eval2 == fa_eval
 
 
 # Fast polynomial multiplicaton using FFT
