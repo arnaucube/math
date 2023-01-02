@@ -10,15 +10,15 @@ def hash(m):
 def hash_to_point(m):
     # WARNING this hash-to-point approach should not be used!
     h = hash(m)
-    return G2 * h
+    return e.G2 * h
 
 
-pairing = Pairing()
+e = Pairing()
 
 class Signer:
     def __init__(self):
-        self.sk = F1.random_element()
-        self.pk = self.sk * G1
+        self.sk = e.F1.random_element()
+        self.pk = self.sk * e.G1
 
     def sign(self, m):
         H = hash_to_point(m)
@@ -26,7 +26,7 @@ class Signer:
 
 def verify(pk, s, m):
     H = hash_to_point(m)
-    return pairing.pair(G1, s) == pairing.pair(pk, H)
+    return e.pair(e.G1, s) == e.pair(pk, H)
 
 def aggr(points):
     R = 0
