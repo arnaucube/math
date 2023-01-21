@@ -25,7 +25,7 @@
 
 \title{Notes on BLS Signatures}
 \author{arnaucube}
-\date{}
+\date{July 2022}
 
 \begin{document}
 
@@ -70,13 +70,13 @@ Identical to verification of a normal signature as long as we use the same corre
 $$e(g_1, \sigma_{aggr})==e(pk_{aggr}, H(m))$$
 
 Unfold:
-$$\fbox{e(pk_{aggr}, H(m))}= e(pk_1 + pk_2 + \ldots + pk_n, H(m)) =$$
+$$e(pk_{aggr}, H(m))= e(pk_1 + pk_2 + \ldots + pk_n, H(m)) =$$
 $$=e([sk_1] \cdot g_1 + [sk_2] \cdot g_1 + \ldots + [sk_n] \cdot g_1, H(m))=$$
 $$=e([sk_1 + sk_2 + \ldots + sk_n] \cdot g_1, H(m))=$$
 $$=[sk_1 + sk_2 + \ldots + sk_n]~\cdot~e(g_1, H(m))=$$
 $$=e(g_1, [sk_1 + sk_2 + \ldots + sk_n] \cdot H(m))=$$
 $$=e(g_1, [sk_1] \cdot H(m) + [sk_2] \cdot H(m) + \ldots + [sk_n] \cdot H(m))=$$
-$$=e(g_1, \sigma_1 + \sigma_2 + \ldots + \sigma_n)= \fbox{e(g_1, \sigma_{aggr})}$$
+$$=e(g_1, \sigma_1 + \sigma_2 + \ldots + \sigma_n)= e(g_1, \sigma_{aggr})$$
 
 
 Note: in the current notes $pk \in G_1$ and $\sigma, H(m) \in G_2$, but we could use $\sigma, H(m) \in G_1$ and $pk \in G_2$.
