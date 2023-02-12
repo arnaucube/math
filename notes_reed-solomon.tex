@@ -1,0 +1,339 @@
+\documentclass[a4paper]{article}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage[bookmarksopen=true,bookmarks=true]{hyperref}
+\usepackage{bookmark}
+\hypersetup{
+        pdfborder = {0.1 0.1 0.1},
+%     colorlinks,
+%     citecolor=black,
+%     filecolor=black,
+%     linkcolor=black,
+%     urlcolor=blue
+}
+
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{ {./imgs} }
+\usepackage{pgf-umlsd} % diagrams
+\usepackage[UKenglish]{datetime}
+\newdateformat{DATEMonthYear}{\monthname[\THEMONTH] \THEYEAR}
+\newdateformat{DATEYearMonthDay}{\THEYEAR-\THEMONTH-\THEDAY}
+
+\usepackage{booktabs} % \toprule \midrule ...
+
+\theoremstyle{definition}
+\newtheorem{definition}{Def}[section]
+\newtheorem{theorem}[definition]{Thm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\title{Notes on Reed-Solomon codes}
+\author{arnaucube}
+\date{January 2023}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	Notes taken while reading about Reed-Solomon codes. Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+
+	The notes are not complete, don't include all the steps neither all the proofs.
+\end{abstract}
+
+\tableofcontents
+
+\section{Reed-Solomon Codes overview}
+In this section we overview the main ideas presented in the Reed-Solomon paper \cite{reedsolomon} and in Bruce Maggs notes \cite{reedsolomon-bruce}.
+
+Reed-Solomon codes appeared in parallel to the BCH codes, and can be described as nonbinary BCH codes. In this section we will focus only in the Reed-Solomon codes, particularly in the encoding and error detection (not correction).
+
+\emph{tmp-note}: I feel like it is worth to check Galois theory \& BCH codes before going to Reed-Solomon codes, but due time constraints and our main goal being FRI, probably we should skip it.
+
+\subsection{Idea}
+
+Let $p(x) = m_0 + m_1 x + \ldots + m_{k-1} x^{k-1}$, where $m_i \in K$ and $k < 2^n$.
+
+We map $k$-tuples of $K$ into $2^n$-tuples of $K$, where $K=GF(p^r)$.
+% Code E maps $k$-tuples of $K$ into $2^n$-tuples of $K$, where $K$ is a field of degree $n$ over the field of two elements $\mathbb{Z}_2$.
+$$
+k
+\begin{cases}
+    m_0\\
+    m_1\\
+    \vdots\\
+    m_{k-1}
+\end{cases}
+\in K~~~~
+% \stackrel{E}{ \xrightarrow{\hspace*{1cm}} }
+\xrightarrow{\hspace*{1cm}}
+2^n
+\begin{cases}
+    p(0)\\
+    p(\alpha)\\
+    p(\alpha^2)\\
+    \vdots\\
+    p(1)
+\end{cases}
+\in K
+$$
+
+The receiver then, can decode the messages by solving simultaneously any $k$ of the $2^n$ equations
+
+\begin{align*}
+    p(0) &= m_0\\
+    p(\alpha) &= m_0 + m_1 \alpha + m_2 \alpha^2 + \ldots + m_{k-1} \alpha^{k-1}\\
+    p(\alpha^2) &= m_0 + m_1 \alpha^2 + m_2 \alpha^4 + \ldots + m_{k-1} \alpha^{2k-2}\\
+    &~~~\vdots\\
+    p(1) &= m_0 + m_1 + m_2 + \ldots + m_{k-1}\\
+\end{align*}
+
+This system of equations can be solved, as we can see that any $k$ of the $p(\alpha^j)$ equations are linearly independent since they form a Vandermonde matrix
+$$
+V =
+\begin{pmatrix}
+    1 & x_1 & x_1^2 & \ldots & x_1^{k-1} \\
+    1 & x_2 & x_2^2 & \ldots & x_2^{k-1} \\
+    1 & x_3 & x_3^2 & \ldots & x_3^{k-1} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n & x_n^2 & \ldots & x_n^{k-1} \\
+\end{pmatrix}
+$$
+
+and $\det V$ is a Vandermonde determinant and $\det V \neq 0$ as
+$$
+\det~V = \prod_{j < i} (x_i - x_j)
+$$
+
+See Annex \ref{sec:vandermondedet} for a proof of the Vandermonde determinant.
+
+% The number of combinations of taking $k$ elements from $2^n$ elements (without regard of order) can be expressed by $C_k^{2^n} = \binom{2^n}{k} = \frac{(2^n)!}{k!~(2^n - k)!}$.
+% This is the number of determinations of $(m_0, \ldots, m_{m-1})$ in case of no errors.
+
+% TODO this part needs to be continued & finished.
+
+\subsection{Real world approach}
+In the practical side, instead of transmitting $k+2s$ polynomial evaluations, we send $k$ coefficients + $2s$ evaluations.
+
+This is because we are interested in efficiency in the \emph{common} case, where in most of cases there are no errors and we care more about having a fast check that there are no errors than of the error recovering phase.
+
+Furthermore, in our use case in the context of FRI IOP, we are not interested into decoding but only into detecting errors.
+
+% \subsubsection{The setup}
+% We work on $GF(p^r)$. For $\alpha$ being a primitive element of $GF(p^r)$, we set the generator polynomial
+% 
+% $$
+% g(x) = (x-\alpha) (x-\alpha^2) \cdots (x-\alpha^{2s-1})
+% $$
+% 
+% 
+% THIS part is not coherent with the 'Encoding' section
+% We define
+% $$b(x) = x^{2s} \cdot m(x) \pmod{g(x)}$$
+% 
+% thus, for some $q(x)$,
+% $$x^{2s} m(x) = q(x) g(x) + b(x)$$
+% 
+% Define the codeword $c(x)$ as
+% $$c(x) = x^{2s} \cdot m(x) - b(x)$$
+% UNTIL HERE.
+
+% notice that $c(x)=q(x)g(x)$, thus $c(x)$ is a multiple of $g(x)$.
+% 
+% In order to check if a received codeword $c'(x)$ is correct, we'll check its divisibility by $g(x)$. If the check passes, we extract the first $k$ elements of $c'(x)$.
+
+
+\subsubsection{Encoding}
+
+Let $g(x)$ be the generator polynomial
+$$g(x) = (x-\alpha) (x-\alpha^2) \cdots (x-\alpha^{2s-1})$$
+
+whith $\alpha$ being a primitive element of $GF(p^r)$.
+
+The \emph{encoder} wants to map the message $\{ m_0, m_1, \ldots, m_{k-1} \}$ into a polynomial $p(x)$ of degree $<k$ such that
+
+$$p(\alpha_i) = m_i ~~ \forall i\in{0, k-1}$$
+
+so we interpolate taking $\{ m_0, m_1, \ldots, m_{k-1} \}$ as the coefficients of $p(x)$ in order to obtain
+$$p(x) = m_0 + m_1 \cdot x + \cdots + m_{k-1} x^{k-1}$$
+
+Then the encoder computes $c(x) = p(x) \cdot g(x)$, and will output the coefficients of $c(x)$, $\{ c_i \}^k$.
+
+Notice that $c(x)=q(x)g(x)$, thus $c(x)$ is a multiple of $g(x)$.
+
+\subsubsection{Error checking}
+
+The \emph{receiver} starts from the received coefficients $\{c_i'\}^k$ of $c'(x)$. $c'(x)$ may contain errors, which we represent by $e(x) = e_0 + e_1 x + e_2 x^2 + \ldots + e_{k-1} x^{k-1}$, so $c'(x) = c(x) + e(x)$.
+
+In order to check $c(x)\stackrel{?}{=} c'(x)$ (thus, that there are no errors ($e(x) = 0$)), we will do the divisibility check $g(x) | c'(x)$, which if there are no errors the check should pass. This comes from the fact that we've chosen $c(x)$ to be a multiple of $g(x)$.
+If the check passes, we'll extract the first $k$ elements of $c'(x)$.
+
+If $c'(x) / g(x) = 0$, it means that $c'(x)$ is a multiple of $g(x)$, thus $c(x)=c'(x)$, which means that there are no errors.
+
+In practice, checking divisibility by dividing $c'(x)$ by $g(x)$ could be computationally expensive, that's why we do the following approach.
+% so we multiply $c(x)$ by some polynomial $d(x)$, and then we check if $g(x)d(x)$ divides the result.
+% 
+% In this way, instead of checking that $c'(x)/g(x) = 0$, we check that
+% $$c'(x) = d(x) \cdot g(x) = 0 \pmod{x^n - 1}$$
+% 
+% If $c'(x) / g(x) \neq 0$, means that there are errors, such that
+% $$c'(x) = p(x) \cdot g(x) + e(x)$$
+
+\textbf{The check polynomial}
+
+From $g(x) = (x-\alpha) (x-\alpha^2) \cdots (x-\alpha^{2s-1})$, we know that
+$$g(x) = \prod_{i=0}^{2s-1} (x - \alpha^i) = x^{2s} - 1$$
+a proof for $\prod_{i=0}^{n-1} (x - \alpha^i) = x^n - 1$ can be found in \cite{cyclotomicpolyroots}.
+
+Now, let $g'(x)=\prod_{i=0}^{n-1} (x-\alpha^i)$, which for $n=k +2s$, is equivalent to
+
+$$g'(x) = \prod_{i=0}^{n-1} (x-\alpha^i) = \prod_{i=0}^{2s-1} (x-\alpha^i) ~\cdot \prod_{i=2s-1}^{n-1} (x-\alpha^i)$$
+% \begin{align*}
+%     g'(x) = \prod_{i=0}^{n-1} (x-\alpha^i) =& \prod_{i=0}^{2s-1} (x-\alpha^i) ~\cdot \prod_{i=2s-1}^{n-1} (x-\alpha^i)\\
+% =& ~g(x) ~\cdot \prod_{i=2s-1}^{n-1} (x-\alpha^i)
+% \end{align*}
+
+where we see clearly that $g'(x)$ is a multiple of $g(x)$, so, we have that $g(x) | g'(x)$, which is the same than saying that
+$$g(x) | (x^n-1),~for~2s<n$$
+
+From here, as we know that $c(x)$ is a multiple of $g(x)$, we can see that there is a unique polynomial $h(x)$ of degree $n-2s$ such that
+$$g(x) h(x) = x^n - 1$$
+So, $h(x) = (x^n -1) / g(x)$, and we can see that
+
+$$h(x) = (x^n -1)/g(x)= \prod_{2s-1}^{n-1} (x - \alpha^i)$$
+% $$h(x) = (x^n -1)/g(x)=\frac{x^n -1}{x^{2s} -1} = \frac{\prod_0^{n-1} (x-\alpha^i)}{\prod_0^{2s-1} (x-\alpha^i)}$$
+% $$= \frac{\prod_0^{2s-1} (x-\alpha^i) \cdot \prod_{2s-1}^{n-1} (x - \alpha^i)}{\prod_0^{2s-1} (x-\alpha^i)}
+% = \prod_{2s-1}^{n-1} (x - \alpha^i)
+% $$
+
+The degree of $h(x)$ being $n-2s$ can be seen from the fact that $deg(g(x))=2s$ and $deg(x^n -1)=n$, thus
+$$deg(h(x)) = deg((x^n -1)/g(x))=n-2s$$
+which is equal to $k$.
+
+The polynomial $h(x)$ receives the \emph{check polynomial} name.
+
+From here, to determine if $c'(x)$ is a valid codeword we check:
+$$c'(x) \cdot h(x) = 0 \pmod{x^n - 1}$$
+
+
+It is common to choose $n = p^r -1$ such as $n=2^8 - 1$, and $k=223$ (\emph{RS(255, 223)}), over $GF(2^8)$. 
+
+
+
+
+
+
+
+\newpage
+%%%%%% APPENDIX
+
+\appendix
+\section{Vandermonde determinant}
+\label{sec:vandermondedet}
+
+This section contains a simple proof of the Vandermonde matrix determinant. The proof was found in \cite{vanddetproof}, here it is written with small modifications and expanded. A different proof can be found in \cite{vanddetproof2}.
+
+$$
+\det~V(x_1, ..., x_n) = \det
+\begin{pmatrix}
+    1 & x_1 & x_1^2 & \ldots & x_1^{n-1} \\
+    1 & x_2 & x_2^2 & \ldots & x_2^{n-1} \\
+    1 & x_3 & x_3^2 & \ldots & x_3^{n-1} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n & x_n^2 & \ldots & x_n^{n-1} \\
+\end{pmatrix}
+= \prod_{j < i} (x_i - x_j)
+$$
+
+\emph{Proof}
+
+The equation is true for $n = 2$, as we have:
+
+$$
+\det~V(x_1, x_2) = \det
+\begin{pmatrix}
+    1 & x_1\\
+    1 & x_2
+\end{pmatrix}
+= x_2 - x_1
+$$
+
+We now assume that $n \ge 3$. Starting with column $n$ and ending at column $2$, we successively apply the following operation: subtract $x_1$ times column $i-1$ from column $i$. The determinant remains the same and the resulting matrix is:
+
+$$
+= \det
+\begin{pmatrix}
+    1 & x_1-(x_1 \cdot 1) & x_1^2 - (x_1 \cdot x_1) & \ldots & x_1^{n-1} - (x_1 \cdot x_1^{n-2}) \\
+    1 & x_2-(x_1 \cdot 1) & x_2^2 - (x_1 \cdot x_2) & \ldots & x_2^{n-1} - (x_1 \cdot x_2^{n-2}) \\
+    1 & x_3-(x_1 \cdot 1) & x_3^2 - (x_1 \cdot x_3) & \ldots & x_3^{n-1} - (x_1 \cdot x_3^{n-2}) \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n-(x_1 \cdot 1) & x_n^2 - (x_1 \cdot x_n) & \ldots & x_n^{n-1} - (x_1 \cdot x_n^{n-2}) \\
+\end{pmatrix}
+$$
+$$
+= \det
+\begin{pmatrix}
+    1      & 0           & 0              & \ldots & 0 \\
+    1      & (x_2 - x_1) & x_2(x_2 - x_1) & \ldots & x_2^{n-2}(x_2 - x_1) \\
+    1      & (x_3 - x_1) & x_3(x_3 - x_1) & \ldots & x_3^{n-2}(x_3 - x_1) \\
+    \vdots & \vdots      & \vdots         &        & \vdots \\
+    1      & (x_n - x_1) & x_n(x_n - x_1) & \ldots & x_n^{n-2}(x_n - x_1) \\
+\end{pmatrix}
+$$
+
+Applying the Laplace expansion along the first row and factoring out the scalar multiples $(x_i - x_1)$ in each column, we obtain: 
+
+$$
+= \det
+\begin{pmatrix}
+    x_2-x_1 & x_2^2 - x_1 x_2 & x_2^3 - x_1 x_2^2 & \ldots & x_2^{n-1} - x_1 x_2^{n-2} \\
+    x_3-x_1 & x_3^2 - x_1 x_3 & x_3^3 - x_1 x_3^2 & \ldots & x_3^{n-1} - x_1 x_3^{n-2} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    x_n-x_1 & x_n^2 - x_1 x_n & x_n^3 - x_1 x_n^2 & \ldots & x_n^{n-1} - x_1 x_n^{n-2} \\
+\end{pmatrix}
+$$
+
+in each row, factor out $(x_i - x_1)$
+
+$$
+= \det
+\begin{pmatrix}
+    1(x_2-x_1) & x_2(x_2 - x_1) & x_2^2(x_2 - x_1) & \ldots & x_2^{n-2}(x_2 - x_1) \\
+    1(x_3-x_1) & x_3(x_3 - x_1) & x_3^2(x_3 - x_1) & \ldots & x_3^{n-2}(x_3 - x_1) \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1(x_n-x_1) & x_n(x_n - x_1) & x_n^2(x_n - x_1) & \ldots & x_n^{n-2}(x_n - x_1) \\
+\end{pmatrix}
+$$
+$$
+= \prod_{2 \leq i \leq n} (x_i - x_1) ~~\det
+\begin{pmatrix}
+    1 & x_2 & x_2^2 & \ldots & x_2^{n-2} \\
+    1 & x_3 & x_3^2 & \ldots & x_3^{n-2} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n & x_n^2 & \ldots & x_n^{n-2} \\
+\end{pmatrix}
+$$
+
+now, by induction
+
+$$
+= \prod_{i=2}^n (x_i - x_1) ~~\cdot \prod_{2 \leq j < i \leq n} (x_i - x_j) ~~= \prod_{1 \leq j < i \leq n} (x_i - x_j)
+$$
+\qed
+
+
+
+
+% Bibliography
+\addcontentsline{toc}{section}{References}
+\bibliography{notes_reed-solomon.bib}
+\bibliographystyle{unsrt}
+
+\end{document}
