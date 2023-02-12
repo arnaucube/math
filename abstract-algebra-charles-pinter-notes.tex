@@ -16,6 +16,9 @@
 \newtheorem{definition}{Def}[section]
 \newtheorem{theorem}[definition]{Thm}
 
+% ndiv command, to allow ̸| (not-div) without needing extra packages
+\newcommand{\ndiv}{\hspace{-4pt}\not|\hspace{2pt}}
+\newcommand{\crossover}{\hspace{-0pt}\not\hspace{-2pt}}
 
 \title{Notes on "A book of Abstract Algebra", Charles C. Pinter}
 \author{arnaucube}
@@ -237,9 +240,10 @@ Example of an \emph{homomorphism}: $f: \mathbb{Z}_6 \rightarrow \mathbb{Z}_3$.
     In an abelian group, every subgroup is normal.
 \end{definition}
 
-\begin{definition}[Kernel]
+\begin{definition}[Kernel]\label{def:homomorphismkernel}
     Let $f: G \rightarrow H$ be a homomorphism. The \emph{kernel} of $f$ is the set $K$ of all the elements of $G$ which are carried by $f$ onto the neutral element of $H$. That is,
     $$K = {x \in G : f(x) = e}$$
+    \emph{Kernel in the context of Extension fields: \ref{def:extensionkernel}}
 \end{definition}
 For every homomorphism, the $e \in G$ maps to $e \in H$, so the \emph{kernel} is never empty, it always contains the identity $e_G$, and if the kernel only contains the identity, then $f$ is one-to-one (injective).
 
@@ -439,7 +443,99 @@ From the last two theorems: every integer $m$ can be factored into primes, and t
     If $a(x)$ has degree $n$, it has at most $n$ roots.
 \end{theorem}
 
+In finite $F$, polynomial $\neq$ polynomial function. If $F$ is infinite, polynomial $=$ polynomial function.
 
-\framebox{WIP: covered until chapter 26, work in progress.}
+For every polynomial with rational coefficients, there is a polynomial with integer coefficients having the same roots. See:
+$$a(x) = \frac{k_0}{l_0} + \frac{k_1}{l_1} x + \cdots + \frac{k_n}{l_n} x^n$$
+$$=\frac{1}{l_0 \cdots l_n} \cdot \underbrace{(k_0 l_1 \cdots l_n + k_1 l_0 l_2 \cdots l_n x + \cdots + k_n l_0 \cdots l_{n-1} x^n)}_{b(x)}$$
+$a(x)$ has rational coefficients, $b(x)$ has integer coefficients. $b(x)$ differs from $a(x)$ only by a constant factor ($\frac{1}{l_0\cdots l_n}$), so $a(x)$ and $b(x)$ have the same roots.
+
+$\Longrightarrow~~\forall~p(x) \in \mathbb{Q}[x]$, there is a $f(x) \in \mathbb{R}$ with the same roots (for every polynomial with rational coefficients, there is a polynomial with integer coefficients having the same roots).
+
+\begin{theorem}
+    If $s/t$ is a root of $a(x)$, then $s|a_0$ and $t|a_n$.
+\end{theorem}
+
+\begin{theorem}
+    Suppose $a(x)$ can be factured as $a(x) = b(x)c(x)$, where $b(x), c(x)$ have rational coefficients. Then there are polynomials $B(x), C(x)$ with integer coefficients, which are constant multiples of $b(x)$ and $c(x)$ respectively, such that $a(x) = B(x)C(x)$.
+\end{theorem}
+
+\begin{theorem}[Eisenstein's irreducibility criterion]
+    Let $a(x) = a_0 + a_1 x + \cdots + a_n x^n$ be a polynomial with integer coefficients.
+
+    If there is prime $p$ such that $p | a_i, ~\forall i\in\{0, n-1\}$, and $p \ndiv a_n$ and $p^2 \ndiv a_0$, then $a(x)$ is irreducible over $\mathbb{Q}$.
+    % Suppose there is a prime number $p$ which divides every coefficient of $a(x)$ except the leading coefficient $a_n$; suppose $p$ does not divide $a_n$ and $p^2$ does not divide $a_0$. Then $a(x)$ is irreducible over $\mathbb{Q}$.
+\end{theorem}
+
+\section{Extensions of fields}
+
+\begin{definition}[Kernel]\label{def:extensionkernel}
+    The \emph{kernel} of $\sigma_c$ consists of all polynomials $a(x) \in F[x]$ such that $c$ is a root of $a(x)$.
+
+    \emph{Kernel in the context of Homomorphisms: \ref{def:homomorphismkernel}}
+\end{definition}
+
+\begin{definition}[Algebraic]
+    $c \in E$ is called \emph{algebraic over} $F$ if it is the root of some nonzero polynomial $a(x) \in F[x]$.
+
+    Otherwise, $c$ is called \emph{transcendental over} $F$.
+\end{definition}
+
+$E/K$ denotes the (field) extension of $E$ over $K$.
+
+\begin{theorem}[Basic theorem of field extensions]
+    Let $F$ be a field and $a(x) \in F[x]$ a nonconstant polynomial. There exists an extension field $E/F$ and an element $c \in E$ such that $c$ is a root of $a(x)$.
+\end{theorem}
+
+Let $a(x) \in F[x]$ be a polynomial of degree $n$. There is an extension field $E/F$ which contains all $n$ roots of $a(x)$.
+
+\section{Vector spaces}
+
+\begin{definition}[Vector space]
+    A \emph{vector space} over a field $F$ is a set $V$, with two operations $+, \cdot$, called \emph{vector addition} and \emph{scalar multiplication}, such that
+
+    \begin{itemize}
+	\item $V$ with vector addition is an abelian group
+	\item $\forall k \in F$ and $\overrightarrow{a} \in V$, the scalar product $k \overrightarrow{a}$ is an element of $V$, subject to the following conditions:
+	    $\forall k, l \in F,~\overrightarrow{a},\overrightarrow{b} \in V$
+	    \begin{enumerate}[i.]
+		\item $k(\overrightarrow{a} + \overrightarrow{b}) = k\overrightarrow{a} + k\overrightarrow{b}$
+		\item $(k + l)\overrightarrow{a} = k\overrightarrow{a} + k\overrightarrow{b}$
+		\item $k(l\overrightarrow{a}) = (kl)\overrightarrow{a}$
+		\item $1 \overrightarrow{a} = \overrightarrow{a}$
+	    \end{enumerate}
+    \end{itemize}
+\end{definition}
+
+\begin{definition}[Linear combination]
+    If $\overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n} \in V$, and $k_1, k_2, \ldots, k_n$ are scalars, then the vector
+    $$k_1 \overrightarrow{a_1} + k_2 \overrightarrow{a_2} + \cdots + k_n \overrightarrow{a_n}$$
+    is called a \emph{linear combination} of $\overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n}$.
+
+    The set of all the linear combinations of $\overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n}$ is a \emph{subspace of} $V$.
+\end{definition}
+
+\begin{definition}[Linear dependancy]
+    Let $S = \{$\overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n}$\}$ be a set of distinct vectors in a vector space $V$. $S$ is said to be \emph{linearly dependent} if there are scalars $k_1, \ldots, k_n$, not all zero, such that $k_1 \overrightarrow{a_1} + k_2 \overrightarrow{a_2} + \cdots + k_n \overrightarrow{a_n} = 0$.
+    Which is equivalent to saying that at least one of the vectors in $S$ is a linear combination of the others.
+
+    If $S$ is not linearly dependent, then it is \emph{linearly independent}. $S$ is linearly independent iff $k_1 \overrightarrow{a_1} + k_2 \overrightarrow{a_2} + \cdots + k_n \overrightarrow{a_n}=0$ implies $k_1 = k_2 = \cdots =  k_n =0$.
+    Which is equivalent to saying thatno vector in $S$ is equal to a linear combination of the other vectors in $S$.
+\end{definition}
+
+If $\{ \overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n} \}$ is linearly dependent, then some $a_i$ is a linear combination of the preceding ones.
+
+If $\{ \overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n} \}$ spans $V$, and $a_i$ is a linear combination of the preceding vectors, then $\{ \overrightarrow{a_1}, \ldots, \crossover{\overrightarrow{a_i}}, \ldots, \overrightarrow{a_n} \}$ still spans $V$.
+
+
+\begin{theorem}
+    Any two bases of a vector space $V$ have the same number of elements.
+
+    (This comes from the fact that all bases of $\mathbb{R}^n$ contain exactly $n$ vectors)
+\end{theorem}
+
+If the  set $(\overrightarrow{a_1}, \overrightarrow{a_2}, \ldots, \overrightarrow{a_n})$ spans $V$, it contains a basis of $V$.
+
+\framebox{WIP: covered until chapter 28, work in progress.}
 
 \end{document}
