@@ -4,6 +4,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \hypersetup{
@@ -28,7 +29,7 @@
 {\endinnersolution}
 
 
-\title{Bilinear Pairings - study}
+\title{Weil Pairing - study}
 \author{arnaucube}
 \date{August 2022}
 
@@ -44,9 +45,7 @@
 
 \tableofcontents
 
-\section{Weil reciprocity}
-
-\section{Generic Weil Pairing}
+\section{Divisors and rational functions}
 
 \begin{definition}{Divisor}
   $$D= \sum_{P \in E(\mathbb{K})} n_p \cdot [P]$$
@@ -67,19 +66,75 @@ $D \sim D'$ iff $D - D'$ is principal.
   $$r(D)= \prod r(P)^{n_p}$$
 \end{definition}
 
-\subsection{Generic Weil Pairing}
+\section{Weil reciprocity}
+\begin{theorem}{(Weil reciprocity)}
+  Let $E/ \mathbb{K}$ be an e.c. over an alg. closed field. If $r,~s \in \mathbb{K}\setminus \{0\}$ are rational functions whose divisors have disjoint support, then
+$$r(div(s)) = s(div(r))$$
+\end{theorem}
+Proof. (todo)
+
+\section{Generic Weil Pairing}
 Let $E(\mathbb{K})$, with $\mathbb{K}$ of char $p$, $n$ s.t. $p \nmid n$.
 
 $\mathbb{K}$ large enough: $E(\mathbb{K})[n] = E(\mathbb{\overline{K}}) = \mathbb{Z}_n \oplus \mathbb{Z}_n$ (with $n^2$ elements).
 
-$P, Q \in E[n]$:
-$$D_P \sim [P] - [0]$$
-$$D_Q \sim [Q] - [0]$$
+For $P, Q \in E[n]$,
+\begin{align*}
+  D_P &\sim [P] - [0]\\
+  D_Q &\sim [Q] - [0]
+\end{align*}
+
 We need them to have disjoint support:
-$$D_P \sim [P] - [0]$$
-$$D_Q \sim [Q+T] - [T]$$
+\begin{align*}
+  D_P &\sim [P] - [0]\\
+  D_Q' &\sim [Q+T] - [T]
+\end{align*}
 
 $$\Delta D = D_Q - D_Q' = [Q] - [0] - [Q+T] + [T]$$
+
+
+Note that $n D_P$ and $n D_Q$ are principal. Proof:
+\begin{align*}
+  n D_P &= n [P] - n [O]\\
+  deg(n D_P) &= n - n = 0\\
+  sum(n D_P) &= nP - nO = 0
+\end{align*}
+($nP = 0$ bcs. $P$ is n-torsion)
+
+Since $n D_P,~ n D_Q$ are principal, we know that $f_P,~ f_Q$ exist.
+
+Take
+\begin{align*}
+  f_P &: div(f_P) = n D_P\\
+  f_Q &: div(f_Q) = n D_Q
+\end{align*}
+
+We define
+$$
+e_n(P, Q) = \frac{f_P(D_Q)}{f_Q(D_P)}
+$$
+
+Remind: evaluation of a rational function over a divisor $D$:
+\begin{align*}
+  D &= \sum n_P [P]\\
+  r(D) &= \prod r(P)^{n_P}
+\end{align*}
+
+If $D_P = [P+S] - [S],~~ D_Q=[Q-T]-[T]$ what is $e_n(P, Q)$?
+
+\begin{align*}
+  f_P(D_Q) &= f_P(Q+T)^1 \cdot f_P(T)^{-1}\\
+  f_Q(D_P) &= f_Q(P+S)^1 \cdot f_Q(S)^{-1}
+\end{align*}
+
+$$
+e_n(P, Q) = \frac{f_P(Q+T)}{f_P(T)} / \frac{f_Q(P+S)}{f_Q(S)}
+$$
+
+with $S \neq \{O, P, -Q, P-Q \}$.
+
+
+\section{Properties}
 
 
 \section{Exercises}
