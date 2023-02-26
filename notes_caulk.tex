@@ -339,7 +339,59 @@ $$e([P]_1, [1]_2) + e(-(\rho_1(\alpha) + \rho_2(\alpha)) - z_{V_n}(\alpha) [x^{d
 
 
 \section{Caulk+}
-\emph{WIP}
+Main update from original Caulk: $R_{unity}$, $\pi_{unity}$ is replaced with a pairing check constraining the evaluation points to be roots of a polynomial dividing $X^n-1$.
+
+KZG commitment $c$ to $C(X)$, with evaluation points in $\mathbb{H}$.\\
+KZG commitment $a$ to $A(X)$, with evaluation points in $\mathbb{V}$.
+
+Witness:\\
+$I \subset [n], ~~ \{ c_i \}_{i \in I} ,~~ C(X), A(X) ,~~ u: [m] \rightarrow I$
+
+Precomputed:\\
+$[W_1^i(x)]_2 ~~\forall i \in I$, where $W_1^i(X) = \frac{C(X) - c_i)}{X-\omega^i}$\\
+$[W_2^i(x)]_2 ~~\forall i \in I$, where $W_2^i(X) = \frac{Z_{\mathbb{H}}(X)}{X-\omega^i}$
+
+\paragraph{Round 1}
+\begin{enumerate}[i.]
+	\item rand blinding factors $r1, \ldots, r_6$
+	\item Lagrange basis polynomials $\{ \tau_i(X) \}_{i \in [m]}$ over $\omega^j_{j \in I}$
+	\item $Z_I'(X)= r_1 \prod_{i \in I} (X - \omega^i)$
+	\item $C_I(X)=\sum_{i \in I} c_i \tau_i(X)$ (unblinded)
+	\item blinded $C_I'(X)=C_I(X) + (r_2 + r_3 X + r_4 X^2) Z_I'(X)$
+	\item set $U(x)$, being degree $m-1$ interploation over $\mathbb{V}$ with $U(v_i)=\omega^{u(i)},~ \forall i\in [m]$
+	\item blinded $U'(X)= U(X) + (r_5 + r_6 X) Z_{\mathbb{V}}(X)$
+	\item return $z_I=[Z_I'(x)]_1,~ c_I=[C_I'(x)]_1,~ u=[U'(X)]_1$
+\end{enumerate}
+
+Verifier sets random challenges $\chi_1, \chi_2$.
+
+\paragraph{Round 2}
+\begin{enumerate}[i.]
+	\item $[W_1(x)+ \chi_2 W_2(x)]_2 = \sum_{i \in I} \frac{[W_1^i(x)]_2 + \chi_2 [W_2^i(x)]_2}{\prod_{j \in I,~i \neq j} \omega^i - \omega^j}$
+	\item $H(X) = \frac{Z_I'(U'(X)) + \chi_1 (C_I'(U'(X)) - A(X))}{Z_{\mathbb{V}}(X)}$
+	\item return $w=r_1^{-1} [W_1(x) + \chi_2 W_2(x)]_2 - [r_2 + r_3 x + r_4 x^2]_2,~ h=[H(x)]_1$
+\end{enumerate}
+
+Verifier sets random challenge $\alpha$.
+
+\paragraph{Round 3}
+Output $v_1, v_2, \pi_1, \pi_2, \pi_3$, where
+\begin{align*}
+	P_1(X) &\leftarrow Z_I'(X) + \chi_1 C_I'(X)\\
+	P_2(X) &\leftarrow Z_I'(U'(\alpha)) + \chi_1 (C_I'(U'(\alpha)) - A(X)) - Z_{\mathbb{V}}(\alpha) H(X)\\
+	(v_1, \pi_1) &\leftarrow KZG.Open(U'(X), \alpha)\\
+	(v_2, \pi_2) &\leftarrow KZG.Open(P_1(X), v_1)\\
+	(0, \pi_3) &\leftarrow KZG.Open(P_2(X), \alpha)\\
+\end{align*}
+
+\paragraph{Verify}
+Compute $p_1 = z_I + \chi_1 c_I, ~~ p_2= [v_2]_1 - \chi_1 a - Z_{\mathbb{V}}(\alpha) h$, verify
+\begin{align*}
+	1 &\leftarrow KZG.Verify(u, \alpha, v_1, \pi_1)\\
+	1 &\leftarrow KZG.Verify(p_1, v_1, v_2, \pi_2)\\
+	1 &\leftarrow KZG.Verify(p_2, \alpha, 0, \pi_3)\\
+	e((C-c_I) &+ \chi_2[x^n -1]_1, [1]_2) = e(z_I, w)
+\end{align*}
 
 \bibliography{paper-notes.bib}
 \bibliographystyle{unsrt}

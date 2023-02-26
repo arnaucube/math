@@ -1,0 +1,186 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% prevent warnings of underfull \hbox:
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Def}[section]
+\newtheorem{theorem}[definition]{Thm}
+
+% custom lemma environment to set custom numbers
+\newtheorem{innerlemma}{Lemma}
+\newenvironment{lemma}[1]
+{\renewcommand\theinnerlemma{#1}\innerlemma}
+{\endinnerlemma}
+
+
+\title{Notes on FRI}
+\author{arnaucube}
+\date{February 2023}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} explainations and while reading about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}.
+
+	Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+
+	The notes are not complete, don't include all the steps neither all the proofs.
+\end{abstract}
+
+\tableofcontents
+
+\section{Preliminaries}
+\subsection{Low degree testing}
+V wants to ensure that $deg(f(x)) \leq d$.
+
+We are in the IOP setting, V asks on a point, P sends back the opening at that point.
+
+TODO
+
+\subsubsection{General degree d test}
+
+Query at points $\{ x_i \}_0^{d+1},~z$ (with rand $z \overset{R}{\in} \mathbb{F}$).
+Interpolate $p(x)$ at $\{f(x_i)\}_0^{d+1}$ to reconstruct the unique polynomial $p$ of degree $d$ such that $p(x_i)=f(x_i)~\forall i=1, \ldots, d+1$.
+
+V checks $p(z)=f(z)$, if the check passes, then V is convinced with high probability.
+
+This needs $d+2$ queries, is linear, $\mathcal{O}(n)$. With FRI we will have the test in $\mathcal{O}(\log{}d)$.
+
+\section{FRI protocol}
+Allows to test if a function $f$ is a poly of degree $\leq d$ in $\mathcal{O}(\log{}d)$.
+
+Note: "P \emph{sends} $f(x)$ to V", "\emph{sends}", in the ideal IOP model means that all the table of $f(x)$ is sent, in practice is sent a commitment to $f(x)$.
+
+\subsection{Intuition}
+V wants to check that two functions $g,~h$ are both polynomials of degree $\leq d$.
+
+Consider the following protocol:
+
+\begin{enumerate}
+	\item V sends $\alpha \in \mathbb{F}$ to P. P sends $f(x) = g(x) + \alpha h(x)$ to V.
+	\item P sends $f(x)=g(x) + \alpha h(x)$ to V.
+	\item V queries $f(r), ~g(r), ~h(r)$ for rand $r \in \mathbb{F}$.
+	\item V checks $f(r)=g(r) + \alpha h(r)$. (Schwartz-Zippel lema).
+		If holds, V can be certain that $f(x)=g(x)+ \alpha h(x)$.
+	\item P proves that $deg(f) \leq d$. 
+	\item If V is convinced that $deg(f) \leq d$, V belives that both $g, h$ have $deg \leq d$.
+\end{enumerate}
+
+%/// TODO tabulate this next lines
+With high probablility, $\alpha$ will not cancel the coeffs with $deg \geq d+1$. % TODO check which is the name of this theorem or why this is true
+
+Let $g(x)=a \cdot x^{d+1}, ~~ h(x)=b \cdot x^{d+1}$, and set $f(x) = g(x) + \alpha h(x)$.
+Imagine that P can chose $\alpha$ such that $a x^{d+1} + \alpha \cdot b x^{d+1} = 0$, then, in $f(x)$ the coefficients of degree $d+1$ would cancel.
+%///
+
+\quad
+
+Here, P proves $g,~h$ both have $deg \leq d$, but instead of doing $2 \cdot (d+2)$ queries ($d+2$ for $g$, and $d+2$ for $h$), it is done in $d+2$ queries (for $f$).
+So we halved the number of queries.
+
+
+\subsection{FRI}
+Both P and V have oracle access to function $f$.
+
+V wants to test if $f$ is polynomial with $deg(f) \leq d$.
+
+Let $f_0(x)=f(x)$.
+
+Each polynomial $f(x)$ of degree that is a power of $2$, can be written as
+$$f(x) = f^L(x^2) + x f^R(x^2)$$
+for some polynomials $f^L,~f^R$ of degree $\frac{deg(f)}{2}$, each one containing the even and odd degree coefficients as follows:
+
+% $f^L(x)$ is built from the even degree coefficients divided by $x$, and $f^R(x)$ from the odd degree coefficients divided by $x$.
+
+$$f^L(x)= \sum_0^{\frac{d+1}{2}-1} c_{2i} x^i ,~~ f^R(x)= \sum_0^{\frac{d+1}{2}-1} c_{2i+1} x^i$$
+
+eg. for $f(x)=x^4+x^3+x^2+x+1$,
+\begin{align*}
+	\begin{rcases}
+	f^L(x)=x^2+x+1\\
+	f^R(x)=x+1
+	\end{rcases}
+	~f(x) = f^L(x^2) &+ x \cdot f^R(x^2)\\
+	= (x^2)^2 + (x^2) + 1 &+ x \cdot ((x^2) + 1)\\
+	= x^4 + x^2 + 1 &+ x^3 + x
+\end{align*}
+
+\begin{enumerate}
+	\item V sends to P some $\alpha_0 \in \mathbb{F}$.
+		Let
+		\begin{equation}\tag{$A_0$}
+			f_0(x) = f_0^L(x^2) + x f_0^R(x^2)
+		\end{equation}
+	\item P sends
+		\begin{equation}\tag{$B_0$}
+			f_1(x) = f_0^L(x) + \alpha_0 f_0^R(x)
+		\end{equation}
+		to V.
+
+		(remember that "sends" in IOP model is that P commits to it)
+	\item V sends to P some $\alpha_1 \in \mathbb{F}$.
+		Let
+		\begin{equation}\tag{$A_1$}
+			f_1(x) = f_1^L(x^2) + x f_1^R(x^2)
+		\end{equation}
+	\item P sends
+		\begin{equation}\tag{$B_1$}
+			f_2(x) = f_1^L(x) + \alpha_1 f_1^R(x)
+		\end{equation}
+		to V.
+	\item Keep repeating the process, eg. let
+		\begin{equation}\tag{$A_2$}
+			f_2(x) = f_2^L(x^2) + x f_2^R(x^2)
+		\end{equation}
+		until $f_i^L,~ f_i^R$ are constant (degree 0 polynomials).
+	\item Once $f_i^L,~ f_i^R$ are constant, P sends them to V.
+\end{enumerate}
+
+Notice that at each step, $deg(f_i)$ halves.
+
+\paragraph{Query phase}
+
+\begin{enumerate}
+	\item V sends rand $z \in \mathbb{F}$ to P
+	\item P sends $\{ f_i(z^{2^i}), f_i(- z^{2^i}) \}$ to V.\\
+		{\scriptsize eg. $f_0(z),~ f_0(-z),~ f_1(z^2),~ f_1(-z^2),~ f_2(z^4),~ f_2(-z^4),~ f_3(z^8),~ f_3(-z^8),~ \ldots$}
+	\item V checks $f_i(a)=f_i^L(a^2) + a f_i^R(a^2)$ for $a=\{z, -z\}$
+		$$
+		\begin{pmatrix}
+			1 & z\\
+			1 & -z
+		\end{pmatrix}
+		\begin{pmatrix}
+			f_i^L(z^2)\\
+			f_i^R(z^2)
+		\end{pmatrix}
+		=
+		\begin{pmatrix}
+			f_i(z)\\
+			f_i(-z)
+		\end{pmatrix}
+		$$
+\end{enumerate}
+
+The number of queries needed is $2 \cdot log(d)$.
+
+\section{FRI as polynomial commitment}
+\emph{[WIP. Unfinished document]}
+
+
+\bibliography{paper-notes.bib}
+\bibliographystyle{unsrt}
+
+\end{document}
