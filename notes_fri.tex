@@ -32,11 +32,11 @@
 \maketitle
 
 \begin{abstract}
-	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} explainations and while reading about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}.
+	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} explainations about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}.
 
-	Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
+	These notes are for self-consumption, are not complete, don't include all the steps neither all the proofs.
 
-	The notes are not complete, don't include all the steps neither all the proofs.
+	An implementation of FRI can be found at \href{https://github.com/arnaucube/fri-commitment}{https://github.com/arnaucube/fri-commitment}.
 \end{abstract}
 
 \tableofcontents
@@ -117,64 +117,139 @@ eg. for $f(x)=x^4+x^3+x^2+x+1$,
 	= x^4 + x^2 + 1 &+ x^3 + x
 \end{align*}
 
+% \begin{enumerate}
+%         \item V sends to P some $\alpha_0 \in \mathbb{F}$.
+%                 Let
+%                 \begin{equation}\tag{$A_0$}
+%                         f_0(x) = f_0^L(x^2) + x f_0^R(x^2)
+%                 \end{equation}
+%         \item P sends
+%                 \begin{equation}\tag{$B_0$}
+%                         f_1(x) = f_0^L(x) + \alpha_0 f_0^R(x)
+%                 \end{equation}
+%                 to V.
+% 
+%                 (remember that "sends" in IOP model is that P commits to it)
+%         \item V sends to P some $\alpha_1 \in \mathbb{F}$.
+%                 Let
+%                 \begin{equation}\tag{$A_1$}
+%                         f_1(x) = f_1^L(x^2) + x f_1^R(x^2)
+%                 \end{equation}
+%         \item P sends
+%                 \begin{equation}\tag{$B_1$}
+%                         f_2(x) = f_1^L(x) + \alpha_1 f_1^R(x)
+%                 \end{equation}
+%                 to V.
+%         \item Keep repeating the process, eg. let
+%                 \begin{equation}\tag{$A_2$}
+%                         f_2(x) = f_2^L(x^2) + x f_2^R(x^2)
+%                 \end{equation}
+%                 until $f_i^L,~ f_i^R$ are constant (degree 0 polynomials).
+%         \item Once $f_i^L,~ f_i^R$ are constant, P sends them to V.
+% \end{enumerate}
+% 
+% Notice that at each step, $deg(f_i)$ halves.
+
+
+\vspace{30px}
+
+\paragraph{Proof generation}
+P starts from $f(x)$, and for $i=0$ sets $f_0(x)=f(x)$.
+
 \begin{enumerate}
-	\item V sends to P some $\alpha_0 \in \mathbb{F}$.
-		Let
-		\begin{equation}\tag{$A_0$}
-			f_0(x) = f_0^L(x^2) + x f_0^R(x^2)
+	\item $\forall~i \in \{0, log(d)\}$, with $d = deg~f(x)$,\\
+		P computes $f_i^L(x),~ f_i^R(x)$ for which
+		\begin{equation}\tag{eq. $A_i$}
+			f_i(x) = f_i^L(x^2) + x f_i^R(x^2)
 		\end{equation}
-	\item P sends
-		\begin{equation}\tag{$B_0$}
-			f_1(x) = f_0^L(x) + \alpha_0 f_0^R(x)
-		\end{equation}
-		to V.
-
-		(remember that "sends" in IOP model is that P commits to it)
-	\item V sends to P some $\alpha_1 \in \mathbb{F}$.
-		Let
-		\begin{equation}\tag{$A_1$}
-			f_1(x) = f_1^L(x^2) + x f_1^R(x^2)
-		\end{equation}
-	\item P sends
-		\begin{equation}\tag{$B_1$}
-			f_2(x) = f_1^L(x) + \alpha_1 f_1^R(x)
-		\end{equation}
-		to V.
-	\item Keep repeating the process, eg. let
-		\begin{equation}\tag{$A_2$}
-			f_2(x) = f_2^L(x^2) + x f_2^R(x^2)
-		\end{equation}
-		until $f_i^L,~ f_i^R$ are constant (degree 0 polynomials).
-	\item Once $f_i^L,~ f_i^R$ are constant, P sends them to V.
+		holds.
+	\item V sends challenge $\alpha_i$
+	\item P commits to the random linear combination $f_{i+1}$, for
+		\begin{equation}\tag{eq. $B_i$}
+		f_{i+1}(x) = f_i^L(x) + \alpha_i f_i^R(x)
+	\end{equation}
+	\item P sets $f_i(x) := f_{i+1}(x)$ and starts again the iteration.
 \end{enumerate}
-
 Notice that at each step, $deg(f_i)$ halves.
 
-\paragraph{Query phase}
+This is done until the last step, where $f_i^L(x),~ f_i^R(x)$ are constant (degree 0 polynomials). For which P does not commit but gives their values directly to V.
 
-\begin{enumerate}
-	\item V sends rand $z \in \mathbb{F}$ to P
-	\item P sends $\{ f_i(z^{2^i}), f_i(- z^{2^i}) \}$ to V.\\
+\paragraph{Data sent from P to V}
+\begin{itemize}
+	\item[] Commitments: $\{Comm(f_i)\}_0^{log(d)}$\\
+		{\scriptsize eg. $\{Comm(f_0),~ Comm(f_1),~ Comm(f_2),~ ...,~ Comm(f_{log(d)})\}$ }
+	\item[] Openings: $\{ f_i(z^{2^i}),~f_i(-(z^{2^i})) \}_0^{log(d)}$\\
+		for a challenge $z \in \mathbb{F}$ set by V\\
 		{\scriptsize eg. $f_0(z),~ f_0(-z),~ f_1(z^2),~ f_1(-z^2),~ f_2(z^4),~ f_2(-z^4),~ f_3(z^8),~ f_3(-z^8),~ \ldots$}
-	\item V checks $f_i(a)=f_i^L(a^2) + a f_i^R(a^2)$ for $a=\{z, -z\}$
-		$$
-		\begin{pmatrix}
-			1 & z\\
-			1 & -z
-		\end{pmatrix}
-		\begin{pmatrix}
-			f_i^L(z^2)\\
-			f_i^R(z^2)
-		\end{pmatrix}
-		=
-		\begin{pmatrix}
-			f_i(z)\\
-			f_i(-z)
-		\end{pmatrix}
-		$$
-\end{enumerate}
+	\item[] Constant values of last iteration: $\{f_k^L,~f_k^R\}$, for $k=log(d)$
+\end{itemize}
 
-The number of queries needed is $2 \cdot log(d)$.
+\paragraph{Verification}
+
+V receives:
+\begin{align*}
+	\text{Commitments:}~ &Comm(f_i),~ \forall i \in \{0, log(d)\}\\
+	\text{Openings:}~ &\{o_i, o_i'\}=\{ f_i(z^{2^i}),~f_i(-(z^{2^i})) \},~ \forall i \in \{0, log(d)\}\\
+	\text{Constant vals:}~ &\{f_k^L,~f_k^R\}
+\end{align*}
+
+\vspace{20px}
+
+For all $i \in \{0, log(d)\}$, V knows the openings at $z^{2^i}$ and $-(z^{2^i})$ for $Comm(f_i(x))$, which are $o_i=f_i(z^{2^i})$ and $o_i'=f_i(-(z^{2^i}))$ respectively.
+
+V, from (eq. $A_i$), knows that
+$$f_i(x)=f_i^L(x^2) + x f_i^R(x^2)$$
+should hold, thus
+$$f_i(z)=f_i^L(z^2) + z f_i^R(z^2)$$
+where $f_i(z)$ is known, but $f_i^L(z^2),~f_i^R(z^2)$ are unknown.
+But, V also knows the value for $f_i(-z)$, which can be represented as
+$$f_i(-z)=f_i^L(z^2) - z f_i^R(z^2)$$
+(note that when replacing $x$ by $-z$, it loses the negative in the power, not in the linear combination).
+
+Thus, we have the system of independent linear equations
+\begin{align*} % TODO add braces on left
+	f_i(z)&=f_i^L(z^2) + z f_i^R(z^2)\\
+	f_i(-z)&=f_i^L(z^2) - z f_i^R(z^2)
+\end{align*}
+for which V will find the value of $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$.
+Equivalently it can be represented by
+$$
+\begin{pmatrix}
+	1 & z\\
+	1 & -z
+\end{pmatrix}
+\begin{pmatrix}
+	f_i^L(z^2)\\
+	f_i^R(z^2)
+\end{pmatrix}
+=
+\begin{pmatrix}
+	f_i(z)\\
+	f_i(-z)
+\end{pmatrix}
+$$
+where V will find the values of $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$ being
+\begin{align*}
+	f_i^L(z^{2^i})=\frac{f_i(z) + f_i(-z)}{2}\\
+	f_i^R(z^{2^i})=\frac{f_i(z) - f_i(-z)}{2z}\\
+\end{align*}
+
+Once, V has computed $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$, can use them to compute the linear combination of
+$$
+f_{i+1}(z^2) = f_i^L(z^2) + \alpha_i f_i^R(z^2)
+$$
+obtaining then $f_{i+1}(z^2)$. This comes from (eq. $B_i$).
+
+Now, V checks that the obtained $f_{i+1}(z^2)$ is equal to the received opening $o_{i+1}=f_{i+1}(z^2)$ from the commitment done by P.
+V checks also the commitment of $Comm(f_{i+1}(x))$ for the opening $o_{i+1}=f_{i+1}(z^2)$.\\
+If the checks pass, V is convinced that $f_1(x)$ was committed honestly.
+
+Now, sets $i := i+1$ and starts a new iteration.
+
+For the last iteration, V checks that the obtained $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$ are equal to the constant values $\{f_k^L,~f_k^R\}$ received from P.
+
+\vspace{10px}
+It needs $log(d)$ iterations, and the number of queries (commitments + openings sent and verified) needed is $2 \cdot log(d)$.
 
 \section{FRI as polynomial commitment}
 \emph{[WIP. Unfinished document]}
