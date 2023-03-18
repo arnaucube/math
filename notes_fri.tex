@@ -32,24 +32,17 @@
 \maketitle
 
 \begin{abstract}
-	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} explainations about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}.
+	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} \cite{vincenzoiovino} explainations about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}, \cite{cryptoeprint:2019/1020}.
 
 	These notes are for self-consumption, are not complete, don't include all the steps neither all the proofs.
 
-	An implementation of FRI can be found at \href{https://github.com/arnaucube/fri-commitment}{https://github.com/arnaucube/fri-commitment}.
+	An implementation of FRI can be found at\\ \href{https://github.com/arnaucube/fri-commitment}{https://github.com/arnaucube/fri-commitment} \cite{fri-impl}.
 \end{abstract}
 
 \tableofcontents
 
 \section{Preliminaries}
-\subsection{Low degree testing}
-V wants to ensure that $deg(f(x)) \leq d$.
-
-We are in the IOP setting, V asks on a point, P sends back the opening at that point.
-
-TODO
-
-\subsubsection{General degree d test}
+\subsection{General degree d test}
 
 Query at points $\{ x_i \}_0^{d+1},~z$ (with rand $z \overset{R}{\in} \mathbb{F}$).
 Interpolate $p(x)$ at $\{f(x_i)\}_0^{d+1}$ to reconstruct the unique polynomial $p$ of degree $d$ such that $p(x_i)=f(x_i)~\forall i=1, \ldots, d+1$.
@@ -91,7 +84,8 @@ Here, P proves $g,~h$ both have $deg \leq d$, but instead of doing $2 \cdot (d+2
 So we halved the number of queries.
 
 
-\subsection{FRI}
+\subsection{FRI-LDT}\label{sec:fri-ldt}
+FRI low degree testing.\\
 Both P and V have oracle access to function $f$.
 
 V wants to test if $f$ is polynomial with $deg(f) \leq d$.
@@ -154,8 +148,9 @@ eg. for $f(x)=x^4+x^3+x^2+x+1$,
 \vspace{30px}
 
 \paragraph{Proof generation}
-P starts from $f(x)$, and for $i=0$ sets $f_0(x)=f(x)$.
 
+\emph{(Commitment phase)}
+P starts from $f(x)$, and for $i=0$ sets $f_0(x)=f(x)$.
 \begin{enumerate}
 	\item $\forall~i \in \{0, log(d)\}$, with $d = deg~f(x)$,\\
 		P computes $f_i^L(x),~ f_i^R(x)$ for which
@@ -163,7 +158,7 @@ P starts from $f(x)$, and for $i=0$ sets $f_0(x)=f(x)$.
 			f_i(x) = f_i^L(x^2) + x f_i^R(x^2)
 		\end{equation}
 		holds.
-	\item V sends challenge $\alpha_i$
+	\item V sends challenge $\alpha_i \in \mathbb{F}$
 	\item P commits to the random linear combination $f_{i+1}$, for
 		\begin{equation}\tag{eq. $B_i$}
 		f_{i+1}(x) = f_i^L(x) + \alpha_i f_i^R(x)
@@ -174,12 +169,16 @@ Notice that at each step, $deg(f_i)$ halves.
 
 This is done until the last step, where $f_i^L(x),~ f_i^R(x)$ are constant (degree 0 polynomials). For which P does not commit but gives their values directly to V.
 
+\emph{(Query phase)}
+P would receive a challenge $z \in D$ set by V (where $D$ is the evaluation domain, $D \in \mathbb{F}$), and P would open the commitments at $\{z^{2^i}, -z^{2^i}\}$ for each step $i$.
+(Recall, "opening" means that would provide a proof (MerkleProof) of it).
+
 \paragraph{Data sent from P to V}
 \begin{itemize}
 	\item[] Commitments: $\{Comm(f_i)\}_0^{log(d)}$\\
 		{\scriptsize eg. $\{Comm(f_0),~ Comm(f_1),~ Comm(f_2),~ ...,~ Comm(f_{log(d)})\}$ }
 	\item[] Openings: $\{ f_i(z^{2^i}),~f_i(-(z^{2^i})) \}_0^{log(d)}$\\
-		for a challenge $z \in \mathbb{F}$ set by V\\
+		for a challenge $z \in D$ set by V\\
 		{\scriptsize eg. $f_0(z),~ f_0(-z),~ f_1(z^2),~ f_1(-z^2),~ f_2(z^4),~ f_2(-z^4),~ f_3(z^8),~ f_3(-z^8),~ \ldots$}
 	\item[] Constant values of last iteration: $\{f_k^L,~f_k^R\}$, for $k=log(d)$
 \end{itemize}
@@ -195,7 +194,8 @@ V receives:
 
 \vspace{20px}
 
-For all $i \in \{0, log(d)\}$, V knows the openings at $z^{2^i}$ and $-(z^{2^i})$ for $Comm(f_i(x))$, which are $o_i=f_i(z^{2^i})$ and $o_i'=f_i(-(z^{2^i}))$ respectively.
+For all $i \in \{0, log(d)\}$, V knows the openings at $z^{2^i}$ and $-(z^{2^i})$ for\\
+$Comm(f_i(x))$, which are $o_i=f_i(z^{2^i})$ and $o_i'=f_i(-(z^{2^i}))$ respectively.
 
 V, from (eq. $A_i$), knows that
 $$f_i(x)=f_i^L(x^2) + x f_i^R(x^2)$$
@@ -236,12 +236,12 @@ where V will find the values of $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$ being
 
 Once, V has computed $f_i^L(z^{2^i}),~f_i^R(z^{2^i})$, can use them to compute the linear combination of
 $$
-f_{i+1}(z^2) = f_i^L(z^2) + \alpha_i f_i^R(z^2)
+f_{i+1}(z^{2^i}) = f_i^L(z^{2^i}) + \alpha_i f_i^R(z^{2^i})
 $$
-obtaining then $f_{i+1}(z^2)$. This comes from (eq. $B_i$).
+obtaining then $f_{i+1}(z^{2^i})$. This comes from (eq. $B_i$).
 
-Now, V checks that the obtained $f_{i+1}(z^2)$ is equal to the received opening $o_{i+1}=f_{i+1}(z^2)$ from the commitment done by P.
-V checks also the commitment of $Comm(f_{i+1}(x))$ for the opening $o_{i+1}=f_{i+1}(z^2)$.\\
+Now, V checks that the obtained $f_{i+1}(z^{2^i})$ is equal to the received opening $o_{i+1}=f_{i+1}(z^{2^i})$ from the commitment done by P.
+V checks also the commitment of $Comm(f_{i+1}(x))$ for the opening $o_{i+1}=f_{i+1}(z^{2^i})$.\\
 If the checks pass, V is convinced that $f_1(x)$ was committed honestly.
 
 Now, sets $i := i+1$ and starts a new iteration.
@@ -251,8 +251,38 @@ For the last iteration, V checks that the obtained $f_i^L(z^{2^i}),~f_i^R(z^{2^i
 \vspace{10px}
 It needs $log(d)$ iterations, and the number of queries (commitments + openings sent and verified) needed is $2 \cdot log(d)$.
 
-\section{FRI as polynomial commitment}
-\emph{[WIP. Unfinished document]}
+\subsection{Parameters}
+
+P commits to $f_i$ restricted to a subfield $F_0 \subset \mathbb{F}$.
+Let $0<\rho<1$ be the \emph{rate} of the code, such that
+$$|F_0| = \rho^{-1} \cdot d$$
+
+\begin{theorem}
+	For $\delta \in (0, 1-\sqrt{\rho})$, we have that if V accepts, then w.v.h.p. (with very high probability) $\Delta(f_0,~ p^d) \leq \delta$.
+\end{theorem}
+
+\section{FRI as polynomial commitment scheme}
+This section overviews the trick from \cite{cryptoeprint:2019/1020} to convert FRI into a polynomial commitment.
+
+Want to check that the evaluation of $f(x)$ at $r$ is $f(r)$, which is equivalent to proving that $\exists ~Q \in \mathbb{F}[x]$ with $deg(Q)=d-1$, such that
+
+$$
+f(x)-f(r) = Q(x) \cdot (x-r)
+$$
+
+note that $f(x)-f(r)$ evaluated at $r$ is $0$, so $(x-r) | (f(x)-f(r))$, in other words
+$(f(x)-f(r))$ is a multiple of $(x-r)$ for a polynomial $Q(x)$.
+
+Let us define $g(x) = \frac{f(x)-f(r)}{x-r}$.
+
+Prover uses FRI-LDT \ref{sec:fri-ldt} to commit to $g(x)$, and then prove w.v.h.p that $deg(g) \leq d-1$ ($\Longleftrightarrow \Delta(g,~ p^{d-1} \leq \delta$).
+
+Prover was already proving that $deg(f) \leq d$.
+
+Now, the missing thing to prove is that $g(x)$ has the right shape. We can relate $g$ to $f$ as follows:
+V does the normal FRI-LDT, but in addition, at the first iteration:
+V has $f(z)$ and $g(z)$ openings, so can verify
+$$g(z) = (f(z)-f(r))\cdot (z-r)^{-1}$$
 
 
 \bibliography{paper-notes.bib}

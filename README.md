@@ -1,18 +1,7 @@
-# math
+# math/cryptography
 
 Notes, code and documents done while reading books and papers.
 
-### Sage code
-- [blind signatures over elliptic curve](blind-sign-over-ec.sage)
-- [BLS signatures](bls-sigs.sage)
-- [FFT](fft.sage)
-- [IPA](ipa.sage)
-- [KZG commitments](kzg.sage)
-- [Powers of Tau](powersoftau.sage)
-- [Ring signatures](ring-signatures.sage)
-- [Sigma protocol](sigma.sage)
-
-### Notes
 - [Notes on "Abstract Algebra" book, by Charles C. Pinter](abstract-algebra-charles-pinter-notes.pdf)
 - [Notes on Caulk & Caulk+ papers](notes_caulk.pdf)
 - [Notes on the DFT & FFT](fft-notes.pdf)
@@ -24,3 +13,5 @@ Notes, code and documents done while reading books and papers.
 - [Notes on Reed-Solomon codes](notes_reed-solomon.pdf)
 - [Notes on FRI](notes_fri.pdf)
 - [Notes on Nova](notes_nova.pdf)
+
+Also some Sage implementations can be found in the `*.sage` files of this repo.
