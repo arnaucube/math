@@ -186,6 +186,9 @@ class IPA_halo:
     def verify(self, P, a, v, x_powers, r, u, U, lj, rj, L, R):
         print("methid verify()")
 
+        # compute P' = P + [v] U
+        P = P + int(v) * U
+
         s = build_s_from_us(u, self.d)
         b = inner_product_field(s, x_powers)
         G = inner_product_point(s, self.gs)
@@ -444,8 +447,6 @@ class TestIPA_halo(unittest.TestCase):
                 u[j] = ipa.F.random_element()
                 while (u[j] == 0): # prevent u[j] from being 0
                     u[j] = ipa.F.random_element()
-
-            P = P + int(v) * U
 
             # prover
             a_ipa, lj, rj, L, R = ipa.ipa(a, x_powers, u, U)

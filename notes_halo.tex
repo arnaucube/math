@@ -14,6 +14,33 @@
 }
 \usepackage{xcolor}
 
+\usepackage{pgf-umlsd} % diagrams
+% message between threads
+% Example:
+% \bloodymess[delay]{sender}{message content}{receiver}{DIR}{start note}{end note}
+\newcommand{\bloodymess}[7][0]{
+  \stepcounter{seqlevel}
+  \path
+  (#2)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess from) {};
+  \addtocounter{seqlevel}{#1}
+  \path
+  (#4)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess to) {};
+  \draw[->,>=angle 60] (mess from) -- (mess to) node[midway, above]
+  {#3};
+
+  \if R#5
+    \node (#3 from) at (mess from) {\llap{#6~}};
+    \node (#3 to) at (mess to) {\rlap{~#7}};
+  \else\if L#5
+         \node (#3 from) at (mess from) {\rlap{~#6}};
+         \node (#3 to) at (mess to) {\llap{#7~}};
+       \else
+         \node (#3 from) at (mess from) {#6};
+         \node (#3 to) at (mess to) {#7};
+       \fi
+  \fi
+}
+
 % prevent warnings of underfull \hbox:
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
@@ -42,11 +69,14 @@
 \section{modified IPA (from Halo paper)}
 Notes taken while reading about the modified Inner Product Argument (IPA) from the Halo paper \cite{cryptoeprint:2019/1021}.
 
+\paragraph{Objective:}
+Prover wants to prove that the polynomial $p(X)$ from the commitment $P$ evaluates to $v$ at $x$, and that $deg(p(X)) \leq d-1$.
+
 \subsection{Notation}
 \begin{description}
     \item[Scalar mul] $[a]G$, where $a$ is a scalar and $G \in \mathbb{G}$
     \item[Inner product] $<\overrightarrow{a}, \overrightarrow{b}> = a_0 b_0 + a_1 b_1 + \ldots + a_{n-1} b_{n-1}$
-    \item[Multiscalar mul] $<\overrightarrow{a}, \overrightarrow{b}> = [a_0] G_0 + [a_1] G_1 + \ldots [a_{n-1}] G_{n-1}$
+    \item[Multiscalar mul] $<\overrightarrow{a}, \overrightarrow{G}> = [a_0] G_0 + [a_1] G_1 + \ldots + [a_{n-1}] G_{n-1}$
 \end{description}
 
 
@@ -61,7 +91,7 @@ $$v=<\overrightarrow{a}, \{1, x, x^2, \ldots, x^{d-1} \} >$$
 
 where $\{1, x, x^2, \ldots, x^{d-1} \} = \overrightarrow{b}$.
 
-We can see that computing $v$ is the equivalent to evaluating $p(x)$ at $x$ ($p(x)=v$).
+We can see that computing $v$ is the equivalent to evaluating $p(X)$ at $x$ ($p(x)=v$).
 
 We will prove:
 \begin{enumerate}[i.]
@@ -71,16 +101,18 @@ We will prove:
 \end{enumerate}
 
 
-Both parties know $P$, point $x$ and claimed evaluation $v$. For $U \in^r \mathbb{G}$,
+Both parties know $P$, point $x$ and claimed evaluation $v$. For $U \in^r \mathbb{G}$.
+
+Prover computes $P'$:
 
 $$P' = P + [v] U = <\overrightarrow{a}, G> + [r]H + [v] U$$
 
 Now, for $k$ rounds ($d=2^k$, from $j=k$ to $j=1$):
 \begin{itemize}
-    \item random blinding factors: $l_j, r_j \in \mathbb{F}_p$
-    \item
+    \item Prover sets random blinding factors: $l_j, r_j \in \mathbb{F}_p$
+    \item Prover computes
 	$$L_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
-	$$L_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
+	$$R_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
     \item Verifier sends random challenge $u_j \in \mathbb{I}$
     \item Prover computes the halved vectors for next round:
 	$$\overrightarrow{a} \leftarrow \overrightarrow{a}_{hi} \cdot u_j^{-1} + \overrightarrow{a}_{lo} \cdot u_j$$
@@ -120,21 +152,57 @@ $$
 $$
 
 \begin{align*}
-&Right~side = \textcolor{blue}{P'} + \sum_{j=1}^k ( \textcolor{violet}{[u_j^2] L_j} + \textcolor{orange}{[u_j^{-2}] R_j})\\
-&= \textcolor{blue}{< \overrightarrow{a}, \overrightarrow{G}> + [r] H + [v] U}\\
-&+ \sum_{j=1}^k (\\
-&\textcolor{violet}{[u_j^2] \cdot <\overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [<\overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U}\\
-&\textcolor{orange}{+ [u_j^{-2}] \cdot <\overrightarrow{a}_{hi}, \overrightarrow{G}_{lo}> + [r_j] H + [<\overrightarrow{a}_{hi}, \overrightarrow{b}_{lo}>] U}
-)
-\end{align*}
-
-\begin{align*}
 &Left~side = \textcolor{brown}{[a]G} + \textcolor{cyan}{[r'] H} + \textcolor{magenta}{[ab] U}\\
 & = \textcolor{brown}{< \overrightarrow{a}, \overrightarrow{G} >}\\
 &+ \textcolor{cyan}{[r + \sum_{j=1}^k (l_j \cdot u_j^2 + r_j u_j^{-2})] \cdot H}\\
 &+ \textcolor{magenta}{< \overrightarrow{a}, \overrightarrow{b} > U}
 \end{align*}
 
+
+\begin{align*}
+&Right~side = \textcolor{blue}{P'} + \sum_{j=1}^k ( \textcolor{violet}{[u_j^2] L_j} + \textcolor{orange}{[u_j^{-2}] R_j})\\
+&= \textcolor{blue}{< \overrightarrow{a}, \overrightarrow{G}> + [r] H + [v] U}\\
+&+ \sum_{j=1}^k (
+\textcolor{violet}{[u_j^2] \cdot <\overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [<\overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U}\\
+&\textcolor{orange}{+ [u_j^{-2}] \cdot <\overrightarrow{a}_{hi}, \overrightarrow{G}_{lo}> + [r_j] H + [<\overrightarrow{a}_{hi}, \overrightarrow{b}_{lo}>] U}
+)
+\end{align*}
+
+
+\vspace{1.5cm}
+The following diagram ilustrates the main steps in the scheme:
+
+\begin{center}
+\begin{sequencediagram}
+    \newinst[1]{p}{Prover}
+    \newinst[3]{v}{Verifier}
+
+    \bloodymess[1]{p}{P}{v}{R}{knows $p(X)\in \mathbb{F[X]}$, commits to $p(X)$, $P$}{rand $x \in \mathbb{F},~U\in \mathbb{G},~\overrightarrow{u} \in \mathbb{F}^d$}
+    \bloodymess[1]{v}{$x, U, u$}{p}{R}{}{}
+    \bloodymess[1]{p}{$proof, a, L_j, R_j, v$}{v}{R}{gen proof}{$verify(proof, P, a, x, L_j, R_j)$}
+
+    % \begin{callself}{p}{knows $p(X) \in \mathbb{F}[X]$}{}
+    % \end{callself}
+    % \begin{callself}{p}{commit to $p(X),~P$}{}
+    % \end{callself}
+    % 
+    % \mess[0]{p}{$P$}{v}
+    % \begin{callself}{v}{rand $x \in \mathbb{F},~U\in \mathbb{G},~\overrightarrow{u} \in \mathbb{F}^d$}{}
+    % \end{callself}
+    % 
+    % \mess[0]{v}{$x,U,u$}{p}
+
+    % \node[anchor=west] (p2) at (mess to) {gen proof2}
+
+    % \begin{callself}{p}{gen proof $\pi$}{}
+    % \end{callself}
+    % 
+    % \mess[0]{p}{$a, L_j, R_j, v$}{v}
+    % 
+    % \begin{callself}{v}{$verify(P, a, x, v, L_j, R_k$)}{}
+    % \end{callself}
+\end{sequencediagram}
+\end{center}
 
 \section{Amortization Strategy}
 TODO
