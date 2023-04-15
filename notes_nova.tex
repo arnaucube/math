@@ -8,6 +8,33 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 
+\usepackage{pgf-umlsd} % diagrams
+% message between threads
+% Example:
+% \bloodymess[delay]{sender}{message content}{receiver}{DIR}{start note}{end note}
+\newcommand{\bloodymess}[7][0]{
+  \stepcounter{seqlevel}
+  \path
+  (#2)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess from) {};
+  \addtocounter{seqlevel}{#1}
+  \path
+  (#4)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess to) {};
+  \draw[->,>=angle 60] (mess from) -- (mess to) node[midway, above]
+  {#3};
+
+  \if R#5
+  \node (\detokenize{#3} from) at (mess from) {\llap{#6~}};
+  \node (\detokenize{#3} to) at (mess to) {\rlap{~#7}};
+  \else\if L#5
+  \node (\detokenize{#3} from) at (mess from) {\rlap{~#6}};
+  \node (\detokenize{#3} to) at (mess to) {\llap{#7~}};
+       \else
+       \node (\detokenize{#3} from) at (mess from) {#6};
+       \node (\detokenize{#3} to) at (mess to) {#7};
+       \fi
+  \fi
+}
+
 % prevent warnings of underfull \hbox:
 \usepackage{etoolbox}
 \apptocmd{\sloppy}{\hbadness 4000\relax}{}{}
@@ -41,7 +68,7 @@
 
 \tableofcontents
 
-\section{Folding Scheme for Committed Relaxed R1CS}
+\section{NIFS}
 
 \subsection{R1CS modification}
 
@@ -95,7 +122,7 @@ $(\overline{E}, u, \overline{W}, x)$, satisfyied by a witness $(E, r_E, W, r_W)$
 \end{align*}
 
 
-\subsection{Folding protocol}
+\subsection{Folding scheme for committed relaxed R1CS}
 
 V and P take two \emph{committed relaxed R1CS} instances
 \begin{align*}
@@ -133,11 +160,120 @@ Let $Z_1 = (W_1, x_1, u_1)$ and $Z_2 = (W_2, x_2, u_2)$.
 		\end{align*}
 \end{enumerate}
 
-P uses a zkSNARK showing that knows the valid witness $(E, r_E, W, r_W)$ for the committed relaxed R1CS without revealing its value.
-Then, via Fiat-Shamir transform we achieve non-interactivity.
+P will proof that knows the valid witness $(E, r_E, W, r_W)$ for the committed relaxed R1CS without revealing its value.
 
-\section{IVC proofs}
-\textbf{WIP}
+\begin{center}
+	\begin{sequencediagram}
+		\newinst[1]{p}{Prover}
+		\newinst[3]{v}{Verifier}
+
+		\bloodymess[1]{p}{$\overline{T}$}{v}{R}{
+			\shortstack{
+				$T=A z_1 \circ B z_1 + A z_2 \circ B z_2 - u_1 C z_2 - u_2 C z_2$\\
+				$\overline{T}=Commit(T, r_T)$
+			}
+		}{
+			\shortstack{
+				$r \in^R \mathbb{F}_p$\\
+				$\overline{E} = \overline{E}_1 + r \overline{T} + r^2 \overline{E}_2$\\
+				$u= u_1 + r u_2$\\
+				$\overline{W} = \overline{W}_1 + r \overline{W}_2$\\
+				$\overline{x} = \overline{x}_1 + r \overline{x}_2$\\
+				$\varphi=(\overline{E}, u, \overline{W}, x)$
+			}
+		}
+		\bloodymess[1]{v}{$r$}{p}{L}{}{
+			\shortstack{
+				$E = E_1 + r T + r^2 E_2$\\
+				$u= u_1 + r u_2$\\
+				$W = W_1 + r W_2$\\
+				$r_{W} = r_{W_1} + r r_{W_2}$\\
+				$(E, r_E, W, r_W)$
+			}
+		}
+	\end{sequencediagram}
+\end{center}
+
+
+The previous protocol achieves non-interactivity via Fiat-Shamir transform, obtaining a \emph{Non-Interactive Folding Scheme for Committed Relaxed R1CS}.
+
+Note: the paper later uses $\mathsf{u}_i,~ \mathsf{U}_i$ for the two inputed $\varphi_1,~ \varphi_2$, and later $\mathsf{u}_{i+1}$ for the outputed $\varphi$. Also, the paper later uses $\mathsf{w},~ \mathsf{W}$ to refer to the witnesses of two folded instances (eg. $\mathsf{w}=(E, r_E, W, r_W)$).
+
+\section{Nova}
+IVC (Incremental Verifiable Computation) scheme for a non-interactive folding scheme.
+
+\subsection{IVC proofs}
+
+Allows prover to show $z_n = F^{(n)}(z_0)$, for some count $n$, initial input $z_0$, and output $z_n$.\\
+$F$: program function (polynomial-time computable)\\
+$F'$: augmented function, invokes $F$ and additionally performs fold-related stuff.
+
+\vspace{0.5cm}
+Two committed relaxed R1CS instances:\\
+$\mathsf{U}_i$: represents the correct execution of invocations $1, \ldots, i-1$ of $F'$\\
+$\mathsf{u}_i$: represents the correct execution of invocations $i$ of $F'$
+
+\paragraph{Simplified version of $F'$ for intuition}
+\vspace{0.5cm}
+$F'$ performs two tasks:
+\begin{enumerate}[i.]
+	\item execute a step of the incremental computation:
+		instance $\mathsf{u}_i$ contains $z_i$, used to output $z_{i+1}=F(z_i)$
+	\item invokes the verifier of the non-interactive folding scheme to fold the task of checking $\mathsf{u}_i$ and $\mathsf{U}_i$ into the task of checking a single instance $\mathsf{U}_{i+1}$
+\end{enumerate}
+
+\vspace{0.5cm}
+$F'$ proves that:
+\begin{enumerate}
+	\item $\exists ( (i, z_0, z_i, \mathsf{u}_i, \mathsf{U}_i), \mathsf{U}_{i+1}, \overline{T})$ such that
+	\begin{enumerate}[i.]
+		\item $\mathsf{u}_i.x = H(vk, i, z_0, z_i, \mathsf{U}_i)$
+		\item $h_{i+1} = H(vk, i+1, z_0, F(z_i), \mathsf{U}_{i+1})$
+		\item $\mathsf{U}_{i+1} = NIFS.V(vk, \mathsf{U}_i, \mathsf{u}_i, \overline{T})$
+	\end{enumerate}
+\item $F'$ outputs $h_{i+1}$
+\end{enumerate}
+
+
+$F'$ is described as follows:\\
+$F'(vk, \mathsf{U}_i, \mathsf{u}_i, (i, z_0, z_i), w_i, \overline{T}) \rightarrow x$:\\
+if $i=0$, output $H(vk, 1, z_0, F(z_0, w_i), \mathsf{u}_{\bot})$\\
+otherwise
+\begin{enumerate}
+	\item check $\mathsf{u}_i.x = H(vk, i, z_0, z_i, \mathsf{U}_i)$
+	\item check $(\mathsf{u}_i.\overline{E}, \mathsf{u}_i.u) = (\mathsf{u}_{\bot}.\overline{E}, 1)$
+	\item compute $\mathsf{U}_{i+1} \leftarrow NIFS.V(vk, U, u, \overline{T})$
+	\item output $H(vk, i+1, z_0, F(z_i, w_i), \mathsf{U}_{i+1})$
+\end{enumerate}
+
+% TODO add diagram
+
+\paragraph{IVC Proof}
+iteration $i+1$: prover runs $F'$ and computes $\mathsf{u}_{i+1},~ \mathsf{U}_{i+1}$, with corresponding witnesses $\mathsf{w}_{i+1},~ \mathsf{W}_{i+1}$.
+$(\mathsf{u}_{i+1},~ \mathsf{U}_{i+1})$ attest correctness of $i+1$ invocations of $F'$, the IVC proof is $\pi_{i+1} = ( (\mathsf{U}_{i+1}, \mathsf{W}_{i+1}), (\mathsf{u}_{i+1}, \mathsf{w}_{i+1}))$.
+
+
+\vspace{0.5cm}
+
+\underline{$P(pk, (i, z_0, z_i), \mathsf{w}_i, \pi_i) \rightarrow \pi_{i+1}$}:\\
+Parse $\pi_i = ( (\mathsf{U}_i, \mathsf{W}_i), (\mathsf{u}_i, \mathsf{w}_i))$, then
+\begin{enumerate}
+	\item if $i=0$: $(\mathsf{U}_{i+1}, \mathsf{W}_{i+1}, \overline{T}) \leftarrow (\mathsf{u}_{\perp}, \mathsf{w}_{\perp}, \mathsf{u}_{\perp}.{\overline{E}})$\\
+		otherwise: $(\mathsf{U}_{i+1}, \mathsf{W}_{i+1}, \overline{T}) \leftarrow NIFS.P(pk, (\mathsf{U}_i, \mathsf{W}_i), (\mathsf{u}_i, \mathsf{w}_i))$
+	\item compute $(\mathsf{u}_{i+1}, \mathsf{w}_{i+1}) \leftarrow trace(F', (vk, \mathsf{U}_i, \mathsf{u}_i, (i, z_0, z_i), \mathsf{w}_i, \overline{T}))$
+	\item output $\pi_{i+1} \leftarrow ((\mathsf{U}_{i+1}, \mathsf{W}_{i+1}), (\mathsf{u}_{i+1}, \mathsf{w}_{i+1}))$
+\end{enumerate}
+
+\underline{$V(vk, (i, z_0, z_i), \pi_i) \rightarrow \{0,1\}$}:
+if $i=0$: check that $z_i=z_0$\\
+otherwise, parse $\pi_i = ( (\mathsf{U}_i, \mathsf{W}_i), (\mathsf{u}_i, \mathsf{w}_i))$, then
+\begin{enumerate}
+	\item check $\mathsf{u}_i.x = H(vk, i, z_0, z_i, \mathsf{U}_i)$
+	\item check $(\mathsf{u}_i.{\overline{E}}, \mathsf{u}_i.u) = (\mathsf{u}_{\perp}.{\overline{E}}, 1)$
+	\item check that $\mathsf{W}_i,~ \mathsf{w}_i$ are satisfying witnesses to $\mathsf{U}_i,~ \mathsf{u}_i$ respectively
+\end{enumerate}
+
+\paragraph{A zkSNARK of a Valid IVC Proof}
 
 
 \bibliography{paper-notes.bib}
