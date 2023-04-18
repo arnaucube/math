@@ -52,7 +52,7 @@
 
 \title{Notes on Nova}
 \author{arnaucube}
-\date{February 2023}
+\date{March 2023}
 
 \begin{document}
 
@@ -199,6 +199,38 @@ The previous protocol achieves non-interactivity via Fiat-Shamir transform, obta
 
 Note: the paper later uses $\mathsf{u}_i,~ \mathsf{U}_i$ for the two inputed $\varphi_1,~ \varphi_2$, and later $\mathsf{u}_{i+1}$ for the outputed $\varphi$. Also, the paper later uses $\mathsf{w},~ \mathsf{W}$ to refer to the witnesses of two folded instances (eg. $\mathsf{w}=(E, r_E, W, r_W)$).
 
+
+\subsection{NIFS}
+
+\underline{fold witness, $(pk, (u_1, w_1), (u_2, w_2))$}:
+\begin{enumerate}
+	\item $T=A z_1 \circ B z_1 + A z_2 \circ B z_2 - u_1 C z_2 - u_2 C z_2$
+	\item $\overline{T}=Commit(T, r_T)$
+	% \item output the folded instance $\varphi = (\overline{E}, u, \overline{W}, x)$
+	%         \begin{align*}
+	%                 &\overline{E}=\overline{E}_1 + r \overline{T} + r^2 \overline{E}_2\\
+	%                 &u = u_1 + r u_2\\
+	%                 &\overline{W} = \overline{W}_1 + r \overline{W}_2\\
+	%                 &x = x_1 + r x_2
+	%         \end{align*}
+	\item output the folded witness $(E, r_E, W, r_W)$
+		\begin{align*}
+			&E = E_1 + r T + r^2 E_2\\
+			&r_E = r_{E_1} + r \cdot r_T + r^2 r_{E_2}\\
+			&W=W_1 + r W_2\\
+			&r_W = r_{W_1} + r \cdot r_{W_2}
+		\end{align*}
+\end{enumerate}
+
+\underline{fold instances $(\varphi_1, \varphi_2) \rightarrow \varphi$, $(vk, u_1, u_2, \overline{E}_1, \overline{E}_2, \overline{W}_1, \overline{W}_2, \overline{T})$}:\\
+V compute folded instance $\varphi = (\overline{E}, u, \overline{W}, x)$
+\begin{align*}
+	&\overline{E}=\overline{E}_1 + r \overline{T} + r^2 \overline{E}_2\\
+	&u = u_1 + r u_2\\
+	&\overline{W} = \overline{W}_1 + r \overline{W}_2\\
+	&x = x_1 + r x_2
+\end{align*}
+
 \section{Nova}
 IVC (Incremental Verifiable Computation) scheme for a non-interactive folding scheme.
 
@@ -236,7 +268,7 @@ $F'$ proves that:
 
 
 $F'$ is described as follows:\\
-$F'(vk, \mathsf{U}_i, \mathsf{u}_i, (i, z_0, z_i), w_i, \overline{T}) \rightarrow x$:\\
+\underline{$F'(vk, \mathsf{U}_i, \mathsf{u}_i, (i, z_0, z_i), w_i, \overline{T}) \rightarrow x$}:\\
 if $i=0$, output $H(vk, 1, z_0, F(z_0, w_i), \mathsf{u}_{\bot})$\\
 otherwise
 \begin{enumerate}
@@ -273,7 +305,27 @@ otherwise, parse $\pi_i = ( (\mathsf{U}_i, \mathsf{W}_i), (\mathsf{u}_i, \mathsf
 	\item check that $\mathsf{W}_i,~ \mathsf{w}_i$ are satisfying witnesses to $\mathsf{U}_i,~ \mathsf{u}_i$ respectively
 \end{enumerate}
 
-\paragraph{A zkSNARK of a Valid IVC Proof}
+\vspace{0.5cm}
+
+\paragraph{A zkSNARK of a Valid IVC Proof} prover and verifier:\\
+\underline{$P(pk, (i, z_0, z_i), \Pi) \rightarrow \pi$}:\\
+if $i=0$, output $\perp$, otherwise:\\
+parse $\Pi$ as $((\mathsf{U}, \mathsf{W}), (\mathsf{u}, \mathsf{w}))$
+\begin{enumerate}
+	\item compute $(\mathsf{U}', \mathsf{W}', \overline{T}) \leftarrow NIFS.P(pk_{NIFS}, (\mathsf{U,~W}), (\mathsf{u,~w}))$
+	\item compute $\pi_{\mathsf{u}'} \leftarrow zkSNARK.P(pk_{zkSNARK}, \mathsf{U}', \mathsf{W}')$
+	\item output $(\mathsf{U,~ u}, \overline{T}, \pi_{\mathsf{u}'})$
+\end{enumerate}
+
+\underline{$V(vk, (i, z_0, z_i), \pi) \rightarrow \{0,1\}$}:\\
+if $i=0$: check that $z_i=z_0$\\
+parse $\pi$ as $(\mathsf{U}, \mathsf{u}, \overline{T}, \pi_{\mathsf{u}'})$
+\begin{enumerate}
+	\item check $\mathsf{u}.x = H(vk_{NIFS}, i, z_0, z_i, \mathsf{U})$
+	\item check $(\mathsf{u}.{\overline{E}}, \mathsf{u}.u) = (\mathsf{u}_{\perp}.{\overline{E}}, 1)$
+	\item compute $\mathsf{U}' \leftarrow NIFS.V(vk_{NIFS}, \mathsf{U}, \mathsf{u}, \overline{T})$
+	\item check $zkSNARK.V(vk_{zkSNARK}, \mathsf{U}', \pi_{\mathsf{u}'})=1$
+\end{enumerate}
 
 
 \bibliography{paper-notes.bib}
