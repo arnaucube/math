@@ -64,6 +64,8 @@
 	Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
 
 	The notes are not complete, don't include all the steps neither all the proofs.
+	
+	Thanks to \href{https://twitter.com/levs57}{Levs57}, \href{https://twitter.com/nibnalin}{Nalin Bhardwaj} and \href{https://twitter.com/cperezz19}{Carlos Pérez} for clarifications on the Nova paper.
 \end{abstract}
 
 \tableofcontents
@@ -72,7 +74,15 @@
 
 \subsection{R1CS modification}
 
-Want: merge 2 instances of R1CS with the same matrices into a single one. Each instance has $z_i = (W_i,~ x_i)$ (public witness, private values resp.).
+\paragraph{R1CS}
+R1CS instance: $(A, B, C, io, m, n)$, where $io$ denotes the public input and output, $A, B, C \in \mathbb{F}^{m \times n}$, with $m \geq |io|+1$.
+R1CS is satisfied by a witness $w \in \mathbb{F}^{m-|io|-1}$ such that
+$$Az \circ Bz = Cz$$
+where $z=(io, 1, w)$.
+
+\vspace{0.5cm}
+
+\textbf{Want}: merge 2 instances of R1CS with the same matrices into a single one. Each instance has $z_i = (W_i,~ x_i)$ (public witness, private values resp.).
 
 \paragraph{traditional R1CS}
 Merged instance with $z=z_1 + r z_2$, for rand $r$. But, since R1CS is not linear $\longrightarrow$ can not apply.

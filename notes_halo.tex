@@ -112,7 +112,7 @@ Now, for $k$ rounds ($d=2^k$, from $j=k$ to $j=1$):
     \item Prover sets random blinding factors: $l_j, r_j \in \mathbb{F}_p$
     \item Prover computes
 	$$L_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
-	$$R_j = < \overrightarrow{a}_{lo}, \overrightarrow{G}_{hi}> + [l_j] H + [< \overrightarrow{a}_{lo}, \overrightarrow{b}_{hi}>] U$$
+	$$R_j = < \overrightarrow{a}_{hi}, \overrightarrow{G}_{lo}> + [r_j] H + [< \overrightarrow{a}_{hi}, \overrightarrow{b}_{lo}>] U$$
     \item Verifier sends random challenge $u_j \in \mathbb{I}$
     \item Prover computes the halved vectors for next round:
 	$$\overrightarrow{a} \leftarrow \overrightarrow{a}_{hi} \cdot u_j^{-1} + \overrightarrow{a}_{lo} \cdot u_j$$
