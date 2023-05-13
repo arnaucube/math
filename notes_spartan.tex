@@ -44,30 +44,29 @@
 
 \tableofcontents
 
-\section{Encoding R1CS instances as low-degree polynomials}
+\section{R1CS into Sum-Check protocol}
 \begin{definition}{R1CS}
 	$\exists w \in \mathbb{F}^{m - |io| - 1}$ such that $(A \cdot z) \circ (B \cdot z) = (C \cdot z)$, where $z=(io, 1, w)$.
 \end{definition}
 
 
-\textbf{Thm 4.1} $\forall$ R1CS instance $x = (\mathbb{F}, A, B, C, io, m, n)$, $\exists$ a degree-3 log m-variate polynomial $G$ such that $\sum_{x \in \{0,1\}^{log m}} G(x) = 0$.
+\textbf{Thm 4.1} $\forall$ R1CS instance $x = (\mathbb{F}, A, B, C, io, m, n)$, $\exists$ a degree-3 log m-variate polynomial $G$ such that $\sum_{x \in \{0,1\}^{log m}} G(x) = 0$ iff $\exists$ a witness $w$ such that $Sat_{R1CS}(x, w)=1$.
 % \begin{theorem}{4.1} // TODO use theorem gadget
 %	$\forall$
 % \begin{end}
 \vspace{0.5cm}
 
-For a RCS instance $x$, let $s = \lceil log m \rceil$.
+% For a RCS instance $x$, let $s = \lceil \log m \rceil$.
 
-We can view matrices $A, B, C \in \mathbb{F}^{m \times m}$ as functions $\{0,1\}^s \times \{0,1\}^s \rightarrow \mathbb{F}$.
+We can view matrices $A, B, C \in \mathbb{F}^{m \times m}$ as functions $\{0,1\}^s \times \{0,1\}^s \rightarrow \mathbb{F}$ ($s= \lceil \log m \rceil$).
 For a given witness $w$ to $x$, let $z=(io, 1, w)$.
 View $z$ as a function $\{0,1\}^s \rightarrow \mathbb{F}$, so any entry in $z$ can be accessed with a $s$-bit identifier.
 
+\begin{small}
 $$
-F_{io}(x)=
+F_{io}(x)=\left( \sum_{y \in \{0,1\}^s} A(x, y) \cdot Z(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} B(x, y) \cdot Z(y) \right) - \sum_{y \in \{0,1\}^s} C(x, y) \cdot Z(y)
 $$
-$$
-\left( \sum_{y \in \{0,1\}^s} A(x, y) \cdot Z(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} B(x, y) \cdot Z(y) \right) - \left( \sum_{y \in \{0,1\}^s} C(x, y) \cdot Z(y) \right)
-$$
+\end{small}
 
 \begin{lemma}{4.1}
 	$\forall x \in \{0,1\}^s,~ F_{io}(x)=0$ iff $Sat_{R1CS}(x,w)=1$.
@@ -75,11 +74,12 @@ $$
 
 $F_{io}(\cdot)$ is a function, not a polynomial, so it can not be used in the Sum-check protocol.
 
-consider its polynomial extension $\widetilde{F}_{io}(x): \mathbb{F}^s \rightarrow \mathbb{F}$,
-$$\widetilde{F}_{io}(x)=$$
+$F_{io}(x)$ function is converted to a polynomial by using its polynomial extension $\widetilde{F}_{io}(x): \mathbb{F}^s \rightarrow \mathbb{F}$,
+\begin{small}
 $$
-\left( \sum_{y \in \{0,1\}^s} \widetilde{A}(x, y) \cdot \widetilde{Z}(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} \widetilde{B}(x, y) \cdot \widetilde{Z}(y) \right) - \left( \sum_{y \in \{0,1\}^s} \widetilde{C}(x, y) \cdot \widetilde{Z}(y) \right)
+\widetilde{F}_{io}(x)=\left( \sum_{y \in \{0,1\}^s} \widetilde{A}(x, y) \cdot \widetilde{Z}(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} \widetilde{B}(x, y) \cdot \widetilde{Z}(y) \right) - \sum_{y \in \{0,1\}^s} \widetilde{C}(x, y) \cdot \widetilde{Z}(y)
 $$
+\end{small}
 
 \begin{lemma}{4.2}
 	$\forall x \in \{0,1\}^s,~ \widetilde{F}_{io}(x)=0$ iff $Sat_{R1CS}(x, w)=1$.
@@ -94,9 +94,12 @@ Verifier can check if $\sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x)=0$ using the
 
 But: $\sum_{x\in \{0,1\}^s} \widetilde{F}_{io}(x)=0 \centernot\Longleftrightarrow F_{io}(x)=0 \forall x \in \{0,1\}^s$.
 Bcs: the $2^s$ terms in the sum might cancel each other even when the individual terms are not zero.
-Solution: consider
+
+Solution: combine $\widetilde{F}_{io}(x)$ with $\widetilde{eq}(t, x)$ to get $Q_{io}(t, x)$ as a zero-polynomial
+
 $$Q_{io}(t)= \sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t, x)$$
-where $\widetilde{eq}(t, x) = \prod_{i=1}^s (t_i \cdot x_i + (1- t_i) \cdot (1- x_i))$.
+
+where $\widetilde{eq}(t, x) = \prod_{i=1}^s (t_i \cdot x_i + (1- t_i) \cdot (1- x_i))$, which is the MLE of $eq(x,e)= \{ 1 ~\text{if}~ x=e,~ 0 ~\text{otherwise} \}$.
 
 Basically $Q_{io}(\cdot)$ is a multivariate polynomial such that
 $$Q_{io}(t) = \widetilde{F}_{io}(t) ~\forall t \in \{0,1\}^s$$
@@ -105,17 +108,24 @@ $\Longleftrightarrow$ iff $\widetilde{F}_{io}(\cdot)$ encodes a witness $w$ such
 
 To check that $Q_{io}(\cdot)$ is a zero-polynomial: check $Q_{io}(\tau)=0,~ \tau \in^R \mathbb{F}^s$ (Schwartz-Zippel-DeMillo–Lipton lemma).
 
+\paragraph{Recap}
+\begin{itemize}
+	\item[] We have that $Sat_{R1CS}(x,w)=1$ iff $F_{io}(x)=0$.
+	\item[] To be able to use sum-check, we use its polynomial extension $\widetilde{F}_{io}(x)$, using sum-check to prove that $\widetilde{F}_{io}(x) =0 ~\forall x \in \{0, 1\}^s$, which means that $Sat_{R1CS}(x,~w)=1$.
+	\item[] To prevent potential canceling terms, we combine $\widetilde{F}_{io}(x)$ with $\widetilde{eq}(t, x)$, obtaining $G_{io, \tau}(x)= \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t, x)$.
+	\item[] Thus $Q_{io}(t)= \sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t, x)$, and then we prove that $Q_{io}(\tau)=0$, for $\tau \in^R \mathbb{F}^s$.
+\end{itemize}
+
 \section{NIZKs with succint proofs for R1CS}
 
 From Thm 4.1: to check R1CS instance $(\mathbb{F}, A, B, C, io, m, n)$ V can check if
-$$\sum_{x \in \{0,1\}^s} G_{io, \tau} (r_x)$$
-where $r_x \in \mathbb{F}^s$.
+$\sum_{x \in \{0,1\}^s} G_{io, \tau} (x) = 0$, which through sum-check protocol can be reduced to $e_x = G_{io, \tau} (r_x)$, where $r_x \in \mathbb{F}^s$.
 
 Recall: $G_{io, \tau}(x) = \widetilde{F}_{io}(x) \cdot \widetilde{eq}(\tau, x)$.
 
-To evaluate $\widetilde{F}_{io}(r_x)$, V needs to evaluate
-$$\forall y \in \{0,1\}^s: \widetilde{A}(r_x, y), \widetilde{B}(r_x, y), \widetilde{C}(r_x, y), \widetilde{Z}(y)$$
-evaluations of $\widetilde{Z}(y) ~\forall y \in \{0,1\}^s ~\Longleftrightarrow (io, 1, w)$.
+Evaluating $\widetilde{eq}(\tau, r_x)$ takes $O(log~m)$, but to evaluate $\widetilde{F}_{io}(r_x)$, V needs to evaluate
+$$\widetilde{A}(r_x, y), \widetilde{B}(r_x, y), \widetilde{C}(r_x, y), \widetilde{Z}(y),~ \forall y \in \{0,1\}^s$$
+But: evaluations of $\widetilde{Z}(y) ~\forall y \in \{0,1\}^s ~\Longleftrightarrow (io, 1, w)$.
 
 Solution: combination of 3 protocols:
 \begin{itemize}
@@ -124,32 +134,50 @@ Solution: combination of 3 protocols:
 	\item polynomial commitment scheme
 \end{itemize}
 
-Observation: let $\widetilde{F}_{io}(r_x) = \bar{A}(r_x) \cdot \bar{B}(r_x) - \bar{C}(r_x)$, where
-$$\bar{A}(r_x) = \sum_{y \in \{0,1\}} \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y)$$
-$$\bar{B}(r_x) = \sum_{y \in \{0,1\}} \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)$$
-$$\bar{C}(r_x) = \sum_{y \in \{0,1\}} \widetilde{C}(r_x, y) \cdot \widetilde{Z}(y)$$
+Observation: let $\widetilde{F}_{io}(r_x) = \overline{A}(r_x) \cdot \overline{B}(r_x) - \overline{C}(r_x)$, where
+$$\overline{A}(r_x) = \sum_{y \in \{0,1\}} \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y)$$
+$$\overline{B}(r_x) = \sum_{y \in \{0,1\}} \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)$$
+$$\overline{C}(r_x) = \sum_{y \in \{0,1\}} \widetilde{C}(r_x, y) \cdot \widetilde{Z}(y)$$
 
-Prover makes 3 separate claims: $\bar{A}(r_x)=v_A,~ \bar{B}(r_x)=v_B,~ \bar{C}(r_x)=v_C$,
+Prover makes 3 separate claims: $\overline{A}(r_x)=v_A,~ \overline{B}(r_x)=v_B,~ \overline{C}(r_x)=v_C$,
 then V evaluates:
 $$G_{io, \tau}(r_x) = (v_A \cdot v_B - v_C) \cdot \widetilde{eq}(r_x, \tau)$$
-which could be 3 sum-check protocol instances. Instead: combine 3 claims into a single claim:
-
-V samples $r_A, r_B, r_C \in^R \mathbb{F}$, and computes $c= r_A v_A + r_B v_B + r_C v_C$.
-V, P use sum-check protocol to check:
-$$r_A \cdot \bar{A}(r_x) + r_B \cdot \bar{B}(r_x) + r_C \cdot \bar{C}(r_x) == c$$
 
 
-Let $L(r_x) = r_A \cdot \bar{A}(r_x) +r_B \cdot \bar{B}(r_x) +r_C \cdot \bar{C}(r_x)$,
+\begin{footnotesize}
+	which equals to
+	$$=\left(\overline{A}(r_x) \cdot \overline{B}(r_x) - \overline{C}(r_x)\right) \cdot \widetilde{eq}(r_x, \tau)=$$
+	$$\left(\left(\sum_{y \in \{0,1\}} \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y)\right) \cdot \left(\sum_{y \in \{0,1\}} \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)\right) - \sum_{y \in \{0,1\}} \widetilde{C}(r_x, y) \cdot \widetilde{Z}(y)\right) \cdot \widetilde{eq}(r_x, \tau)$$
+\end{footnotesize}
 
+\vspace{0.5cm}
+
+This would be 3 sum-check protocol instances (3 claims: $\overline{A}(r_x)=v_A$, $\overline{B}(r_x)=v_B$, $\overline{C}(r_x)=v_C$).
+
+Instead, combine 3 claims into a single claim:
+
+\begin{itemize}
+	\item V samples $r_A, r_B, r_C \in^R \mathbb{F}$, and computes $c= r_A v_A + r_B v_B + r_C v_C$.
+	\item V, P use sum-check protocol to check:
+$$r_A \cdot \overline{A}(r_x) + r_B \cdot \overline{B}(r_x) + r_C \cdot \overline{C}(r_x) == c$$
+
+
+% Let $L(r_x) = r_A \cdot \overline{A}(r_x) +r_B \cdot \overline{B}(r_x) +r_C \cdot \overline{C}(r_x)$,
+Let
+\begin{small}
 \begin{align*}
-	L(r_x) &= \sum_{y \in \{0,1\}^s}
-	       r_A \cdot \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y)
-+ r_B \cdot \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)
-+ r_C \cdot \widetilde{C}(r_x, y) \cdot \widetilde{Z}(y)\\
+	&L(r_x) = r_A \cdot \overline{A}(r_x) +r_B \cdot \overline{B}(r_x) +r_C \cdot \overline{C}(r_x)\\
+	&= \sum_{y \in \{0,1\}^s}
+	       \left( r_A \cdot \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y)
+	       + r_B \cdot \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)
+	       + r_C \cdot \widetilde{C}(r_x, y) \cdot \widetilde{Z}(y) \right)\\
 	       &= \sum_{y \in \{0,1\}^s} M_{r_x}(y)
 \end{align*}
+\end{small}
 
 $M_{r_x}(y)$ is a s-variate polynomial with deg $\leq 2$ in each variable ($\Longleftrightarrow \mu = s,~ l=2,~ T=c$).
+
+\end{itemize}
 
 
 \begin{align*}
@@ -163,12 +191,30 @@ r_A \cdot \widetilde{A}(r_x, r_y) \cdot \widetilde{Z}(r_y)
 + r_C \cdot \widetilde{C}(r_x, r_y)) \cdot \widetilde{Z}(r_y)\\
 \end{align*}
 
-only one term in $M_{r_x}(r_y)$ depends on prover's witness: $\widetilde{Z}(r_y)$
+only one term in $M_{r_x}(r_y)$ depends on prover's witness: $\widetilde{Z}(r_y)$, the other terms can be computed locally by V in $O(n)$ time (Section 6 of the paper for sub-linear in $n$).
 
-P sends a commitment to $\widetilde{w}(\cdot)$ (= MLE of the witness $w$) to V before the first instance of the sum-check protocol.
+Instead of evaluating $\widetilde{Z}(r_y)$ in $O(|w|)$ communications, P sends a commitment to $\widetilde{w}(\cdot)$ (= MLE of the witness $w$) to V before the first instance of the sum-check protocol.
 
+
+\paragraph{Recap}
+\begin{itemize}
+	\item[] To check the R1CS instance, V can check $\sum_{x \in \{0,1\}^s} G_{io, \tau} (x) = 0$, which through the sum-check is reduced to $e_x = G_{io, \tau} (r_x)$, for $r_x \in \mathbb{F}^s$.
+	\item[] Evaluating $G_{io, \tau}(x)$ ($G_{io, \tau}(x) = \widetilde{F}_{io}(x) \cdot \widetilde{eq}(\tau, x)$) is not cheap. Evaluating $\widetilde{eq}(\tau, r_x)$ takes $O(log~m)$, but to evaluate $\widetilde{F}_{io}(r_x)$, V needs to evaluate $\widetilde{A}, \widetilde{B}, \widetilde{C}, \widetilde{Z},~ \forall y \in \{0,1\}^s$
+	% \item[] Solution: combine 3 protocols: sum-check protocol, randomized mini protocol, polynomial commitment scheme.
+	\item[] P makes 3 separate claims: $\overline{A}(r_x)=v_A,~ \overline{B}(r_x)=v_B,~ \overline{C}(r_x)=v_C$, so V can evaluate $G_{io, \tau}(r_x) = (v_A \cdot v_B - v_C) \cdot \widetilde{eq}(r_x, \tau)$
+	\item[] The previous claims are combined into a single claim (random linear combination) to use only a single sum-check protocol:
+		\begin{itemize}
+			\item[] P: $c= r_A v_A + r_B v_B + r_C v_C$, for $r_A, r_B, r_C \in^R \mathbb{F}$
+			\item[] V, P: sum-check $r_A \cdot \overline{A}(r_x) + r_B \cdot \overline{B}(r_x) + r_C \cdot \overline{C}(r_x) == c$
+		\end{itemize}
+	\item[] $c=L(r_x)=\sum_{y \in \{0,1\}^s} M_{r_x}(y)$, where $M_{r_x}(y)$ is a s-variate polynomial with deg $\leq 2$ in each variable ($\Longleftrightarrow \mu = s,~ l=2,~ T=c$). Only $\widetilde{Z}(r_y)$ depends on P's witness, the other terms can be computed locally by V.
+	\item[] Instead of evaluating $\widetilde{Z}(r_y)$ in $O(|w|)$ communications, P uses a commitment to $\widetilde{w}(\cdot)$ (= MLE of the witness $w$).
+\end{itemize}
 
 \subsection{Full protocol}
+\begin{footnotesize}
+	(Recall: Sum-Check params: $\mu$: n vars, n rounds, $l$: degree in each variable upper bound, $T$: claimed result.)
+\end{footnotesize}
 
 \begin{itemize}
 	\item $pp \leftarrow Setup(1^{\lambda})$: invoke $pp \leftarrow PC.Setup(1^{\lambda}, log m)$; output $pp$
@@ -195,7 +241,9 @@ P sends a commitment to $\widetilde{w}(\cdot)$ (= MLE of the witness $w$) to V b
 	\end{enumerate}
 \end{itemize}
 
-\vspace{2cm}
+Section 6 of the paper, describes how in step 16, instead of evaluating $\widetilde{A},~\widetilde{B},~\widetilde{C}$ at $r_x,~r_y$ with $O(n)$ costs, P commits to $\widetilde{A},~\widetilde{B},~\widetilde{C}$ and later provides proofs of openings.
+
+\vspace{1cm}
 \framebox{WIP: covered until sec.6}
 
 
