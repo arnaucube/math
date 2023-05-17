@@ -9,6 +9,8 @@
 \usepackage{xcolor}
 \usepackage{pgf-umlsd} % diagrams
 \usepackage{centernot}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 
 % prevent warnings of underfull \hbox:
@@ -48,15 +50,16 @@
 \section{CCS}
 \subsection{R1CS to CCS overview}
 
-\begin{itemize}
-	\item[] R1CS instance: $S_{R1CS} = (m, n, N, l, A, B, C)$
-	\item[] CCS instance: $S_{CCS} = (m, n, N, l, t, q, d, M, S, c)$
-	\item[] R1CS-to-CCS parameters:\\
-    $n=n,~ m=m,~ N=N,~ l=l,~ t=3,~ q=2,~ d=2$\\
-    $M=\{A,B,C\}$, $S=\{\{0,~1\},~ \{2\}\}$, $c=\{1,-1\}$
-\end{itemize}
+\begin{description}
+	\item[R1CS instance] $S_{R1CS} = (m, n, N, l, A, B, C)$\\
+		where $m, n$ are such that $A \in \mathbb{F}^{m \times n}$, and $l$ such that the public inputs $x \in \mathbb{F}^l$. Also $z=(w, 1, x) \in \mathbb{F}^n$, thus $w \in \mathbb{F}^{n-l-1}$.
+	\item[CCS instance] $S_{CCS} = (m, n, N, l, t, q, d, M, S, c)$\\
+		where we have the same parameters than in $S_{R1CS}$, but additionally:\\
+		$t=|M|$, $q = |c| = |S|$, $d$= max degree in each variable.
+	\item[R1CS-to-CCS parameters] $n=n,~ m=m,~ N=N,~ l=l,~ t=3,~ q=2,~ d=2$, $M=\{A,B,C\}$, $S=\{\{0,~1\},~ \{2\}\}$, $c=\{1,-1\}$
+\end{description}
 
-Then, we can see that the CCS relation:
+The CCS relation check:
 $$\sum_{i=0}^{q-1} c_i \cdot \bigcirc_{j \in S_i} M_j \cdot z ==0$$
 
 where $z=(w, 1, x) \in \mathbb{F}^n$.
@@ -97,31 +100,38 @@ Sat if:
 
 
 \section{Multifolding Scheme for CCS}
-Recall sum-check protocol:\\
-\underline{$C \leftarrow <P, V(r)>(g, l, d, T)$}:\\ % TODO use proper <, >
-$T=\sum_{x_1 \in \{0,1\}} \sum_{x_2 \in \{0,1\}} \cdots \sum_{x_l \in \{0,1\}} g(x_1, x_2, \ldots, x_l)$
-$l$-variate polynomial g, degree $\leq d$ in each variable.
+Recall sum-check protocol notation: \underline{$C \leftarrow \langle P, V(r) \rangle (g, l, d, T)$}:
+$$T=\sum_{x_1 \in \{0,1\}} \sum_{x_2 \in \{0,1\}} \cdots \sum_{x_l \in \{0,1\}} g(x_1, x_2, \ldots, x_l)$$
+where $g$ is a $l$-variate polynomial, with degree at most $d$ in each variable, and $T$ is the claimed value.
 
-let $s= \log m,~ s'= \log n$.
+\vspace{1cm}
+
+Let $s= \log m,~ s'= \log n$.
 
 \begin{enumerate}
 	\item $V \rightarrow P: \gamma \in^R \mathbb{F},~ \beta \in^R \mathbb{F}^s$
 	\item $V: r_x' \in^R \mathbb{F}^s$
-	\item $V \leftrightarrow P$: sum-check protocol:\\
-		$$c \leftarrow <P, V(r_x')>(g, s, d+1, \sum_{j \in [t]} \gamma^j \cdot v_j)$$
-		where:\\
+	\item $V \leftrightarrow P$: sum-check protocol:
+		$$c \leftarrow \langle P, V(r_x') \rangle (g, s, d+1, \overbrace{\sum_{j \in [t]} \gamma^j \cdot v_j}^\text{T})$$
+		where:
 		\begin{align*}
 			g(x) &:= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x)\\
-			L_j(x) &:= \widetilde{eq}(r_x, x) \cdot \left( \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y) \right)\\
-			Q(x) &:= \widetilde{eq}(\beta, x) \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) \right)
+			\text{for LCCCS:}~ L_j(x) &:= \widetilde{eq}(r_x, x) \cdot \left(
+				\underbrace{\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)}_\text{this is the check from LCCCS}
+			\right)\\
+				\text{for CCCS:}~ Q(x) := &\widetilde{eq}(\beta, x) \cdot \left(
+				\underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{this is the check from CommittedCCS}
+			\right)
 		\end{align*}
-	\item $P \rightarrow V$: $\left( (\sigma_1, \ldots, \sigma_t), (\theta_1, \ldots, \theta_t) \right)$
-		where
-		$$\sigma_j = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)$$
-		$$\theta_j = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y)$$
+		Notice that $v_j= \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(r, y) \cdot \widetilde{z}(y) = \sum_{x\in \{0,1\}^s} L_j(x)$.
+	\item $P \rightarrow V$: $\left( (\sigma_1, \ldots, \sigma_t), (\theta_1, \ldots, \theta_t) \right)$, where $\forall j \in [t]$,
+		$$\sigma_j = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
+		$$\theta_j = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_2(y)$$
+		where $\sigma_j,~\theta_j$ are the checks from LCCCS and CCCS respectively with $x=r_x'$.
 	\item V: $e_1 \leftarrow \widetilde{eq}(r_x, r_x')$, $e_2 \leftarrow \widetilde{eq}(\beta, r_x')$\\
 		check:
 		$$c = \left( \sum_{j \in [t]} \gamma^j e_1 \sigma_j + \gamma^{t+1} e_2 \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \sigma \right) \right)$$
+		which should be equivalent to the $g(x)$ computed by $V,P$ in the sum-check protocol.
 	\item $V \rightarrow P: \rho \in^R \mathbb{F}$
 	\item $V, P$: output the folded LCCCS instance $(C', u', \mathsf{x}', r_x', v_1', \ldots, v_t')$, where $\forall i \in [t]$:
 		\begin{align*}
@@ -133,6 +143,72 @@ let $s= \log m,~ s'= \log n$.
 	\item $P$: output folded witness: $\widetilde{w}' \leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2$.
 \end{enumerate}
 
+
+
+%%%%%% APPENDIX
+\appendix
+\section{Appendix: Some details}
+This appendix contains some notes on things that don't specifically appear in the paper, but that would be needed in a practical implementation of the scheme.
+
+\subsection{Matrix and Vector to Sparse Multilinear Extension}
+
+Let $M \in \mathbb{F}^{m \times n}$ be a matrix. We want to compute its MLE
+$$\widetilde{M}(x_1, \ldots, x_l) = \sum_{e \in \{0, 1 \}^l} M(e) \cdot \widetilde{eq}(x, e)$$
+
+We can view the matrix $M \in \mathbb{F}^{m \times n}$ as a function with the following signature:
+$$M(\cdot): \{0,1\}^s \times \{0,1\}^{s'} \rightarrow \mathbb{F}$$
+where $s = \lceil \log m \rceil,~ s' = \lceil \log n \rceil$.
+
+An entry in $M$ can be accessed with a $(s+s')$-bit identifier.
+
+eg.:
+$$
+M = \begin{pmatrix}
+1 & 2 & 3\\
+4 & 5 & 6\\
+\end{pmatrix}
+\in \mathbb{F}^{3 \times 2}
+$$
+
+$m = 3,~ n = 2,~~~ s = \lceil \log 3 \rceil = 2,~ s' = \lceil \log 2 \rceil = 1$
+
+So, $M(s_0, s_1) = x$, where $s_0 \in \{0,1\}^s,~ s_1 \in \{0,1\}^{s'},~ x \in \mathbb{F}$
+
+$$
+M = \begin{pmatrix}
+M(00,0) & M(01,0) & M(10,0)\\
+M(00,1) & M(01,1) & M(10,1)\\
+\end{pmatrix}
+\in \mathbb{F}^{3 \times 2}
+$$
+
+This logic can be defined as follows:
+
+\begin{algorithm}[H]
+\caption{Generating a Sparse Multilinear Polynomial from a matrix}
+\begin{algorithmic}
+	\State set empty vector $v \in (\text{index:}~ \mathbb{Z}, x: \mathbb{F})^{s \times s'}$
+	\For {$i$ to $n$}
+	\For {$j$ to $m$}
+		\If {$M_{i,j} \neq 0$}
+			\State $v.\text{append}( \{ \text{index}: i \cdot m + j,~ x: M_{i,j} \} )$
+		\EndIf
+	\EndFor
+	\EndFor
+	\State return $v$    \Comment {$v$ represents the evaluations of the polynomial}
+\end{algorithmic}
+\end{algorithm}
+
+Once we have the polynomial, its MLE comes from
+$$\widetilde{M}(x_1, \ldots, x_{s+s'}) = \sum_{e \in \{0,1\}^{s+s'}} M(e) \cdot \widetilde{eq}(x, e)$$
+
+$$M(X) \in \mathbb{F}[X_1, \ldots, X_s]$$
+
+\paragraph{Multilinear extensions of vectors}
+Given a vector $u \in \mathbb{F}^m$, the polynomial $\widetilde{u}$ is the MLE of $u$, and is obtained by viewing $u$ as a function mapping ($s=\log m$)
+$$u(x): \{0,1\}^s \rightarrow \mathbb{F}$$
+$\widetilde{u}(x, e)$ is the multilinear extension of the function $u(x)$
+$$\widetilde{u}(x_1, \ldots, x_s) = \sum_{e \in \{0,1\}^s} u(e) \cdot \widetilde{eq}(x, e)$$
 
 \bibliography{paper-notes.bib}
 \bibliographystyle{unsrt}
