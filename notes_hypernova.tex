@@ -37,7 +37,7 @@
 \maketitle
 
 \begin{abstract}
-	Notes taken while reading about Spartan \cite{cryptoeprint:2023/573}, \cite{cryptoeprint:2023/552}.
+	Notes taken while reading about HyperNova \cite{cryptoeprint:2023/573} and CCS\cite{cryptoeprint:2023/552}.
 
 	Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
 
@@ -77,6 +77,8 @@ which is equivalent to the R1CS relation: $Az \circ Bz == Cz$
 An example of the conversion from R1CS to CCS implemented in SageMath can be found at\\
 \href{https://github.com/arnaucube/math/blob/master/r1cs-ccs.sage}{https://github.com/arnaucube/math/blob/master/r1cs-ccs.sage}.
 
+Similar relations between Plonkish and AIR arithmetizations to CCS are shown in the CCS paper \cite{cryptoeprint:2023/552}, but for now with the R1CS we have enough to see the CCS generalization idea and to use it for the HyperNova scheme.
+
 \subsection{Committed CCS}
 $R_{CCCS}$ instance: $(C, \mathsf{x})$, where $C$ is a commitment to a multilinear polynomial in $s'-1$ variables.
 
@@ -100,7 +102,7 @@ Sat if:
 
 
 \section{Multifolding Scheme for CCS}
-Recall sum-check protocol notation: \underline{$C \leftarrow \langle P, V(r) \rangle (g, l, d, T)$}:
+Recall sum-check protocol notation: \underline{$C \leftarrow \langle P, V(r) \rangle (g, l, d, T)$} means
 $$T=\sum_{x_1 \in \{0,1\}} \sum_{x_2 \in \{0,1\}} \cdots \sum_{x_l \in \{0,1\}} g(x_1, x_2, \ldots, x_l)$$
 where $g$ is a $l$-variate polynomial, with degree at most $d$ in each variable, and $T$ is the claimed value.
 
@@ -112,18 +114,20 @@ Let $s= \log m,~ s'= \log n$.
 	\item $V \rightarrow P: \gamma \in^R \mathbb{F},~ \beta \in^R \mathbb{F}^s$
 	\item $V: r_x' \in^R \mathbb{F}^s$
 	\item $V \leftrightarrow P$: sum-check protocol:
-		$$c \leftarrow \langle P, V(r_x') \rangle (g, s, d+1, \overbrace{\sum_{j \in [t]} \gamma^j \cdot v_j}^\text{T})$$
+		$$c \leftarrow \langle P, V(r_x') \rangle (g, s, d+1, \underbrace{\sum_{j \in [t]} \gamma^j \cdot v_j}_\text{T})$$
+		(in fact, $T=(\sum_{j \in [t]} \gamma^j \cdot v_j) \underbrace{+ \gamma^{t+1} \cdot Q(x)}_{=0}) = \sum_{j \in [t]} \gamma^j \cdot v_j$)\\
 		where:
 		\begin{align*}
-			g(x) &:= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x)\\
+			g(x) &:= \underbrace{\left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right)}_\text{LCCCS check} + \underbrace{\gamma^{t+1} \cdot Q(x)}_\text{CCCS check}\\
 			\text{for LCCCS:}~ L_j(x) &:= \widetilde{eq}(r_x, x) \cdot \left(
 				\underbrace{\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)}_\text{this is the check from LCCCS}
 			\right)\\
 				\text{for CCCS:}~ Q(x) := &\widetilde{eq}(\beta, x) \cdot \left(
-				\underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{this is the check from CommittedCCS}
+				\underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{this is the check from CCCS}
 			\right)
 		\end{align*}
-		Notice that $v_j= \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(r, y) \cdot \widetilde{z}(y) = \sum_{x\in \{0,1\}^s} L_j(x)$.
+		Notice that
+		$$v_j= \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(r, y) \cdot \widetilde{z}(y) = \sum_{x\in \{0,1\}^s} L_j(x)$$
 	\item $P \rightarrow V$: $\left( (\sigma_1, \ldots, \sigma_t), (\theta_1, \ldots, \theta_t) \right)$, where $\forall j \in [t]$,
 		$$\sigma_j = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
 		$$\theta_j = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_2(y)$$
@@ -142,6 +146,44 @@ Let $s= \log m,~ s'= \log n$.
 		\end{align*}
 	\item $P$: output folded witness: $\widetilde{w}' \leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2$.
 \end{enumerate}
+
+\vspace{1cm}
+
+Now, to see the verifier check from step 5, observe that in LCCCS, since $\widetilde{w}$ satisfies,
+\begin{align*}
+	v_j &= \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x, y) \cdot \widetilde{z}_1(y)\\
+	    &= \sum_{x \in \{0,1\}^s}
+		\underbrace{
+			\widetilde{eq}(r_x, x) \cdot \left( \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y) \right)
+		}_{L_j(x)}\\
+	    &= \sum_{x \in \{0,1\}^s} L_j(x)
+\end{align*}
+
+Observe also that in CCCS, since $\widetilde{w}$ satisfies,
+$$
+0=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+$$
+for $\beta$,
+\begin{align*}
+	0&=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(\beta, y) \cdot \widetilde{z}_2(y) \right)\\
+	 &= \sum_{x \in \{0,1\}^s}
+	 \underbrace{\widetilde{eq}(\beta , x) \cdot
+		\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+	}_{Q(x)}\\
+	 &= \sum_{x \in \{0,1\}^s} Q(x)
+\end{align*}
+
+Then we can see that
+
+\begin{align*}
+	c &= g(r_x')\\
+	  &= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(r_x') \right) + \gamma^{t+1} \cdot Q(r_x')\\
+	  &= \left( \sum_{j \in [t]} \gamma^j \cdot e_q \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \sum_{i \in [q]} c_i \prod_{j \in S_i} \theta_j
+\end{align*}
+
+where $e_1 = \widetilde{eq}(r_x, r_x')$ and $e_2=\widetilde{eq}(\beta, r_x')$.
+
+Which is the check that $V$ performs at step $5$.
 
 
 
@@ -172,7 +214,7 @@ $$
 
 $m = 3,~ n = 2,~~~ s = \lceil \log 3 \rceil = 2,~ s' = \lceil \log 2 \rceil = 1$
 
-So, $M(s_0, s_1) = x$, where $s_0 \in \{0,1\}^s,~ s_1 \in \{0,1\}^{s'},~ x \in \mathbb{F}$
+So, $M(x, y) = x$, where $x \in \{0,1\}^s,~ y \in \{0,1\}^{s'},~ x \in \mathbb{F}$
 
 $$
 M = \begin{pmatrix}
@@ -188,10 +230,10 @@ This logic can be defined as follows:
 \caption{Generating a Sparse Multilinear Polynomial from a matrix}
 \begin{algorithmic}
 	\State set empty vector $v \in (\text{index:}~ \mathbb{Z}, x: \mathbb{F})^{s \times s'}$
-	\For {$i$ to $n$}
-	\For {$j$ to $m$}
+	\For {$i$ to $m$}
+	\For {$j$ to $n$}
 		\If {$M_{i,j} \neq 0$}
-			\State $v.\text{append}( \{ \text{index}: i \cdot m + j,~ x: M_{i,j} \} )$
+			\State $v.\text{append}( \{ \text{index}: i \cdot n + j,~ x: M_{i,j} \} )$
 		\EndIf
 	\EndFor
 	\EndFor
