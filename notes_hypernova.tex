@@ -7,10 +7,37 @@
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{xcolor}
-\usepackage{pgf-umlsd} % diagrams
 \usepackage{centernot}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+
+\usepackage{pgf-umlsd} % diagrams
+
+% message between threads. From https://tex.stackexchange.com/a/174765
+% Example:
+% \bloodymess[delay]{sender}{message content}{receiver}{DIR}{start note}{end note}
+\newcommand{\bloodymess}[7][0]{
+  \stepcounter{seqlevel}
+  \path
+  (#2)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess from) {};
+  \addtocounter{seqlevel}{#1}
+  \path
+  (#4)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess to) {};
+  \draw[->,>=angle 60] (mess from) -- (mess to) node[midway, above]
+  {#3};
+
+  \if R#5
+  \node (\detokenize{#3} from) at (mess from) {\llap{#6~}};
+  \node (\detokenize{#3} to) at (mess to) {\rlap{~#7}};
+  \else\if L#5
+  \node (\detokenize{#3} from) at (mess from) {\rlap{~#6}};
+  \node (\detokenize{#3} to) at (mess to) {\llap{#7~}};
+       \else
+       \node (\detokenize{#3} from) at (mess from) {#6};
+       \node (\detokenize{#3} to) at (mess to) {#7};
+       \fi
+  \fi
+}
 
 
 % prevent warnings of underfull \hbox:
@@ -147,6 +174,30 @@ Let $s= \log m,~ s'= \log n$.
 	\item $P$: output folded witness: $\widetilde{w}' \leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2$.
 \end{enumerate}
 
+
+\vspace{1cm}
+Multifolding flow:
+\begin{center}
+	\begin{sequencediagram}
+		\newinst[1]{p}{Prover}
+		\newinst[3]{v}{Verifier}
+
+		\bloodymess[1]{v}{$\gamma,~\beta,~r_x'$}{p}{L}{
+			\shortstack{
+				$\gamma \in \mathbb{F},~ \beta \in \mathbb{F}^s$\\
+				$r_x' \in \mathbb{F}^s$
+			}
+		}{}
+		\bloodymess[1]{p}{$c,~ \pi_{SC}$}{v}{R}{sum-check prove}{sum-check verify}
+		\bloodymess[1]{p}{$\{\sigma_j\},~\{\theta_j\}$}{v}{R}{compute $\{\sigma_j\}, \{\theta_j\}~ \forall j \in [t]$}{verify $c$ with $\{\sigma_j\}, \{\theta_j\}$ relation}
+		\bloodymess[1]{v}{$\rho$}{p}{L}{$\rho \in^R \mathbb{F}$}{}
+		\callself[0]{p}{fold LCCCS instance}{p}
+		\prelevel
+		\callself[0]{v}{fold LCCCS instance}{v}
+		\callself[0]{p}{fold $\widetilde{w}$}{p}
+	\end{sequencediagram}
+\end{center}
+
 \vspace{1cm}
 
 Now, to see the verifier check from step 5, observe that in LCCCS, since $\widetilde{w}$ satisfies,
@@ -178,7 +229,7 @@ Then we can see that
 \begin{align*}
 	c &= g(r_x')\\
 	  &= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(r_x') \right) + \gamma^{t+1} \cdot Q(r_x')\\
-	  &= \left( \sum_{j \in [t]} \gamma^j \cdot e_q \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \sum_{i \in [q]} c_i \prod_{j \in S_i} \theta_j
+	  &= \left( \sum_{j \in [t]} \gamma^j \cdot \overbrace{e_1 \cdot \sigma_j}^{L_j(r_x')} \right) + \gamma^{t+1} \cdot \overbrace{e_2 \cdot \sum_{i \in [q]} c_i \prod_{j \in S_i} \theta_j}^{Q(x)}
 \end{align*}
 
 where $e_1 = \widetilde{eq}(r_x, r_x')$ and $e_2=\widetilde{eq}(\beta, r_x')$.
@@ -229,7 +280,7 @@ This logic can be defined as follows:
 \begin{algorithm}[H]
 \caption{Generating a Sparse Multilinear Polynomial from a matrix}
 \begin{algorithmic}
-	\State set empty vector $v \in (\text{index:}~ \mathbb{Z}, x: \mathbb{F})^{s \times s'}$
+	\State set empty vector $v \in (\text{index:}~ \mathbb{Z}, x: \mathbb{F}^{s \times s'})$
 	\For {$i$ to $m$}
 	\For {$j$ to $n$}
 		\If {$M_{i,j} \neq 0$}

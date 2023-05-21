@@ -89,24 +89,33 @@ $$
 
 \vspace{0.5cm}
 
-$\widetilde{F}_{io}(\cdot)$: low-degree multivariate polynomial over $\mathbb{F}$ in $s$ variables.
-Verifier can check if $\sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x)=0$ using the Sum-check protocol.
+So, for this, V will need to check that $\widetilde{F}_{io}$ vanishes over the boolean hypercube ($\widetilde{F}_{io}(x)=0 ~\forall x \in \{0,1\}^s$).
 
-But: $\sum_{x\in \{0,1\}^s} \widetilde{F}_{io}(x)=0 \centernot\Longleftrightarrow F_{io}(x)=0 \forall x \in \{0,1\}^s$.
+Recall that $\widetilde{F}_{io}(\cdot)$ is a low-degree multivariate polynomial over $\mathbb{F}$ in $s$ variables.
+Thus, checking that $\widetilde{F}_{io}$ vanishes over the boolean hypercube is equivalent to checking that $\widetilde{F}_io=0$.
+
+Thus, V can check $\sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x)=0$ using the Sum-check protocol (through SZ lemma, V can check if for a random value it equals to 0, and be convinced that applies to all the points whp.).
+
+But: as $\widetilde{F}_{io}(x)$ is not multilinear, so $\sum_{x\in \{0,1\}^s} \widetilde{F}_{io}(x)=0 \centernot\Longleftrightarrow F_{io}(x)=0 ~\forall x \in \{0,1\}^s$.
 Bcs: the $2^s$ terms in the sum might cancel each other even when the individual terms are not zero.
 
-Solution: combine $\widetilde{F}_{io}(x)$ with $\widetilde{eq}(t, x)$ to get $Q_{io}(t, x)$ as a zero-polynomial
+Solution: combine $\widetilde{F}_{io}(x)$ with $\widetilde{eq}(t, x)$ to get $Q_{io}(t, x)$ which will be the unique multilinear polynomial, and then check that it is a zero-polynomial
 
 $$Q_{io}(t)= \sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t, x)$$
 
 where $\widetilde{eq}(t, x) = \prod_{i=1}^s (t_i \cdot x_i + (1- t_i) \cdot (1- x_i))$, which is the MLE of $eq(x,e)= \{ 1 ~\text{if}~ x=e,~ 0 ~\text{otherwise} \}$.
 
-Basically $Q_{io}(\cdot)$ is a multivariate polynomial such that
+Basically $Q_{io}(\cdot)$ is a multivariate (the unique multilinear) polynomial such that
 $$Q_{io}(t) = \widetilde{F}_{io}(t) ~\forall t \in \{0,1\}^s$$
 thus, $Q_{io}(\cdot)$ is a zero-polynomial iff $\widetilde{F}_{io}(x)=0 ~\forall x\in \{0,1\}^s$.
 $\Longleftrightarrow$ iff $\widetilde{F}_{io}(\cdot)$ encodes a witness $w$ such that $Sat_{R1CS}(x, w)=1$.
 
-To check that $Q_{io}(\cdot)$ is a zero-polynomial: check $Q_{io}(\tau)=0,~ \tau \in^R \mathbb{F}^s$ (Schwartz-Zippel-DeMillo–Lipton lemma).
+$\widetilde{F}_{io}(x)$ has degree 2 in each variable, and $\widetilde{eq}(t, x)$ has degree 1 in each variable, so $Q_{io}(t)$ has degree 3 in each variable.
+
+To check that $Q_{io}(\cdot)$ is a zero-polynomial: check $Q_{io}(\tau)=0,~ \tau \in^R \mathbb{F}^s$ (Schwartz-Zippel-DeMillo–Lipton lemma) through the sum-check protocol.
+
+This would mean that the R1CS instance is satisfied.
+
 
 \paragraph{Recap}
 \begin{itemize}
@@ -125,7 +134,12 @@ Recall: $G_{io, \tau}(x) = \widetilde{F}_{io}(x) \cdot \widetilde{eq}(\tau, x)$.
 
 Evaluating $\widetilde{eq}(\tau, r_x)$ takes $O(log~m)$, but to evaluate $\widetilde{F}_{io}(r_x)$, V needs to evaluate
 $$\widetilde{A}(r_x, y), \widetilde{B}(r_x, y), \widetilde{C}(r_x, y), \widetilde{Z}(y),~ \forall y \in \{0,1\}^s$$
-But: evaluations of $\widetilde{Z}(y) ~\forall y \in \{0,1\}^s ~\Longleftrightarrow (io, 1, w)$.
+
+which requires 3 sum-check instances (\begin{scriptsize}
+$\left( \sum_{y \in \{0,1\}^s} \widetilde{A}(x, y) \cdot \widetilde{Z}(y) \right)$,\\ $\left( \sum_{y \in \{0,1\}^s} \widetilde{B}(x, y) \cdot \widetilde{Z}(y) \right)$, $\left( \sum_{y \in \{0,1\}^s} \widetilde{C}(x, y) \cdot \widetilde{Z}(y) \right)$
+\end{scriptsize}), one for each summation in\\ $\widetilde{F}_{io}(x)$.
+
+But note that evaluations of $\widetilde{Z}(y) ~\forall y \in \{0,1\}^s$ are already known as $(io, 1, w)$.
 
 Solution: combination of 3 protocols:
 \begin{itemize}
@@ -133,6 +147,7 @@ Solution: combination of 3 protocols:
 	\item randomized mini protocol
 	\item polynomial commitment scheme
 \end{itemize}
+Basically to do a random linear combination of the 3 summations to end up doing just a single sum-check.
 
 Observation: let $\widetilde{F}_{io}(r_x) = \overline{A}(r_x) \cdot \overline{B}(r_x) - \overline{C}(r_x)$, where
 $$\overline{A}(r_x) = \sum_{y \in \{0,1\}} \widetilde{A}(r_x, y) \cdot \widetilde{Z}(y),~~\overline{B}(r_x) = \sum_{y \in \{0,1\}} \widetilde{B}(r_x, y) \cdot \widetilde{Z}(y)$$
@@ -241,6 +256,8 @@ Instead of evaluating $\widetilde{Z}(r_y)$ in $O(|w|)$ communications, P sends a
 \end{itemize}
 
 Section 6 of the paper, describes how in step 16, instead of evaluating $\widetilde{A},~\widetilde{B},~\widetilde{C}$ at $r_x,~r_y$ with $O(n)$ costs, P commits to $\widetilde{A},~\widetilde{B},~\widetilde{C}$ and later provides proofs of openings.
+
+In a practical implementation those commits to $\widetilde{A},~\widetilde{B},~\widetilde{C}$ could be done in a preprocessing step.
 
 \vspace{1cm}
 \framebox{WIP: covered until sec.6}

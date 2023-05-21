@@ -98,7 +98,7 @@ print("z:", z)
 print("S:", S)
 print("c:", c)
 
-# check CCS relation
+# check CCS relation (this is agnostic to R1CS, for any CCS instance)
 r = [F(0)] * m
 for i in range(0, q):
     hadamard_output = [F(1)]*m
