@@ -69,6 +69,8 @@
 	Usually while reading papers I take handwritten notes, this document contains some of them re-written to $LaTeX$.
 
 	The notes are not complete, don't include all the steps neither all the proofs.
+
+	Thanks to \href{https://twitter.com/asn_d6}{George Kadianakis} for clarifications, and the authors \href{https://twitter.com/srinathtv}{Srinath Setty} and \href{https://twitter.com/abhiramko}{Abhiram Kothapalli} for answers on chats and twitter.
 \end{abstract}
 
 \tableofcontents
@@ -212,19 +214,66 @@ Now, to see the verifier check from step 5, observe that in LCCCS, since $\widet
 
 Observe also that in CCCS, since $\widetilde{w}$ satisfies,
 $$
-0=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+0=\underbrace{\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)}_{q(x)}
 $$
-for $\beta$,
+
+we have that
+$$
+G(X) = \sum_{x \in \{0,1\}^s} eq(X, x) \cdot q(x)
+$$
+is multilinear, and can be seen as a Lagrange polynomial where coefficients are evaluations of $q(x)$ on the hypercube.
+
+For an honest prover, all these coefficients are zero, thus $G(X)$ must necessarily be the zero polynomial. Thus $G(\beta)=0$ for $\beta \in^R \mathbb{F}^s$.
 \begin{align*}
-	0&=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(\beta, y) \cdot \widetilde{z}_2(y) \right)\\
+	% 0&=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(\beta, y) \cdot \widetilde{z}_2(y) \right)\\
+	0&=G(\beta) = \sum_{x \in \{0,1\}^s} eq(\beta, x) \cdot q(x)\\
 	 &= \sum_{x \in \{0,1\}^s}
 	 \underbrace{\widetilde{eq}(\beta , x) \cdot
-		\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+		 \overbrace{
+			\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+		}^{q(x)}
 	}_{Q(x)}\\
 	 &= \sum_{x \in \{0,1\}^s} Q(x)
 \end{align*}
 
-Then we can see that
+\framebox{\begin{minipage}{4.3 in}
+\begin{footnotesize}
+
+\textbf{Note}: notice that this past equation is related to Spartan paper \cite{cryptoeprint:2019/550}, lemmas 4.2 and 4.3, where instead of 
+
+$$q(x) = \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)$$
+
+for our R1CS example, we can restrict it to just $M_0,M_1,M_2$, which would be
+
+$$=\left( \sum_{y \in \{0,1\}^s} \widetilde{M_0}(x, y) \cdot \widetilde{z}(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} \widetilde{M_1}(x, y) \cdot \widetilde{z}(y) \right) - \sum_{y \in \{0,1\}^s} \widetilde{M_2}(x, y) \cdot \widetilde{z}(y)$$
+
+and we can see that $q(x)$ is the same equation $\widetilde{F}_{io}(x)$ that we had in Spartan:
+
+$$
+\widetilde{F}_{io}(x)=\left( \sum_{y \in \{0,1\}^s} \widetilde{A}(x, y) \cdot \widetilde{z}(y) \right) \cdot \left( \sum_{y \in \{0,1\}^s} \widetilde{B}(x, y) \cdot \widetilde{z}(y) \right) - \sum_{y \in \{0,1\}^s} \widetilde{C}(x, y) \cdot \widetilde{z}(y)
+$$
+
+where
+$$Q_{io}(t) = \sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t,x)=0$$
+and V checks $Q_{io}(\tau)=0$ for $\tau \in^R \mathbb{F}^s$, which in HyperNova is $G(\beta)=0$ for $\beta \in^R \mathbb{F}^s$.
+
+$Q_{io}(\cdot)$ is a zero-polynomial ($G(\cdot)$ in HyperNova), it evaluates to zero for all points in its domain iff $\widetilde{F}_{io}(\cdot)$ evaluates to zero at all points in the $s$-dimensional boolean hypercube.
+\begin{align*}
+	\text{Spartan} &\longleftrightarrow \text{HyperNova}\\
+	\tau &\longleftrightarrow \beta\\
+	\widetilde{F}_{io}(x) &\longleftrightarrow q(x)\\
+	Q_{io}(\tau) &\longleftrightarrow G(\beta)
+\end{align*}
+
+So, in HyperNova
+$$0 = \sum_{x \in \{0,1\}^s} Q(x) = \sum_{x \in \{0,1\}^s} \widetilde{eq}(\beta,x) \cdot q(x)$$
+
+\end{footnotesize}
+\end{minipage}}
+
+\vspace{1cm}
+
+Comming back to HyperNova equations, we can now see that
 
 \begin{align*}
 	c &= g(r_x')\\
