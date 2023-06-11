@@ -163,7 +163,7 @@ Let $s= \log m,~ s'= \log n$.
 		where $\sigma_j,~\theta_j$ are the checks from LCCCS and CCCS respectively with $x=r_x'$.
 	\item V: $e_1 \leftarrow \widetilde{eq}(r_x, r_x')$, $e_2 \leftarrow \widetilde{eq}(\beta, r_x')$\\
 		check:
-		$$c = \left( \sum_{j \in [t]} \gamma^j e_1 \sigma_j + \gamma^{t+1} e_2 \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \sigma \right) \right)$$
+		$$c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)$$
 		which should be equivalent to the $g(x)$ computed by $V,P$ in the sum-check protocol.
 	\item $V \rightarrow P: \rho \in^R \mathbb{F}$
 	\item $V, P$: output the folded LCCCS instance $(C', u', \mathsf{x}', r_x', v_1', \ldots, v_t')$, where $\forall i \in [t]$:
@@ -173,7 +173,11 @@ Let $s= \log m,~ s'= \log n$.
 			\mathsf{x}' &\leftarrow \mathsf{x}_1 + \rho \cdot \mathsf{x}_2\\
 			v_i' &\leftarrow \sigma_i + \rho \cdot \theta_i
 		\end{align*}
-	\item $P$: output folded witness: $\widetilde{w}' \leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2$.
+	\item $P$: output folded witness and the folded $r_w'$ (random value used for the witness commitment $C$):
+		\begin{align*}
+			\widetilde{w}' &\leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2\\
+			r_w' &\leftarrow r_{w_1} + \rho \cdot r_{w_2}
+		\end{align*}
 \end{enumerate}
 
 
@@ -285,7 +289,116 @@ where $e_1 = \widetilde{eq}(r_x, r_x')$ and $e_2=\widetilde{eq}(\beta, r_x')$.
 
 Which is the check that $V$ performs at step $5$.
 
+\subsection{Multifolding for multiple instances}
+The multifolding of multiple LCCCS \& CCCS instances is not shown in the HyperNova paper, but Srinath Setty gave an overview in the PSE HyperNova presentation. This section unfolds it.
 
+We're going to do this example with parameters \textcolor{orange}{LCCCS: $\mu = 2$}, \textcolor{cyan}{CCCS: $\nu = 2$}, which means that we have 2 LCCCS instances and 2 CCCS instances.
+
+Assume we have 4 $z$ vectors, $z_1,~ \textcolor{orange}{z_2}$ for the two LCCCS instances, and $z_3,~ \textcolor{cyan}{z_4}$ for the two CCCS instances, where $z_1,~z_3$ are the vectors that we already had in the example with $\mu=1,\nu=1$, and $z_2,~z_4$ are the extra ones that we're adding now.
+
+In \emph{step 3} of the multifolding with more than one LCCCS and more than one CCCS instances, we have:
+
+\begin{align*}
+	g(x) &:= \left( \sum_{j \in [t]} \gamma^j \cdot L_{1,j}(x) + \textcolor{orange}{\gamma^{t+j} \cdot L_{2,j}(x)} \right)
++ \gamma^{2t+1} \cdot Q_1(x) + \textcolor{cyan}{\gamma^{2t+2} \cdot Q_2(x)} \\
+	     &L_{1,j}(x) := \widetilde{eq}(r_{1,x}, x) \cdot \left(
+	\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)
+\right)\\
+	     &\textcolor{orange}{L_{2,j}(x)} := \widetilde{eq}(\textcolor{orange}{r_{2,x}}, x) \cdot \left(
+	\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{orange}{\widetilde{z}_2(y)}
+\right)\\
+	     &Q_1(x) := \widetilde{eq}(\beta, x) \cdot \left(
+\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_3(y) \right)\right)\\
+	     &\textcolor{cyan}{Q_2(x)} := \widetilde{eq}(\textcolor{cyan}{\beta'}, x) \cdot \left(
+	\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{cyan}{\widetilde{z}_4(y)} \right)\right)
+\end{align*}
+
+\framebox{\begin{minipage}{4.3 in}
+A generic definition of $g(x)$ for $\mu>1~\nu>1$, would be
+
+$$
+g(x) := \left( \sum_{i \in [\mu]} \left( \sum_{j \in [t]} \gamma^{i \cdot t+j} \cdot L_{i,j}(x) \right) \right)
++ \left( \sum_{i \in [\nu]} \gamma^{\mu \cdot t + i} \cdot Q_i(x) \right)
+$$
+\end{minipage}}
+
+Recall, the original $g(x)$ definition was
+$$\textcolor{gray}{g(x) := \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x)}$$
+
+
+
+\vspace{0.5cm}
+In \emph{step 4}, $P \rightarrow V$:
+$(\{\sigma_{1,j}\}, \textcolor{orange}{\{\sigma_{2,j}\}}, \{\theta_{1,j}\}, \textcolor{cyan}{\{\theta_{2,j}\}}),~ \text{where} ~\forall j \in [t]$,
+
+$$\sigma_{1,j} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
+$$\textcolor{orange}{\sigma_{2,j}} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \textcolor{orange}{\widetilde{z}_2(y)}$$
+$$\theta_{1,j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_3(y)$$
+$$\textcolor{cyan}{\theta_{2,j}} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \textcolor{cyan}{\widetilde{z}_4(y)}$$
+
+\framebox{\begin{minipage}{4.3 in}
+	so in a generic way,\\
+$P \rightarrow V$:
+$(\{\sigma_{i,j}\}, \{\theta_{k,j}\}),~ \text{where} ~\forall~ j \in [t],~ \forall~ i \in [\mu],~ \forall~ k \in [\nu]$
+where
+$$\sigma_{i,j} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_i(y)$$
+$$\theta_{k,j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_{\mu+k}(y)$$
+\end{minipage}}
+
+\vspace{1cm}
+
+And in \emph{step 5}, $V$ checks
+
+% TODO check orange gamma^j...
+\begin{align*}
+	c &= \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_{1,j}
+~\textcolor{orange}{+ \gamma^{t+j} \cdot e_1 \cdot \sigma_{2,j}}\right)\\
+	  &+ \gamma^{2t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)
+	  + \textcolor{cyan}{\gamma^{2t+2} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)} 
+\end{align*}
+
+where
+% TODO check e_4
+$e_1 \leftarrow \widetilde{eq}(r_{1,x}, r_x'),~ e_2 \leftarrow \widetilde{eq}(r_{2,x}, r_x')$, $e_3 \leftarrow \widetilde{eq}(\beta, r_x'),~ e_4 \leftarrow \widetilde{eq}(\beta', r_x')$ (note: wip, pending check for $\beta, \beta'$ used in step 3).
+
+\vspace{0.5cm}
+
+\framebox{\begin{minipage}{4.3 in}
+A generic definition of the check would be
+$$
+c = \sum_{i \in [\mu]} \left(\sum_{j \in [t]} \gamma^{i \cdot t + j} \cdot e_i \cdot \sigma_{i,j} \right) \\
++ \sum_{k \in [\nu]} \gamma^{\mu \cdot t+k} \cdot e_k \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_{k,j} \right)
+$$
+\end{minipage}}
+
+where the original check was\\
+$\textcolor{gray}{c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)}$
+
+% TODO
+% Pending questions:
+% - \beta & \beta' can be the same? or related somehow like \beta'=\beta^2 ?
+
+\vspace{0.5cm}
+
+And for the \emph{step 7},
+\begin{align*}
+	C' &\leftarrow C_1 + \rho \cdot C_2 + \rho^2 C_3 + \rho^3 C_4 + \ldots = \sum_{i \in [\mu + \nu]} \rho^i \cdot C_i \\
+	u' &\leftarrow \sum_{i \in [\mu]} \rho^i \cdot u_i + \sum_{i \in [\nu]} \rho^{\mu + i-1} \cdot 1\\
+	\mathsf{x}' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i \cdot \mathsf{x}_i\\
+	v_i' &\leftarrow \sum_{i \in [\mu]} \rho^i \cdot \sigma_i + \sum_{i \in [\nu]} \rho^{\mu + i-1} \cdot \theta_i\\
+\end{align*}
+
+and \emph{step 8},
+\begin{align*}
+	\widetilde{w}' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i\cdot \widetilde{w}_i\\
+	r_w' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i \cdot r_{w_i}\\
+\end{align*}
+
+
+Note that over all the multifolding for $\mu >1$ and $\nu>1$, we can easily parallelize most of the computation.
+
+
+\vspace{2cm}
 
 %%%%%% APPENDIX
 \appendix
