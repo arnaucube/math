@@ -34,7 +34,6 @@
 \date{August 2022}
 
 \begin{document}
-
 \maketitle
 
 \begin{abstract}
@@ -45,15 +44,117 @@
 
 \tableofcontents
 
-\section{Divisors and rational functions}
+\section{Rational functions}
+
+Let $E/\Bbbk$ be an elliptic curve defined by: $y^2 = x^3 + Ax + B$.
+
+\paragraph{set of polynomials over $E$:}
+$\Bbbk[E] := \Bbbk[x,y] / (y^2 - x^3 - Ax - B =0)$
+
+we can replace $y^2$ in the polynomial $f \in \Bbbk[E]$ with $x^3 + Ax + B$
+
+\paragraph{canonical form:} $f(x,y) = v(x)+y w(x)$ for $v, w \in \Bbbk[x]$
+\paragraph{conjugate:} $\overline{f} = v(x) - y w(x)$
+\paragraph{norm:} $N_f = f \cdot \overline{f} = v(x)^2 - y^2 w(x)^2 = v(x)^2 - (x^3 + Ax + B) w(x)^2 \in \Bbbk[x] \subset \Bbbk[E]$
+
+we can see that $N_{fg} = N_f \cdot N_g$
+
+\paragraph{set of rational functions over $E$:}
+$\Bbbk(E) := \Bbbk[E] \times \Bbbk[E]/ \thicksim$
+
+For $r\in \Bbbk(E)$ and a finite point $P \in E(\Bbbk)$, $r$ is \emph{finite} at $P$ iff
+$$\exists~ r=\frac{f}{g} ~\text{with}~ f,g \in \Bbbk[E],~ s.t.~ g(P) \neq 0$$
+We define $r(P)=\frac{f(P)}{g(P)}$. Otherwise, $r(P)=\infty$.
+
+Remark: $r=\frac{f}{g} \in \Bbbk(E)$, $r=\frac{f}{g}=\frac{f \cdot \overline{g}}{g \cdot \overline{g}} = \frac{f \overline{g}}{N_g}$, thus
+$$r(x,y)=\frac{ (f \overline{g})(x,y)}{N_g(x,y)} = \underbrace{ \frac{v(x)}{N_g(x)} + y \frac{w(x)}{N_g(x)} }_\text{canonical form of $r(x,y)$}$$
+
+\paragraph{degree of $f$:} Let $f\in \Bbbk[E]$, in canonical form: $f(x,y) = v(x) + y w(x)$,
+$$deg(f) := max\{ 2 \cdot deg_x(v), 3+2 \cdot deg_x(w) \}$$
+
+For $f,g \in \Bbbk[E]$:
+\begin{enumerate}[i.]
+  \item $deg(f) = deg_x(N_f)$
+  \item $deg(f \cdot g) = deg(f) + deg(g)$
+\end{enumerate}
+
+\begin{definition}
+  Let $r=\frac{f}{g} \in \Bbbk(E)$
+  \begin{enumerate}[i.]
+    \item if $deg(f) < deg(g):~ r(0)=0$
+    \item if $deg(f) > deg(g):~ r ~\text{is not finite at}~ 0$
+    \item if $deg(f) = deg(g)$ with $deg(f)$ even:\\
+      $f$'s canonical form leading terms $ax^d$\\
+      $g$'s canonical form leading terms $bx^d$\\
+      $a,b \in \Bbbk^\times,~ d=\frac{deg(f)}{2}$, set $r(0)=\frac{a}{b}$
+    \item if $deg(f) = deg(g)$ with $deg(f)$ odd\\
+      $f$'s canonical form leading terms $ax^d$\\
+      $g$'s canonical form leading terms $bx^d$\\
+      $a,b \in \Bbbk^\times,~ deg(f)=deg(g)=3+2d$, set $r(0)=\frac{a}{b}$
+  \end{enumerate}
+\end{definition}
+
+\subsection{Zeros, poles, uniformizers and multiplicities}
+
+$r \in \Bbbk(E)$ has a \emph{zero} in $P\in E$ if $r(P)=0$\\
+$r \in \Bbbk(E)$ has a \emph{pole} in $P\in E$ if $r(P)$ is not finite.
+
+\paragraph{uniformizer:} Let $P\in E$,
+uniformizer: rational function $u \in \Bbbk(E)$ with $u(P)=0$ if
+$\forall r\in \Bbbk(E) \setminus \{0\},~ \exists d \in \mathbb{Z},~ s\in \Bbbk(E)$ finite at $P$ with $s(P) \neq 0$ s.t.
+$$r=u^d \cdot s$$
+
+\paragraph{order:} Let $P \in E(\Bbbk)$, let $u \in \Bbbk(E)$ be a uniformizer at $P$.
+For $r \in \Bbbk(E) \setminus \{0\}$ being a rational function with $r=u^d \cdot s$ with $s(P)\neq 0, \infty$, we say that $r$ has \emph{order} $d$ at $P$ ($ord_P(r)=d$).
+
+\paragraph{multiplicity:} \emph{multiplicity of a zero} of $r$ is the order of $r$ at that point, \emph{multiplicity of a pole} of $r$ is the order of $r$ at that point.
+
+if $P \in E(\Bbbk)$ is neither a zero or pole of $r$, then $ord_P(r)=0$ ($=d,~ r=u^0s$).
+
+\vspace{0.5cm}
+\begin{minipage}{4.3 in}
+    \paragraph{Multiplicities, from the book "Elliptic Tales"} (p.69), to provide intuition
+
+    Factorization into \emph{linear factors}: $p(x)=c\cdot (x-a_1) \cdots (x-a_d)$\\
+    $d$: degree of $p(x)$, $a_i \in \Bbbk$\\
+    Solutions to $p(x)=0$ are $x=a_1, \ldots, a_d$ (some $a_i$ can be repeated)\\
+    eg.: $p(x)=(x-1)(x-1)(x-3)$, solutions to $p(x)=0:~ 1, 1, 3$\\
+    $x=1$ is a solution to $p(x)=0$ of \emph{multiplicity} 2.
+
+    The total number of solutions (counted with multiplicity) is $d$, the degree of the polynomial whose roots we are finding.
+\end{minipage}
+
+
+\section{Divisors}
 
 \begin{definition}{Divisor}
-  $$D= \sum_{P \in E(\mathbb{K})} n_p \cdot [P]$$
+  $$D= \sum_{P \in E(\Bbbk)} n_p \cdot [P]$$
 \end{definition}
 
 \begin{definition}{Degree \& Sum}
-  $$deg(D)= \sum_{P \in E(\mathbb{K})} n_p$$
-  $$sum(D)= \sum_{P \in E(\mathbb{K})} n_p \cdot P$$
+  $$deg(D)= \sum_{P \in E(\Bbbk)} n_p$$
+  $$sum(D)= \sum_{P \in E(\Bbbk)} n_p \cdot P$$
+\end{definition}
+
+
+The set of all divisors on $E$ forms a group: for $D = \sum_{P\in E(\Bbbk)} n_P[P]$ and $D' = \sum_{P\in E(\Bbbk)} m_P[P]$,
+$$D+D' = \sum_{P\in E(\Bbbk)} (n_P + m_P)[P]$$
+
+\begin{definition}{Associated divisor}
+  $$div(r) = \sum_{P \in E(\Bbbk)} ord_P(r)[P]$$
+\end{definition}
+
+Observe that
+\begin{enumerate}
+  \item[] $div(rs) = div(r)+div(s)$
+  \item[] $div(\frac{r}{s}) = div(r)-div(s)$
+\end{enumerate}
+
+Observe that
+$$\sum{P \in E(\Bbbk)} ord_P(r) \cdot P = 0$$
+
+\begin{definition}{Support}
+  $$\sum_P n_P[P], ~\forall P \in E(\Bbbk) \mid n_P \neq 0$$
 \end{definition}
 
 \begin{definition}{Principal divisor}
@@ -62,21 +163,21 @@
 $D \sim D'$ iff $D - D'$ is principal.
 
 
-\begin{definition}{Evaluation of a rational function}
+\begin{definition}{Evaluation of a rational function} (function $r$ evaluated at $D$)
   $$r(D)= \prod r(P)^{n_p}$$
 \end{definition}
 
 \section{Weil reciprocity}
 \begin{theorem}{(Weil reciprocity)}
-  Let $E/ \mathbb{K}$ be an e.c. over an alg. closed field. If $r,~s \in \mathbb{K}\setminus \{0\}$ are rational functions whose divisors have disjoint support, then
+  Let $E/ \Bbbk$ be an e.c. over an alg. closed field. If $r,~s \in \Bbbk\setminus \{0\}$ are rational functions whose divisors have disjoint support, then
 $$r(div(s)) = s(div(r))$$
 \end{theorem}
 Proof. (todo)
 
 \section{Generic Weil Pairing}
-Let $E(\mathbb{K})$, with $\mathbb{K}$ of char $p$, $n$ s.t. $p \nmid n$.
+Let $E(\Bbbk)$, with $\Bbbk$ of char $p$, $n$ s.t. $p \nmid n$.
 
-$\mathbb{K}$ large enough: $E(\mathbb{K})[n] = E(\mathbb{\overline{K}}) = \mathbb{Z}_n \oplus \mathbb{Z}_n$ (with $n^2$ elements).
+$\Bbbk$ large enough: $E(\Bbbk)[n] = E(\overline{\Bbbk}) = \mathbb{Z}_n \oplus \mathbb{Z}_n$ (with $n^2$ elements).
 
 For $P, Q \in E[n]$,
 \begin{align*}
@@ -143,7 +244,7 @@ with $S \neq \{O, P, -Q, P-Q \}$.
 \begin{solution}{6.29}
   $div(R(x) \cdot S(x)) = div( R(x)) + div( S(x))$, where $R(x), S(x)$ are rational functions.
   \\proof:\\
-  \emph{Norm} of $f$: $N_f = f \cdot \overline{f}$, and we know that $N_{fg} = N_f \cdot N_g~\forall~\mathbb{K}[E]$,\\
+  \emph{Norm} of $f$: $N_f = f \cdot \overline{f}$, and we know that $N_{fg} = N_f \cdot N_g~\forall~\Bbbk[E]$,\\
   then $$deg(f) = deg_x(N_f)$$\\
   and $$deg(f \cdot g) = deg(f) + deg(g)$$
 
@@ -151,8 +252,8 @@ with $S \neq \{O, P, -Q, P-Q \}$.
   $$deg(f \cdot g) = deg_x(N_{fg}) = deg_x(N_f \cdot N_g)$$
   $$= deg_x(N_f) + deg_x(N_g) = deg(f) + deg(g)$$
 
-  So, $\forall P \in E(\mathbb{K}),~ ord_P(rs) = ord_P(r) + ord_P(s)$.\\
-  As $div(r) = \sum_{P\in E(\mathbb{K})} ord_P(r)[P]$, $div(s) = \sum ord_P(s)[P]$.
+  So, $\forall P \in E(\Bbbk),~ ord_P(rs) = ord_P(r) + ord_P(s)$.\\
+  As $div(r) = \sum_{P\in E(\Bbbk)} ord_P(r)[P]$, $div(s) = \sum ord_P(s)[P]$.
 
   So,
   $$div(rs) = \sum ord_P(rs)[P]$$
