@@ -151,14 +151,16 @@ Observe that
 \end{enumerate}
 
 Observe that
-$$\sum{P \in E(\Bbbk)} ord_P(r) \cdot P = 0$$
+$$\sum_{P \in E(\Bbbk)} ord_P(r) \cdot P = 0$$
 
-\begin{definition}{Support}
-  $$\sum_P n_P[P], ~\forall P \in E(\Bbbk) \mid n_P \neq 0$$
+\begin{definition}{Support of a divisor}
+  $$\sum_P n_P[P], ~\forall P \in E(\Bbbk) ~\text{s.t.}~ n_P \neq 0$$
 \end{definition}
 
 \begin{definition}{Principal divisor}
-  iff $deg(D)=0$ and $sum(D)=0$
+  iff
+  $$deg(D)=0$$
+  $$sum(D)=0$$
 \end{definition}
 $D \sim D'$ iff $D - D'$ is principal.
 
@@ -169,10 +171,23 @@ $D \sim D'$ iff $D - D'$ is principal.
 
 \section{Weil reciprocity}
 \begin{theorem}{(Weil reciprocity)}
-  Let $E/ \Bbbk$ be an e.c. over an alg. closed field. If $r,~s \in \Bbbk\setminus \{0\}$ are rational functions whose divisors have disjoint support, then
+  Let $E/ \Bbbk$ be an e.c. over an algebraically closed field. If $r,~s \in \Bbbk\setminus \{0\}$ are rational functions whose divisors have disjoint support, then
 $$r(div(s)) = s(div(r))$$
 \end{theorem}
 Proof. (todo)
+
+\paragraph{Example}
+\begin{align*}
+  p(x)=x^2 - 1,&~ q(x)=\frac{x}{x-2}\\
+  div(p)&= 1 \cdot [1] + 1 \cdot [-1] - 2 \cdot [\infty]\\
+  div(q)&= 1 \cdot [0] - 1 \cdot [2]\\
+	&\text{(they have disjoint support)}\\
+  p(div(q)) &= p(0)^1 \cdot p(2)^{-1}= (0^2 - 1)^1 \cdot (2^2 - 1)^{-1} = \frac{-1}{3}\\
+  q(div(p)) &= q(1)^1 \cdot q(-1)^1 - q(\infty)^2\\
+	    &= (\frac{1}{1-2})^1 \cdot (\frac{-1}{-1-2})^1 \cdot (\frac{\infty}{\infty - 2})^2 = \frac{-1}{3}
+\end{align*}
+
+so, $p(div(q))=q(div(p))$.
 
 \section{Generic Weil Pairing}
 Let $E(\Bbbk)$, with $\Bbbk$ of char $p$, $n$ s.t. $p \nmid n$.
@@ -236,6 +251,24 @@ with $S \neq \{O, P, -Q, P-Q \}$.
 
 
 \section{Properties}
+\begin{enumerate}[i.]
+  \item $e_n(P, Q)^n = 1 ~\forall P,Q \in E[n]$\\
+    ($\Rightarrow~ e_n(P,Q)$ is a $n^{th}$ root of unity)
+  \item Bilinearity
+    $$e_n(P_1+P_2, Q) = e_n(P_1, Q) \cdot e_n(P_2, Q)$$
+    $$e_n(P, Q_1+Q_2) = e_n(P, Q_1) \cdot e_n(P, Q_2)$$
+    \emph{proof:}
+    recall that $e_n(P,Q)=\frac{g(S+P)}{g(S)}$, then,
+    \begin{align*}
+      e_n(P_1, Q) &\cdot e_n(P_2, Q) = \frac{g(P_1 + S)}{g(S)} \cdot \frac{g(P_2 + P_1 + S)}{g(P_1 + S)}\\
+				    &\text{(replace $S$ by $S+P_1$)}\\
+				    &= \frac{g(P_2 + P_1 + S)}{g(S)} = e_n(P_1+P_2, Q)
+    \end{align*}
+  \item Alternating
+    $$e_n(P, P)=1 ~\forall P\in E[n]$$
+  \item Nondegenerate
+    $$\text{if}~ e_n(P,Q)=1 ~\forall Q\in E[n],~ \text{then}~ P=0$$
+\end{enumerate}
 
 
 \section{Exercises}

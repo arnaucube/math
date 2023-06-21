@@ -349,17 +349,15 @@ $$\theta_{k,j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \wide
 
 And in \emph{step 5}, $V$ checks
 
-% TODO check orange gamma^j...
 \begin{align*}
 	c &= \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_{1,j}
-~\textcolor{orange}{+ \gamma^{t+j} \cdot e_1 \cdot \sigma_{2,j}}\right)\\
-	  &+ \gamma^{2t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)
-	  + \textcolor{cyan}{\gamma^{2t+2} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)} 
+~\textcolor{orange}{+ \gamma^{t+j} \cdot e_2 \cdot \sigma_{2,j}}\right)\\
+	  &+ \gamma^{2t+1} \cdot e_3 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)
+	  + \textcolor{cyan}{\gamma^{2t+2} \cdot e_4 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)} 
 \end{align*}
 
 where
-% TODO check e_4
-$e_1 \leftarrow \widetilde{eq}(r_{1,x}, r_x'),~ e_2 \leftarrow \widetilde{eq}(r_{2,x}, r_x')$, $e_3 \leftarrow \widetilde{eq}(\beta, r_x'),~ e_4 \leftarrow \widetilde{eq}(\beta', r_x')$ (note: wip, pending check for $\beta, \beta'$ used in step 3).
+$e_1 \leftarrow \widetilde{eq}(r_{1,x}, r_x'),~ e_2 \leftarrow \widetilde{eq}(r_{2,x}, r_x')$, $e_3, e_4 \leftarrow \widetilde{eq}(\beta, r_x')$.
 
 \vspace{0.5cm}
 
