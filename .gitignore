@@ -8,3 +8,5 @@
 *.toc
 *.bbl
 *.blg
+*.nav
+*.snm

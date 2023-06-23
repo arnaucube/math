@@ -1,0 +1,353 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Frankfurt}
+  \usecolortheme{dove}  %% grey scale
+  \useinnertheme{circles}
+  \setbeamercovered{transparent}
+}
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\usepackage{graphicx}
+\usepackage{pgf-umlsd} % diagrams
+
+\setbeamertemplate{itemize}{$\circ$}
+\setbeamertemplate{itemize items}{$\circ$}
+
+\beamertemplatenavigationsymbolsempty %% no navigation bar
+
+\setbeamertemplate{footline}{\hspace*{.1cm}\scriptsize{
+\hspace*{50pt} \hfill\insertframenumber/\inserttotalframenumber\hspace*{.1cm}\vspace*{.1cm}}}
+
+\setbeamertemplate{caption}[numbered]
+\setbeamerfont{caption}{size=\tiny}
+
+% message between threads. From https://tex.stackexchange.com/a/174765
+% Example:
+% \bloodymess[delay]{sender}{message content}{receiver}{DIR}{start note}{end note}
+\newcommand{\bloodymess}[7][0]{
+  \stepcounter{seqlevel}
+  \path
+  (#2)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess from) {};
+  \addtocounter{seqlevel}{#1}
+  \path
+  (#4)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess to) {};
+  \draw[->,>=angle 60] (mess from) -- (mess to) node[midway, above]
+  {#3};
+
+  \if R#5
+  \node (\detokenize{#3} from) at (mess from) {\llap{#6~}};
+  \node (\detokenize{#3} to) at (mess to) {\rlap{~#7}};
+  \else\if L#5
+  \node (\detokenize{#3} from) at (mess from) {\rlap{~#6}};
+  \node (\detokenize{#3} to) at (mess to) {\llap{#7~}};
+       \else
+       \node (\detokenize{#3} from) at (mess from) {#6};
+       \node (\detokenize{#3} to) at (mess to) {#7};
+       \fi
+  \fi
+}
+
+
+
+%Information to be included in the title page:
+\title{HyperNova's multifolding overview}
+\author{}
+\date{\scriptsize{2023-06-22\\\href{https://0xparc.org}{0xPARC} Novi team}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section[Overview]{Overview}
+
+\begin{frame}{Multifolding - Overview}
+
+  \begin{tiny}
+  \begin{enumerate}
+    \item[1.] $V \rightarrow P: \gamma \in^R \mathbb{F},~ \beta \in^R \mathbb{F}^s$
+    \item[2.] $V: r_x' \in^R \mathbb{F}^s$
+    \item[3.] $V \leftrightarrow P$: sum-check protocol:
+		  $c \leftarrow \langle P, V(r_x') \rangle (g, s, d+1, \underbrace{\sum_{j \in [t]} \gamma^j \cdot v_j}_\text{T})$, where:
+		  \begin{align*}
+			  g(x) &:= \underbrace{\left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right)}_\text{LCCCS check} + \underbrace{\gamma^{t+1} \cdot Q(x)}_\text{CCCS check}\\
+			  L_j(x) &:= \widetilde{eq}(r_x, x) \cdot \left(
+				  \underbrace{\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)}_\text{LCCCS check}
+			  \right)\\
+				  Q(x) := &\widetilde{eq}(\beta, x) \cdot \left(
+				  \underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{CCCS check}
+			  \right)
+		  \end{align*}
+  \end{enumerate}
+  \end{tiny}
+
+\end{frame}
+
+\begin{frame}{Multifolding - Overview}
+
+  \begin{tiny}
+  \begin{enumerate}
+    \item[4.] $P \rightarrow V$: $\left( (\sigma_1, \ldots, \sigma_t), (\theta_1, \ldots, \theta_t) \right)$, where $\forall j \in [t]$,
+		$$\sigma_j = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
+		$$\theta_j = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_2(y)$$
+	      \item[5.] V: $e_1 \leftarrow \widetilde{eq}(r_x, r_x')$, $e_2 \leftarrow \widetilde{eq}(\beta, r_x')$\\
+		check:
+		$$c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)$$
+	      \item[6.] $V \rightarrow P: \rho \in^R \mathbb{F}$
+	      \item[7.] $V, P$: output the folded LCCCS instance $(C', u', \mathsf{x}', r_x', v_1', \ldots, v_t')$, where $\forall i \in [t]$:
+		\begin{align*}
+			C' &\leftarrow C_1 + \rho \cdot C_2\\
+			u' &\leftarrow u + \rho \cdot 1\\
+			\mathsf{x}' &\leftarrow \mathsf{x}_1 + \rho \cdot \mathsf{x}_2\\
+			v_i' &\leftarrow \sigma_i + \rho \cdot \theta_i
+		\end{align*}
+	      \item[8.] $P$: output folded witness and the folded $r_w'$:
+		\begin{align*}
+			\widetilde{w}' &\leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2\\
+			r_w' &\leftarrow r_{w_1} + \rho \cdot r_{w_2}
+		\end{align*}
+  \end{enumerate}
+  \end{tiny}
+
+\end{frame}
+
+
+
+\begin{frame}{Multifolding - Overview}
+  \begin{tiny}
+\begin{center}
+	\begin{sequencediagram}
+		\newinst[1]{p}{Prover}
+		\newinst[3]{v}{Verifier}
+
+		\bloodymess[1]{v}{$\gamma,~\beta,~r_x'$}{p}{L}{
+			\shortstack{
+				$\gamma \in \mathbb{F},~ \beta \in \mathbb{F}^s$\\
+				$r_x' \in \mathbb{F}^s$
+			}
+		}{}
+		\bloodymess[1]{p}{$c,~ \pi_{SC}$}{v}{R}{sum-check prove}{sum-check verify}
+		\bloodymess[1]{p}{$\{\sigma_j\},~\{\theta_j\}$}{v}{R}{compute $\{\sigma_j\}, \{\theta_j\}~ \forall j \in [t]$}{verify $c$ with $\{\sigma_j\}, \{\theta_j\}$ relation}
+		\bloodymess[1]{v}{$\rho$}{p}{L}{$\rho \in^R \mathbb{F}$}{}
+		\callself[0]{p}{fold LCCCS instance}{p}
+		\prelevel
+		\callself[0]{v}{fold LCCCS instance}{v}
+		\callself[0]{p}{fold $\widetilde{w}, r_w$}{p}
+	\end{sequencediagram}
+\end{center}
+  \end{tiny}
+\end{frame}
+
+
+\section[Checks]{Checks}
+
+\begin{tiny}
+\begin{frame}{LCCCS checks}
+$$
+\color{gray}{g(x) :=}
+\color{black}{\underbrace{\left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right)}_\text{LCCCS} }
+\color{gray}{+ \gamma^{t+1} \cdot Q(x)}
+$$
+$$
+L_j(x) := \widetilde{eq}(r_x, x) \cdot \left(
+\underbrace{\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)}_\text{LCCCS check}
+\right)
+$$
+
+
+Notice that, $v_j$ from LCCCS relation check
+
+\begin{align*}
+v_j &= \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x, y) \cdot \widetilde{z}_1(y)\\
+    &= \sum_{x \in \{0,1\}^s}
+	  \widetilde{eq}(r_x, x) \cdot \left( \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y) \right)\\
+    &= \sum_{x \in \{0,1\}^s} L_j(x)
+\end{align*}
+  
+\end{frame}
+\begin{frame}{CCCS checks}
+  $$
+  \color{gray}{g(x) := \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) +}
+  \color{black}{\underbrace{\gamma^{t+1} \cdot Q(x)}_\text{CCCS}}
+  $$
+$$Q(x) := \widetilde{eq}(\beta, x) \cdot \left(
+                    \underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{CCCS check}
+            \right)$$
+  
+  Recall that Spartan's $\widetilde{F}_{io}(x)$ here is $q(x)$, so we're doing the same Spartan check:
+  
+$$
+0 =G(\beta) = \sum_{x \in \{0,1\}^s} Q(x) = \sum_{x \in \{0,1\}^s} eq(\beta, x) \cdot q(x)$$
+$$= \sum_{x \in \{0,1\}^s}
+ \underbrace{\widetilde{eq}(\beta , x) \cdot
+         \overbrace{
+                \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
+        }^{q(x)}
+}_{Q(x)}
+$$
+
+\end{frame}
+
+
+\begin{frame}{Verifier checks}
+  \textcolor{gray}{
+Recall:
+$$g(x) := \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x)$$
+$$c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)$$
+}
+
+We can see now that V's check in step 5,
+
+\begin{align*}
+  c &= 
+\left( \sum_{j \in [t]} \gamma^j \cdot \overbrace{e_1 \cdot \sigma_j}^{L_j(r_x')} \right) + \gamma^{t+1} \cdot \overbrace{e_2 \cdot \sum_{i \in [q]} c_i \prod_{j \in S_i} \theta_j}^{Q(x)}\\
+&= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(r_x') \right) + \gamma^{t+1} \cdot Q(r_x')\\
+&= g(r_x')
+\end{align*}
+
+where $e_1 = \widetilde{eq}(r_x, r_x')$, $e_2=\widetilde{eq}(\beta, r_x')$.
+\end{frame}
+\end{tiny}
+
+\section[Multiple instances]{Multiple instances}
+
+\begin{footnotesize}
+\begin{frame}{Multifolding multiple instances}
+Hypernova paper: $\mu=1, \nu=1$ \emph{(ie. 1 LCCCS instance and 1 CCCS instance)}
+
+\vspace{1cm}
+In next slides
+\begin{itemize}
+  \item example with: $\color{orange}{LCCCS: \mu = 2},~ \color{blue}{CCCS: \nu = 2}$
+  \item generalized equations for $\mu,~\nu$
+\end{itemize}
+
+Let $z_1,~ \color{orange}{z_2}$ be the two LCCCS instances, and $z_3,~ \color{blue}{z_4}$ be the two CCCS instances
+
+\end{frame}
+\end{footnotesize}
+
+\begin{tiny}
+\begin{frame}
+  In \emph{step 3},
+
+\begin{align*}
+	g(x) &:= \left( \sum_{j \in [t]} \gamma^j \cdot L_{1,j}(x) + \textcolor{orange}{\gamma^{t+j} \cdot L_{2,j}(x)} \right)
++ \gamma^{2t+1} \cdot Q_1(x) + \textcolor{cyan}{\gamma^{2t+2} \cdot Q_2(x)} \\
+	     &L_{1,j}(x) := \widetilde{eq}(r_{1,x}, x) \cdot \left(
+	\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)
+\right)\\
+	     &\textcolor{orange}{L_{2,j}(x)} := \widetilde{eq}(\textcolor{orange}{r_{2,x}}, x) \cdot \left(
+	\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{orange}{\widetilde{z}_2(y)}
+\right)\\
+	     &Q_1(x) := \widetilde{eq}(\beta, x) \cdot \left(
+\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_3(y) \right)\right)\\
+	     &\textcolor{cyan}{Q_2(x)} := \widetilde{eq}(\textcolor{cyan}{\beta}, x) \cdot \left(
+	\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{cyan}{\widetilde{z}_4(y)} \right)\right)
+\end{align*}
+
+\framebox{\begin{minipage}{4.3 in}
+A generic definition of $g(x)$ for $\mu>1~\nu>1$, would be
+
+$$
+g(x) := \left( \sum_{i \in [\mu]} \left( \sum_{j \in [t]} \gamma^{i \cdot t+j} \cdot L_{i,j}(x) \right) \right)
++ \left( \sum_{i \in [\nu]} \gamma^{\mu \cdot t + i} \cdot Q_i(x) \right)
+$$
+\end{minipage}}
+
+Recall, the original $g(x)$ definition was
+$$\textcolor{gray}{g(x) := \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x)}$$
+
+
+\end{frame}
+
+\begin{frame}
+  In \emph{step 4}, $P \rightarrow V$: $(\{\sigma_{1,j}\}, \textcolor{orange}{\{\sigma_{2,j}\}}, \{\theta_{1,j}\}, \textcolor{cyan}{\{\theta_{2,j}\}}),~ \text{where} ~\forall j \in [t]$,
+
+$$\sigma_{1,j} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
+$$\textcolor{orange}{\sigma_{2,j}} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \textcolor{orange}{\widetilde{z}_2(y)}$$
+$$\theta_{1,j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_3(y)$$
+$$\textcolor{cyan}{\theta_{2,j}} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \textcolor{cyan}{\widetilde{z}_4(y)}$$
+
+\framebox{\begin{minipage}{4.3 in}
+	so in a generic way,\\
+$P \rightarrow V$:
+$(\{\sigma_{i,j}\}, \{\theta_{k,j}\}),~ \text{where} ~\forall~ j \in [t],~ \forall~ i \in [\mu],~ \forall~ k \in [\nu]$
+where
+$$\sigma_{i,j} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_i(y)$$
+$$\theta_{k,j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_{\mu+k}(y)$$
+\end{minipage}}
+
+\end{frame}
+
+\begin{frame}
+  And in \emph{step 5}, $V$ checks
+
+\begin{align*}
+	c &= \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_{1,j}
+~\textcolor{orange}{+ \gamma^{t+j} \cdot e_2 \cdot \sigma_{2,j}}\right)
+	  + \gamma^{2t+1} \cdot e_3 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)
+	  + \textcolor{cyan}{\gamma^{2t+2} \cdot e_4 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)} 
+\end{align*}
+
+where
+$e_1 \leftarrow \widetilde{eq}(r_{1,x}, r_x'),~ e_2 \leftarrow \widetilde{eq}(r_{2,x}, r_x')$, $e_3, e_4 \leftarrow \widetilde{eq}(\beta, r_x')$.
+
+\vspace{0.5cm}
+
+\framebox{\begin{minipage}{4.3 in}
+A generic definition of the check would be
+$$
+c = \sum_{i \in [\mu]} \left(\sum_{j \in [t]} \gamma^{i \cdot t + j} \cdot e_i \cdot \sigma_{i,j} \right) \\
++ \sum_{k \in [\nu]} \gamma^{\mu \cdot t+k} \cdot e_k \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_{k,j} \right)
+$$
+\end{minipage}}
+
+where the original check was\\
+$\textcolor{gray}{c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)}$
+
+\end{frame}
+
+\begin{frame}
+And for the \emph{step 7},
+\begin{align*}
+	C' &\leftarrow C_1 + \rho \cdot C_2 + \rho^2 C_3 + \rho^3 C_4 + \ldots = \sum_{i \in [\mu + \nu]} \rho^i \cdot C_i \\
+	u' &\leftarrow \sum_{i \in [\mu]} \rho^i \cdot u_i + \sum_{i \in [\nu]} \rho^{\mu + i-1} \cdot 1\\
+	\mathsf{x}' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i \cdot \mathsf{x}_i\\
+	v_i' &\leftarrow \sum_{i \in [\mu]} \rho^i \cdot \sigma_i + \sum_{i \in [\nu]} \rho^{\mu + i-1} \cdot \theta_i\\
+\end{align*}
+
+and \emph{step 8},
+\begin{align*}
+	\widetilde{w}' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i\cdot \widetilde{w}_i\\
+	r_w' &\leftarrow \sum_{i \in [\mu+\nu]} \rho^i \cdot r_{w_i}\\
+\end{align*}
+
+\end{frame}
+
+\end{tiny}
+
+\section[Wrappup]{Wrappup}
+
+\begin{frame}
+\frametitle{Wrappup}
+\begin{itemize}
+  \item HyperNova: \href{https://eprint.iacr.org/2023/573}{https://eprint.iacr.org/2023/573}
+  \item multifolding PoC on arkworks: \href{https://github.com/privacy-scaling-explorations/multifolding-poc}{github.com/privacy-scaling-explorations/multifolding-poc}
+\end{itemize}
+
+\vspace{2cm}
+\tiny{
+  $$\text{2023-06-22}$$
+  $$\text{\href{https://0xparc.org}{0xPARC} Novi team}$$
+}
+\end{frame}
+
+\end{document}

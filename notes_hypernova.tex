@@ -206,39 +206,65 @@ Multifolding flow:
 
 \vspace{1cm}
 
+Recall that we are folding 2 instances:
+\begin{itemize}
+	\item[] LCCCS: $(C, u, \textcolor{orange}{x_1}, \textcolor{magenta}{r_x}, \textcolor{orange}{v_1, \ldots, v_t})$
+	\item[] CCCS: $(C, \textcolor{cyan}{x_2})$
+\end{itemize}
+
 Now, to see the verifier check from step 5, observe that in LCCCS, since $\widetilde{w}$ satisfies,
 \begin{align*}
-	v_j &= \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x, y) \cdot \widetilde{z}_1(y)\\
-	    &= \sum_{x \in \{0,1\}^s}
-		\underbrace{
-			\widetilde{eq}(r_x, x) \cdot \left( \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y) \right)
-		}_{L_j(x)}\\
-	    &= \sum_{x \in \{0,1\}^s} L_j(x)
+	\textcolor{orange}{L_j(x)} &:= \widetilde{eq}(\textcolor{magenta}{r_x}, x) \cdot \left(
+	\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{orange}{\widetilde{z}_1(y)}
+	\right)\\
+   &\textcolor{orange}{v_j}= \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(\textcolor{magenta}{r_x}, y) \cdot \textcolor{orange}{\widetilde{z}_1(y)})\\
+   &~~=\sum_{x \in \{0,1\}^s} \widetilde{eq}(\textcolor{magenta}{r_x},y) \cdot (\sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(x,y)\cdot \textcolor{orange}{\widetilde{z}_1(y)})\\
+   &~~=\sum_{x \in \{0,1\}^s} \textcolor{orange}{L_j(x)}
 \end{align*}
 
-Observe also that in CCCS, since $\widetilde{w}$ satisfies,
-$$
-0=\underbrace{\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)}_{q(x)}
-$$
 
+Observe also that in CCCS, since $\widetilde{w}$ satisfies,\\
 we have that
 $$
-G(X) = \sum_{x \in \{0,1\}^s} eq(X, x) \cdot q(x)
+G(X) = \sum_{x \in \{0,1\}^s} \widetilde{eq}(X, x) \cdot \textcolor{cyan}{q(x)}
 $$
 is multilinear, and can be seen as a Lagrange polynomial where coefficients are evaluations of $q(x)$ on the hypercube.
 
-For an honest prover, all these coefficients are zero, thus $G(X)$ must necessarily be the zero polynomial. Thus $G(\beta)=0$ for $\beta \in^R \mathbb{F}^s$.
 \begin{align*}
-	% 0&=\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(\beta, y) \cdot \widetilde{z}_2(y) \right)\\
-	0&=G(\beta) = \sum_{x \in \{0,1\}^s} eq(\beta, x) \cdot q(x)\\
-	 &= \sum_{x \in \{0,1\}^s}
-	 \underbrace{\widetilde{eq}(\beta , x) \cdot
-		 \overbrace{
-			\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right)
-		}^{q(x)}
-	}_{Q(x)}\\
-	 &= \sum_{x \in \{0,1\}^s} Q(x)
+  \textcolor{cyan}{Q(x)} := &\widetilde{eq}(\textcolor{magenta}{\beta}, x) \cdot \left(
+    \overbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{cyan}{\widetilde{z}_2(y)} \right)
+    }^\textcolor{cyan}{q(x)}
+  \right)\\
+0= &\sum_{i=1}^q c_i \prod_{j\in S_i} \left( \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(\textcolor{magenta}{\beta}, y) \cdot \textcolor{cyan}{\widetilde{z}_2(y)}\right)\\
+  =&\sum_{x \in \{0,1\}^s} \widetilde{eq}(\textcolor{magenta}{\beta}, x) \cdot \left( \sum_{i=1}^q c_i \prod_{j\in S_i} ( \sum_{y\in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{cyan}{\widetilde{z}_2(y)}) \right) \\
+  =&\sum_{x \in \{0,1\}^s} \textcolor{cyan}{Q(x)} = G(\textcolor{magenta}{\beta})
 \end{align*}
+
+%
+For an honest prover, all these coefficients are zero, thus $G(X)$ must necessarily be the zero polynomial. Thus $G(\beta)=0$ for $\beta \in^R \mathbb{F}^s$.
+
+\vspace{1cm}
+
+We can now see that
+
+$$\textcolor{orange}{\sigma_j} = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(\textcolor{pink}{r_x'}, y) \cdot \textcolor{orange}{\widetilde{z}_1(y)},
+~~~\textcolor{cyan}{\theta_j} = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(\textcolor{pink}{r_x'}, y) \cdot \textcolor{cyan}{\widetilde{z}_2(y)}$$
+$$e_1 \leftarrow \widetilde{eq}(\textcolor{magenta}{r_x}, \textcolor{pink}{r_x'}),~ e_2 \leftarrow \widetilde{eq}(\textcolor{magenta}{\beta}, \textcolor{pink}{r_x'})$$
+
+so the Verifier's check:
+\begin{align*}
+c &= \left(
+\sum_{j \in [t]} \gamma^j \cdot \underbrace{e_1 \cdot \textcolor{orange}{\sigma_j} }_\textcolor{orange}{L_j}(\textcolor{pink}{r_x'})
+\right)
++ \gamma^{t+1} \cdot
+\underbrace{e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \textcolor{cyan}{\theta_j} \right) }_\textcolor{cyan}{Q}(\textcolor{pink}{r_x'})\\
+&= \left( \sum_{j\in [t]} \gamma^j \cdot \textcolor{orange}{L_j}(\textcolor{pink}{r_x'}) \right) + \gamma^{t+1} \cdot \textcolor{cyan}{Q}(\textcolor{pink}{r_x'})\\
+&= g(\textcolor{pink}{r_x'})
+\end{align}
+$$\textcolor{gray}{(Recall,~ g(x) := \left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right) + \gamma^{t+1} \cdot Q(x))}$$
+
+Outputed LCCCS: $(C', u', x', \textcolor{pink}{r_x'}, v_1', \ldots, v_t')$
+
 
 \framebox{\begin{minipage}{4.3 in}
 \begin{footnotesize}
@@ -277,18 +303,6 @@ $$0 = \sum_{x \in \{0,1\}^s} Q(x) = \sum_{x \in \{0,1\}^s} \widetilde{eq}(\beta,
 
 \vspace{1cm}
 
-Comming back to HyperNova equations, we can now see that
-
-\begin{align*}
-	c &= g(r_x')\\
-	  &= \left( \sum_{j \in [t]} \gamma^j \cdot L_j(r_x') \right) + \gamma^{t+1} \cdot Q(r_x')\\
-	  &= \left( \sum_{j \in [t]} \gamma^j \cdot \overbrace{e_1 \cdot \sigma_j}^{L_j(r_x')} \right) + \gamma^{t+1} \cdot \overbrace{e_2 \cdot \sum_{i \in [q]} c_i \prod_{j \in S_i} \theta_j}^{Q(x)}
-\end{align*}
-
-where $e_1 = \widetilde{eq}(r_x, r_x')$ and $e_2=\widetilde{eq}(\beta, r_x')$.
-
-Which is the check that $V$ performs at step $5$.
-
 \subsection{Multifolding for multiple instances}
 The multifolding of multiple LCCCS \& CCCS instances is not shown in the HyperNova paper, but Srinath Setty gave an overview in the PSE HyperNova presentation. This section unfolds it.
 
@@ -309,7 +323,7 @@ In \emph{step 3} of the multifolding with more than one LCCCS and more than one 
 \right)\\
 	     &Q_1(x) := \widetilde{eq}(\beta, x) \cdot \left(
 \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_3(y) \right)\right)\\
-	     &\textcolor{cyan}{Q_2(x)} := \widetilde{eq}(\textcolor{cyan}{\beta'}, x) \cdot \left(
+	     &\textcolor{cyan}{Q_2(x)} := \widetilde{eq}(\textcolor{cyan}{\beta}, x) \cdot \left(
 	\sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \textcolor{cyan}{\widetilde{z}_4(y)} \right)\right)
 \end{align*}
 
