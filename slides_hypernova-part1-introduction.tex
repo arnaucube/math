@@ -1,0 +1,420 @@
+\documentclass{beamer}
+\usefonttheme[onlymath]{serif}
+
+\mode<presentation>
+{
+  \usetheme{Frankfurt}
+  \usecolortheme{dove}  %% grey scale
+  \useinnertheme{circles}
+  % \setbeamercovered{transparent}
+}
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+\usepackage{graphicx}
+\usepackage{listings} % embed code
+
+\setbeamertemplate{itemize}{$\circ$}
+\setbeamertemplate{itemize items}{$\circ$}
+
+\beamertemplatenavigationsymbolsempty %% no navigation bar
+
+\setbeamertemplate{footline}{\hspace*{.1cm}\scriptsize{
+\hspace*{50pt} \hfill\insertframenumber/\inserttotalframenumber\hspace*{.1cm}\vspace*{.1cm}}}
+
+\setbeamertemplate{caption}[numbered]
+\setbeamerfont{caption}{size=\tiny}
+
+
+
+
+\title{HyperNova introduction}
+\author{}
+\date{\scriptsize{2023-07-25\\\href{https://0xparc.org}{0xPARC}, London}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+% NOTE: This talk provides an overview, if people is interested we can do another session going more into the technical details of the schemes.
+
+
+\section[Preliminaries]{Preliminaries}
+
+\begin{frame}{IVC}
+
+For a function $F$, with initial input $z_0$, an IVC scheme allows a prover to produce a proof $\pi_i$ for the statement $z_i = F^{(i)}(z_0)$, given a proof $\pi_{i-1}$ for the statement $z_{i-1} = F^{(i-1)}(z_0)$
+
+TODO add draw
+TODO add reference to Valiant paper (2008)
+
+\end{frame}
+
+\begin{frame}{Recursion before folding schemes}
+We used to use recursive SNARKs to achieve IVC.
+
+  \begin{itemize}
+    \item Prove verification in circuit: inside a circuit, verify another proof
+    \begin{itemize}
+      \item eg. verifying a Groth16 proof inside a Groth16 circuit.
+    \end{itemize}
+    \item Amortized accumulation
+    \begin{itemize}
+      \item eg. Halo
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{R1CS refresher}
+
+  R1CS instance: $(\{A, B, C\} \in \mathbb{F}^{m \times n},~ io,~ m,~ n,~ l)$, such that for $z=(io \in \mathbb{F}^l, 1, w \in \mathbb{F}^{m-l-1}) \in \mathbb{F}^m$,
+
+$$Az \circ Bz = Cz$$
+
+Typically we use some scheme to prove that the previous equation is fullfilled by some private $w$ (eg. Groth16, Marlin, Spartan, etc).
+
+\end{frame}
+
+% \begin{frame}{R1CS refresher}
+% TODO add A, B, C example from Vitalik article
+% \end{frame}
+
+\begin{frame}{Random linear combination}
+
+Combine 2 instances together through a random linear comibnation, and the outputted instance will still satisfy the relation.
+
+\begin{itemize}
+  \item Have 2 values $x_1, x_2$.
+  \item Set $r \in^R \mathbb{F}$
+  \item Compute $x_3 = x_1 + r \cdot x_2$.
+\end{itemize}
+
+\pause
+
+Combined with homomorphic commitments
+\begin{itemize}
+  \item We can do random linear combinations with the commitments and their witnesses, and the output can still be opened
+\end{itemize}
+
+% TODO check on internet if there is some more standard definition / examples.
+
+\end{frame}
+
+
+\section[Nova]{Nova}
+
+\begin{frame}{Folding schemes}
+We're not verifying the entire proof
+\begin{itemize}
+   \item Take n instances and 'batch' them together
+  \begin{itemize}
+    \item Folds $k$ (eg. 2) instances (eg. R1CS instances) and their respective witnesses into a signle one
+  \end{itemize}
+   \item At the end of the chain of folds, we just prove that the last fold is correct through a SNARK
+  \begin{itemize}
+     \item Which implies that all the previous folds were correct
+  \end{itemize}
+\end{itemize}
+
+\pause
+
+In Nova: folding without a SNARK, we just reduce the satisfiability of the 2 inputted instances to the satisfiability of the single outputted one.
+
+[TODO image of multiple folding iterations]
+
+\end{frame}
+
+
+\begin{frame}{Relaxed R1CS}
+  We work with \emph{relaxed R1CS}
+
+$$Az \circ Bz = u \cdot Cz + E$$
+
+\begin{scriptsize} % TODO use the other simplier font syntax
+(= R1CS when $u=1,~ E=0$)
+\end{scriptsize}
+
+\begin{itemize}
+  \item main idea: allows us to fold, but accumulates \emph{cross terms}
+    \pause
+  \item when we do the \emph{relaxed} of higher degree equations (eg. plonkish), the cross terms grow (eg. Sangria with higher degree gates)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{NIFS - setup}
+V and P: \emph{committed relaxed R1CS} instances
+\begin{align*}
+	\varphi_1&=(\overline{E}_1, u_1, \overline{w}_1, x_1)\\
+	\varphi_2&=(\overline{E}_2, u_2, \overline{w}_2, x_2)
+\end{align*}
+
+P: witnesses
+\begin{align*}
+	(E_1, r_{E_1}, w_1, r_{w_1})\\
+	(E_2, r_{E_2}, w_2, r_{w_2})
+\end{align*}
+
+Let $z_1 = (w_1, x_1, u_1)$ and $z_2 = (w_2, x_2, u_2)$.
+
+\end{frame}
+
+\begin{frame}{NIFS}
+\begin{footnotesize}
+% While Prover works with $w, E$, Verifier works with commitments to them (\emph{Committed Relaxed R1CS}).\\
+% To keep the relations working with the random linear combinations, we use homomorphic commitments.
+
+\begin{itemize}
+      \item V, P: folded instance $\varphi = (\overline{E}, u, \overline{w}, x)$
+	      \begin{align*}
+		      &\overline{E}=\overline{E}_1 + r \overline{T} + r^2 \overline{E}_2\\
+		      &u = u_1 + r u_2\\
+		      &\overline{w} = \overline{w}_1 + r \overline{w}_2\\
+		      &x = x_1 + r x_2
+	      \end{align*}
+      \item P: folded witness $(E, r_E, w, r_W)$
+	      \begin{align*}
+		      &E = E_1 + r T + r^2 E_2\\
+		      &r_E = r_{E_1} + r \cdot r_T + r^2 r_{E_2}\\
+		      &w=w_1 + r w_2\\
+		      &r_W = r_{w_1} + r \cdot r_{w_2}
+	      \end{align*}
+\end{itemize}
+\end{footnotesize}
+\pause
+\begin{scriptsize}
+Note: $T$ are the cross-terms comming from combining the two R1CS instances from
+\begin{align*}
+  Az \circ Bz &=A(z_1 + r \cdot z_2) \circ B(z_1 + r z_2)\\
+	      &=A z_1 \circ B z_1 + r(A z_1 \circ B z_2 + A z_2 \circ B z_1) + r^2 (A z_2 \circ B z_2) = \ldots
+\end{align*}
+\end{scriptsize}
+
+\end{frame}
+
+\begin{frame}{NIFS}
+
+\begin{small}
+$$E=E_1 + r \underbrace{ (A z_1 \circ B z_2 + A z_2 \circ B z_1 - u_1 C z_2 - u_2 C z_1) }_\text{cross-terms} + r^2 E_2$$
+\end{small}
+
+$Az \circ Bz = uCz + E$ will hold for valid $z$ (which comes from valid $z_1,~ z_2$).
+
+[TODO add image of function F' with F inside with extra checks]
+
+\end{frame}
+
+
+
+\begin{frame}{NIFS}
+
+Each fold: $2~EC_{Add} + 1~EC_{Mul} + 1~hash$
+
+20k R1CS constraints (using curve cycles)
+
+{\footnotesize
+(so folding makes sense when we have a circuit with more than $2 \cdot 20k$ constraints)
+}
+
+\pause
+After all the folding iterations, Nova generates a SNARK proving the last folding instance.
+
+In Nova implementation, they use Spartan.
+\end{frame}
+
+\begin{frame}{Benchmarks}
+
+% TODO: review names, and add links to profiles.
+Benchmarks that Oskar, Carlos, et al did during the Vietnam residency in April
+\href{https://hackmd.io/u3qM9s_YR1emHZSg3jteQA?view}{https://hackmd.io/u3qM9s\_YR1emHZSg3jteQA}
+
+\begin{center}
+\begin{tabular}{ |c|c|c| } 
+ \hline
+ Size & Constraints & Time\\
+ \hline
+ 2KB  &   883k      & 320ms\\
+ 4KB  &   1.7m      & 521ms\\
+ 8KB  &   3.4m      &    1s\\
+ 16KB &   6.8m      &  1.9s\\
+ 32KB & 13.7m       & 4.1s \\
+ \hline
+\end{tabular}\\
+{\footnotesize eg. for 8kb, x100 Halo2 and Plonky2}
+\end{center}
+
+(this is for the folding, without the last snark)
+
+\end{frame}
+
+\begin{frame}{SuperNova}
+\begin{itemize}
+  \item iteration on Nova, combining \emph{different circuits} in a single one with \emph{selectors}
+  \item so we can work with a big circuit with \emph{subcircuits} without paying the whole size cost on each iteration
+  \item in IVC terms: fold multiple $F_i$ in a single $F'$ (in Nova was a single $F$ in $F'$)
+\end{itemize}
+
+This is useful for example for a VM, doing one $F_i$ for each opcode
+
+\end{frame}
+
+\section[HyperNova]{HyperNova}
+
+% \begin{frame}{CCS}
+% \begin{itemize}
+%   \item kind of a generalization of constraint systems
+%   \item can translate R1CS,Plonk,AIR to CCS
+% \end{itemize}
+% $$\sum_{i=0}^{q-1} c_i \cdot \bigcirc_{j \in S_i} M_j \cdot z ==0$$
+% \end{frame}
+
+\begin{frame}{R1CS to CCS example}
+
+\begin{scriptsize}
+\begin{itemize}
+  \item Kind of a generalization of constraint systems
+  \item Can translate R1CS,Plonk,AIR to CCS
+\end{itemize}
+\pause
+\begin{description}
+	\item[CCS instance] $S_{CCS} = (m, n, N, l, t, q, d, M, S, c)$\\
+		where we have the same parameters than in $S_{R1CS}$, but additionally:\\
+		$t=|M|$, $q = |c| = |S|$, $d$= max degree in each variable.
+	\item[R1CS-to-CCS parameters] $n=n,~ m=m,~ N=N,~ l=l,~ t=3,~ q=2,~ d=2$, $M=\{A,B,C\}$, $S=\{\{0,~1\},~ \{2\}\}$, $c=\{1,-1\}$
+\end{description}
+\pause
+
+The CCS relation check:
+\end{scriptsize}
+
+$$\sum_{i=0}^{q-1} c_i \cdot \bigcirc_{j \in S_i} M_j \cdot z ==0$$
+
+\begin{scriptsize}
+In our R1CS-to-CCS parameters is equivalent to
+\begin{align*}
+	&c_0 \cdot ( (M_0 z) \circ (M_1 z) ) + c_1 \cdot (M_2 z) ==0\\
+	\Longrightarrow &1 \cdot ( (A z) \circ (B z) ) + (-1) \cdot (C z) ==0\\
+	\Longrightarrow &( (A z) \circ (B z) ) - (C z) ==0
+\end{align*}
+\end{scriptsize}
+
+\end{frame}
+
+
+\begin{frame}{Multifolding}
+\begin{itemize}
+  \item Nova: 2-to-1 folding
+  \item HyperNova: multifolding, k-to-1 folding
+  \item We fold while through a SumCheck proving the correctness of the fold
+\end{itemize}
+
+SumCheck's polynomial work is trivial, most of the cost comes from Poseidon hash in the transcript
+
+[TODO WIP section]
+
+\end{frame}
+
+\begin{frame}{Multifolding - Overview}
+
+  \begin{tiny}
+  \begin{enumerate}
+    \item[1.] $V \rightarrow P: \gamma \in^R \mathbb{F},~ \beta \in^R \mathbb{F}^s$
+    \item[2.] $V: r_x' \in^R \mathbb{F}^s$
+    \item[3.] $V \leftrightarrow P$: sum-check protocol:
+		  $c \leftarrow \langle P, V(r_x') \rangle (g, s, d+1, \underbrace{\sum_{j \in [t]} \gamma^j \cdot v_j}_\text{T})$, where:
+		  \begin{align*}
+			  g(x) &:= \underbrace{\left( \sum_{j \in [t]} \gamma^j \cdot L_j(x) \right)}_\text{LCCCS check} + \underbrace{\gamma^{t+1} \cdot Q(x)}_\text{CCCS check}\\
+			  L_j(x) &:= \widetilde{eq}(r_x, x) \cdot \left(
+				  \underbrace{\sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_1(y)}_\text{LCCCS check}
+			  \right)\\
+				  Q(x) := &\widetilde{eq}(\beta, x) \cdot \left(
+				  \underbrace{ \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \left( \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(x, y) \cdot \widetilde{z}_2(y) \right) }_\text{CCCS check}
+			  \right)
+		  \end{align*}
+  \end{enumerate}
+  \end{tiny}
+
+\end{frame}
+
+\begin{frame}{Multifolding - Overview}
+
+  \begin{tiny}
+  \begin{enumerate}
+    \item[4.] $P \rightarrow V$: $\left( (\sigma_1, \ldots, \sigma_t), (\theta_1, \ldots, \theta_t) \right)$, where $\forall j \in [t]$,
+		$$\sigma_j = \sum_{y \in \{0,1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_1(y)$$
+		$$\theta_j = \sum_{y \in \{0, 1\}^{s'}} \widetilde{M}_j(r_x', y) \cdot \widetilde{z}_2(y)$$
+	      \item[5.] V: $e_1 \leftarrow \widetilde{eq}(r_x, r_x')$, $e_2 \leftarrow \widetilde{eq}(\beta, r_x')$\\
+		check:
+		$$c = \left(\sum_{j \in [t]} \gamma^j \cdot e_1 \cdot \sigma_j \right) + \gamma^{t+1} \cdot e_2 \cdot \left( \sum_{i=1}^q c_i \cdot \prod_{j \in S_i} \theta_j \right)$$
+	      \item[6.] $V \rightarrow P: \rho \in^R \mathbb{F}$
+	      \item[7.] $V, P$: output the folded LCCCS instance $(C', u', \mathsf{x}', r_x', v_1', \ldots, v_t')$, where $\forall i \in [t]$:
+		\begin{align*}
+			C' &\leftarrow C_1 + \rho \cdot C_2\\
+			u' &\leftarrow u + \rho \cdot 1\\
+			\mathsf{x}' &\leftarrow \mathsf{x}_1 + \rho \cdot \mathsf{x}_2\\
+			v_i' &\leftarrow \sigma_i + \rho \cdot \theta_i
+		\end{align*}
+	      \item[8.] $P$: output folded witness and the folded $r_w'$:
+		\begin{align*}
+			\widetilde{w}' &\leftarrow \widetilde{w}_1 + \rho \cdot \widetilde{w}_2\\
+			r_w' &\leftarrow r_{w_1} + \rho \cdot r_{w_2}
+		\end{align*}
+  \end{enumerate}
+  \end{tiny}
+
+\end{frame}
+
+\section[Wrappup]{Wrappup}
+
+\begin{frame}{Mysteries \& unsolved things}
+\begin{itemize}
+  \item how HyperNova compares to Protostar
+  \item prover knows the full witness [TODO update/rm this]
+\end{itemize}
+
+[TODO WIP section]
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Wrappup}
+\begin{itemize}
+  \item HyperNova: \href{https://eprint.iacr.org/2023/573}{https://eprint.iacr.org/2023/573}
+  \item multifolding PoC on arkworks: \href{https://github.com/privacy-scaling-explorations/multifolding-poc}{github.com/privacy-scaling-explorations/multifolding-poc}
+  \item PSE hypernova WIP \href{https://github.com/privacy-scaling-explorations/Nova}{github.com/privacy-scaling-explorations/Nova}
+\end{itemize}
+
+\vspace{2cm}
+\tiny{
+  $$\text{2023-07-25}$$
+  $$\text{\href{https://0xparc.org}{0xPARC}}$$
+}
+\end{frame}
+
+
+% from Michael
+% - Why Nova?
+% - Nova's limitations
+% - Why Hypernova
+% - Hypernova concepts explained to General Technologist (minimal ZK understanding)
+% - Final output
+
+
+
+%%%%%
+% - We used recursive SNARKs to achieve IVC
+%   - get a proof and prove that it's verification passes, inside another proof
+% - Folding: we're not verifying the entire proof
+%   - we take n proofs and 'batch' them together
+%   - at the end of the chain of folds, we just prove that the last fold is correct
+%     - which implies that all the previous folds were correct
+% - Random Linear Combination: combine 2 instances together through a random linear comibnation, and the outputted instance will still satisfy the relation
+% - Multifolding SumCheck: SumCheck's polynomial work is trivial, most of the cost comes from Poseidon hash in the transcript
+
+\end{document}
