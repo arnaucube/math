@@ -9,7 +9,7 @@
     citecolor=black,
     filecolor=black,
     linkcolor=black,
-    urlcolor=black
+    urlcolor=blue
 }
 
 \theoremstyle{definition}
@@ -285,7 +285,7 @@ Quotient group construction is useful as a way of actually manufacturing all the
 \end{theorem}
 
 
-\section{Rings}
+\section{Rings and Fields}
 
 \begin{definition}[Ring]
     A set $A$ with operations called \emph{addition} and \emph{multiplication} which satisfy the following axioms:
@@ -311,6 +311,19 @@ Quotient group construction is useful as a way of actually manufacturing all the
 \begin{definition}[Field]
     If $A$ is a commutative ring with unity in which every nonzero element is invertible, $A$ is called a \emph{field}.
 \end{definition}
+
+\begin{theorem}[Finite Field must be over p prime ($\mathbb{F}_p$)]
+    Proof from \href{https://github.com/aragonzkresearch/blog/blob/main/pdf/Aragon_Math_Seminar.pdf}{Matan Prasma seminars}:\\
+    One of the axioms of a field is $\exists$ multiplicative inverse.\\
+    If $\mathbb{Z}_n$ with $n$ no prime, then $n= k \cdot l$ for some $1 \leq k,~l \leq n-1$.\\
+    Then in $\mathbb{Z}_n$, $k \cdot l = 0$, but if $k \cdot l=0$ means that either $k=0$ or $l=0$ (otherwise, we could multiply by (eg) $k^{-1}$ and get $k^{-1} \cdot k \cdot l = k^{-1} \cdot 0$, which leads to $1 \cdot l = 0$).\\
+    which is a contradiction here (since $1 \leq k,~l \leq n-1$).\\
+    Thus $\mathbb{Z}_n$ with $n$ not prime can not be a field.\\
+    Conversely, if $n = p$ prime,\\
+    for $0 \neq x \in \mathbb{Z}_p$, $gcd(x, p)=1$, so Extended Euclidean Algorithm gives $u, v \in \mathbb{Z}$ such that $u x + v p = 1$.\\
+    Then, $ux=1 \pmod p$, so $u=x^{-1}$, so inverses exist.\\
+    Thus $\mathbb{Z}_p$ is a field.
+\end{theorem}
 
 \begin{definition}[Divisor of zero]
     In any ring, a nonzero element a is called a \emph{divisor of zero} if there is a
@@ -347,7 +360,7 @@ Every field is an integral domain, but the converse is not true (eg. $\mathbb{Z}
 
 \begin{definition}[Characteristic n]
     Let $A$ be a ring with unity, the \emph{characteristic} of $A$ is the least positive integer $n$ such that
-    $$1 + 1 + \cdots + 1 = 0$$
+    $$\underbrace{1 + 1 + \cdots + 1}_{n-times} = 0$$
     If there is no such positive integer $n$, $A$ has characteristic $0$.
 \end{definition}
 
