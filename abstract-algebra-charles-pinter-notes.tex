@@ -121,6 +121,7 @@ Every subgroup of a cyclic group is cyclic.
 
 \begin{definition}[Surjective (epimorphism)]
     A function $f:A \rightarrow B$ is called \emph{surjective} if each element of $B$ is the image of at least one element of $A$.
+    \\ In other words, does not repeat outputs.
 \end{definition}
 
 \begin{definition}[Bijective (isomorphism)]
@@ -128,6 +129,8 @@ Every subgroup of a cyclic group is cyclic.
     \\
     A function $f: A \rightarrow B$ has an inverse iff it is \emph{bijective}. In that case, the inverse $f^{-1}$ is a bijective function from $B$ to $A$.
 \end{definition}
+
+In finite sets, if $f: A \rightarrow B$ is injective then $|A| \leq |B|$, and if $f$ is surjective then $|B| \leq |A|$. And if $f$ is bijective, then $|A| = |B|$.
 
 \begin{definition}[Composite function]
     A function $f:A \rightarrow B$ and $g: B \rightarrow C$ be functions. The \emph{composite function} denoted by $g \circ f$ is a function from $A$ to $C$ defined as follows:
@@ -470,13 +473,13 @@ $\Longrightarrow~~\forall~p(x) \in \mathbb{Q}[x]$, there is a $f(x) \in \mathbb{
 \end{theorem}
 
 \begin{theorem}
-    Suppose $a(x)$ can be factured as $a(x) = b(x)c(x)$, where $b(x), c(x)$ have rational coefficients. Then there are polynomials $B(x), C(x)$ with integer coefficients, which are constant multiples of $b(x)$ and $c(x)$ respectively, such that $a(x) = B(x)C(x)$.
+    Suppose $a(x)$ can be factored as $a(x) = b(x)c(x)$, where $b(x), c(x)$ have rational coefficients. Then there are polynomials $B(x), C(x)$ with integer coefficients, which are constant multiples of $b(x)$ and $c(x)$ respectively, such that $a(x) = B(x)C(x)$.
 \end{theorem}
 
 \begin{theorem}[Eisenstein's irreducibility criterion]
     Let $a(x) = a_0 + a_1 x + \cdots + a_n x^n$ be a polynomial with integer coefficients.
 
-    If there is prime $p$ such that $p | a_i, ~\forall i\in\{0, n-1\}$, and $p \ndiv a_n$ and $p^2 \ndiv a_0$, then $a(x)$ is irreducible over $\mathbb{Q}$.
+    If there is a prime $p$ such that $p | a_i, ~\forall i\in\{0, n-1\}$, and $p \ndiv a_n$ and $p^2 \ndiv a_0$, then $a(x)$ is irreducible over $\mathbb{Q}$.
     % Suppose there is a prime number $p$ which divides every coefficient of $a(x)$ except the leading coefficient $a_n$; suppose $p$ does not divide $a_n$ and $p^2$ does not divide $a_0$. Then $a(x)$ is irreducible over $\mathbb{Q}$.
 \end{theorem}
 
