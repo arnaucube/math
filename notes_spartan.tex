@@ -125,7 +125,7 @@ This would mean that the R1CS instance is satisfied.
 	\item[] Thus $Q_{io}(t)= \sum_{x \in \{0,1\}^s} \widetilde{F}_{io}(x) \cdot \widetilde{eq}(t, x)$, and then we prove that $Q_{io}(\tau)=0$, for $\tau \in^R \mathbb{F}^s$.
 \end{itemize}
 
-\section{NIZKs with succint proofs for R1CS}
+\section{NIZKs with succinct proofs for R1CS}
 
 From Thm 4.1: to check R1CS instance $(\mathbb{F}, A, B, C, io, m, n)$ V can check if
 $\sum_{x \in \{0,1\}^s} G_{io, \tau} (x) = 0$, which through sum-check protocol can be reduced to $e_x = G_{io, \tau} (r_x)$, where $r_x \in \mathbb{F}^s$.
@@ -247,7 +247,7 @@ Instead of evaluating $\widetilde{Z}(r_y)$ in $O(|w|)$ communications, P sends a
 		\item Sum-check 2. $e_y \leftarrow <P_{SC}(M_{r_x}), V_{SC}(r_y)>(\mu_2, l_2, T_2)$
 		\item P: $v \leftarrow \widetilde{w}(r_y[1..])$, send $v$ to V
 		\item $b_e \leftarrow <P_{PC.Eval}(\widetilde{w}, S), V_{PC.Eval}(r)>(pp,  C, r_y, v, \mu_2)$
-		\item V: abourt with $b=0$ if $b_e==0$
+		\item V: abort with $b=0$ if $b_e==0$
 		\item V: $v_z \leftarrow (1 - r_y[0]) \cdot \widetilde{w}(r_y [1..]) + r_y[0] \widetilde{(io, 1)} (r_y[1..])$
 		\item V: $v_1 \leftarrow \widetilde{A}(r_x, r_y),~ v_2 \leftarrow \widetilde{B}(r_x, r_y),~ v_3 \leftarrow \widetilde{C}(r_x, r_y)$
 		\item V: abort with $b=0$ if $e_y \neq (r_A v_1 + r_B v_2 + r_C v_3) \cdot v_z$

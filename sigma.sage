@@ -325,7 +325,7 @@ class TestORProof(unittest.TestCase):
 
                 # Alice generates key pair
                 X = alice.new_key()
-                Xs.insert(0, X) # add X at the begining of Xs array
+                Xs.insert(0, X) # add X at the beginning of Xs array
 
                 # Alice generates commitments (internally running the simulator)
                 As = alice.gen_commitments(Xs)

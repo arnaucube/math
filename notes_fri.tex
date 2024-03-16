@@ -7,6 +7,8 @@
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{xcolor}
+% \usepackage{pgf-umlsd} % diagrams
+
 
 % prevent warnings of underfull \hbox:
 \usepackage{etoolbox}
@@ -32,7 +34,7 @@
 \maketitle
 
 \begin{abstract}
-	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} \cite{vincenzoiovino} explainations about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}, \cite{cryptoeprint:2019/1020}.
+	Notes taken from \href{https://sites.google.com/site/vincenzoiovinoit/}{Vincenzo Iovino} \cite{vincenzoiovino} explanations about FRI \cite{fri}, \cite{cryptoeprint:2022/1216}, \cite{cryptoeprint:2019/1020}.
 
 	These notes are for self-consumption, are not complete, don't include all the steps neither all the proofs.
 
@@ -68,7 +70,7 @@ Consider the following protocol:
 	\item V checks $f(r)=g(r) + \alpha h(r)$. (Schwartz-Zippel lema).
 		If holds, V can be certain that $f(x)=g(x)+ \alpha h(x)$.
 	\item P proves that $deg(f) \leq d$. 
-	\item If V is convinced that $deg(f) \leq d$, V belives that both $g, h$ have $deg \leq d$.
+	\item If V is convinced that $deg(f) \leq d$, V believes that both $g, h$ have $deg \leq d$.
 \end{enumerate}
 
 %/// TODO tabulate this next lines
@@ -182,6 +184,22 @@ P would receive a challenge $z \in D$ set by V (where $D$ is the evaluation doma
 		{\scriptsize eg. $f_0(z),~ f_0(-z),~ f_1(z^2),~ f_1(-z^2),~ f_2(z^4),~ f_2(-z^4),~ f_3(z^8),~ f_3(-z^8),~ \ldots$}
 	\item[] Constant values of last iteration: $\{f_k^L,~f_k^R\}$, for $k=log(d)$
 \end{itemize}
+
+% \begin{figure}[htp]
+% \centering
+% \begin{footnotesize}
+% \begin{sequencediagram}
+%     \newinst[0]{p}{Prover}
+%     \newinst[5]{v}{Verifier}
+% 
+%     \mess{p}{$\{Comm(f_i)\}_0^{log(d)},~ \{f_i(z^{2^i}),~f_i(-(z^{2^i})) \}_0^{log(d)},~ \{f_k^L,~ f_k^R\}$}{v}
+% 
+% \end{sequencediagram}
+% \end{footnotesize}
+% \caption[FRI-LDT]{sketch of the FRI-LDT flow}
+% \label{fig:fri-ldt}
+% \end{figure}
+
 
 \paragraph{Verification}
 

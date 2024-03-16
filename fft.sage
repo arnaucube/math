@@ -41,7 +41,7 @@ def fft(F, n):
     return w, ft, ft_inv
 
 
-# Fast polynomial multiplicaton using FFT
+# Fast polynomial multiplication using FFT
 def poly_mul(fa, fb, F, n):
     w, ft, ft_inv = fft(F, n)
 
@@ -126,7 +126,7 @@ print("fa_eval'", fa_eval)
 assert fa_eval2 == fa_eval
 
 
-# Fast polynomial multiplicaton using FFT
+# Fast polynomial multiplication using FFT
 print("\n---------")
 print("---Fast polynomial multiplication using FFT")
 

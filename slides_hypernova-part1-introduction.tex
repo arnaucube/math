@@ -77,7 +77,7 @@ We used to use recursive SNARKs to achieve IVC.
 
 $$Az \circ Bz = Cz$$
 
-Typically we use some scheme to prove that the previous equation is fullfilled by some private $w$ (eg. Groth16, Marlin, Spartan, etc).
+Typically we use some scheme to prove that the previous equation is fulfilled by some private $w$ (eg. Groth16, Marlin, Spartan, etc).
 
 \end{frame}
 
@@ -114,7 +114,7 @@ We're not verifying the entire proof
 \begin{itemize}
    \item Take n instances and 'batch' them together
   \begin{itemize}
-    \item Folds $k$ (eg. 2) instances (eg. R1CS instances) and their respective witnesses into a signle one
+    \item Folds $k$ (eg. 2) instances (eg. R1CS instances) and their respective witnesses into a single one
   \end{itemize}
    \item At the end of the chain of folds, we just prove that the last fold is correct through a SNARK
   \begin{itemize}
@@ -136,7 +136,7 @@ In Nova: folding without a SNARK, we just reduce the satisfiability of the 2 inp
 
 $$Az \circ Bz = u \cdot Cz + E$$
 
-\begin{scriptsize} % TODO use the other simplier font syntax
+\begin{scriptsize} % TODO use the other simpler font syntax
 (= R1CS when $u=1,~ E=0$)
 \end{scriptsize}
 
@@ -189,7 +189,7 @@ Let $z_1 = (w_1, x_1, u_1)$ and $z_2 = (w_2, x_2, u_2)$.
 \end{footnotesize}
 \pause
 \begin{scriptsize}
-Note: $T$ are the cross-terms comming from combining the two R1CS instances from
+Note: $T$ are the cross-terms coming from combining the two R1CS instances from
 \begin{align*}
   Az \circ Bz &=A(z_1 + r \cdot z_2) \circ B(z_1 + r z_2)\\
 	      &=A z_1 \circ B z_1 + r(A z_1 \circ B z_2 + A z_2 \circ B z_1) + r^2 (A z_2 \circ B z_2) = \ldots

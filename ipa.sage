@@ -184,7 +184,7 @@ class IPA_halo:
         return a[0], l, r, L, R
 
     def verify(self, P, a, v, x_powers, r, u, U, lj, rj, L, R):
-        print("methid verify()")
+        print("method verify()")
 
         # compute P' = P + [v] U
         P = P + int(v) * U
@@ -323,7 +323,7 @@ h = 1
 q = g.order()
 Fq = GF(q)
 
-# simplier curve values
+# simpler curve values
 #  p = 19
 #  Fp = GF(p)
 #  E = EllipticCurve(Fp,[0,3])
