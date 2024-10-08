@@ -12,3 +12,14 @@
 *.snm
 *.vrb
 galois-theory-notes.bib
+
+# slides
+*.toc
+*.aux
+*.fls
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.fdb_latexmk
+*.xopp
