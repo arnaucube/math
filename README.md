@@ -11,7 +11,7 @@ Notes, code and documents done while reading books and papers.
 - [Notes on Weil pairing](weil-pairing.pdf)
 - [Notes on Sigma protocol and OR proofs](sigma-or-notes.pdf)
 - [Notes on Reed-Solomon codes](notes_reed-solomon.pdf)
-- [Notes on FRI](notes_fri.pdf)
+- [Notes on FRI and STIR](notes_fri_stir.pdf)
 - [Notes on Spartan](notes_spartan.pdf)
 - [Notes on Nova](notes_nova.pdf)
 - [Notes on HyperNova](notes_hypernova.pdf)

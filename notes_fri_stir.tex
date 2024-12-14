@@ -25,7 +25,7 @@
 {\endinnerlemma}
 
 
-\title{Notes on FRI}
+\title{Notes on FRI and STIR}
 \author{arnaucube}
 \date{February 2023}
 
@@ -39,6 +39,8 @@
 	These notes are for self-consumption, are not complete, don't include all the steps neither all the proofs.
 
 	An implementation of FRI can be found at\\ \href{https://github.com/arnaucube/fri-commitment}{https://github.com/arnaucube/fri-commitment} \cite{fri-impl}.
+
+	Update(2024-03-22): notes on STIR \cite{cryptoeprint:2024/390} from explanations by \href{https://hecmas.github.io/}{Héctor Masip Ardevol} \cite{hectormasipardevol}.
 \end{abstract}
 
 \tableofcontents
@@ -302,6 +304,30 @@ V does the normal FRI-LDT, but in addition, at the first iteration:
 V has $f(z)$ and $g(z)$ openings, so can verify
 $$g(z) = (f(z)-f(r))\cdot (z-r)^{-1}$$
 
+
+\section{STIR (main idea)}
+\emph{Update from 2024-03-22, notes from Héctor Masip Ardevol (\href{https://hecmas.github.io/}{https://hecmas.github.io}) explanations.}
+
+\vspace{0.3cm}
+Let $p \in \mathbb{F}[x]^{<n}$.
+
+In FRI we decompose $p(x)$ as
+$$p(x) = p_e(x^2) + x \cdot p_o(x^2)$$
+with $p_e, p_o \in \mahtbb{F}[x]^{<n}$ containing the even and odd powers respectively.
+
+The next FRI polynomial is
+$$p_1(x) = p_e(x) + \alpha p_o(x)$$
+for $\alpha \in^R \mathbb{F}$.
+
+In STIR, this would be $q(x)=x^2$,
+$$Q(z,y) = p_e(y) + z \cdot p_o(y)$$
+and then, $p(x) = Q(x, q(x))$. And $Q$ fullfills the degree from Fact 4.6 from the STIR paper.
+
+We can generalize to a $q$ with bigger degree, or with another shape, and adapting $Q$ on the choice of $q$.
+
+eg. for $q(x)=x^3$, we can take
+$$Q(z,y) = p_1(y) + z \cdot p_2(y) + z^2 \cdot p_3(y)$$
+with $p_1, p_2, p_3 \in \mathbb{F}[x]^{<n/3}$ with coefficients taken every 3 powers alternating.
 
 \bibliography{paper-notes.bib}
 \bibliographystyle{unsrt}
