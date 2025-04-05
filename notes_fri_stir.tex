@@ -66,7 +66,7 @@ V wants to check that two functions $g,~h$ are both polynomials of degree $\leq 
 Consider the following protocol:
 
 \begin{enumerate}
-	\item V sends $\alpha \in \mathbb{F}$ to P. P sends $f(x) = g(x) + \alpha h(x)$ to V.
+	\item V sends $\alpha \in \mathbb{F}$ to P.
 	\item P sends $f(x)=g(x) + \alpha h(x)$ to V.
 	\item V queries $f(r), ~g(r), ~h(r)$ for rand $r \in \mathbb{F}$.
 	\item V checks $f(r)=g(r) + \alpha h(r)$. (Schwartz-Zippel lema).
@@ -169,12 +169,19 @@ P starts from $f(x)$, and for $i=0$ sets $f_0(x)=f(x)$.
 	\end{equation}
 	\item P sets $f_i(x) := f_{i+1}(x)$ and starts again the iteration.
 \end{enumerate}
-Notice that at each step, $deg(f_i)$ halves.
+
+Note on step 3: when we say "commits", this means that the prover P evaluates $f_{i+1}(x)$ at the $(\rho^{-1} \cdot d)$-sized evaluation
+domain $D$ (ie. $f_{i+1}(x) |_D$), and constructs a merkle tree with the
+evaluations as leaves.
+
+\vspace{0.5cm}
+Notice that at each step, $deg(f_i)$ halves with respect to $deg(f_{i-1}$).
 
 This is done until the last step, where $f_i^L(x),~ f_i^R(x)$ are constant (degree 0 polynomials). For which P does not commit but gives their values directly to V.
 
 \emph{(Query phase)}
-P would receive a challenge $z \in D$ set by V (where $D$ is the evaluation domain, $D \in \mathbb{F}$), and P would open the commitments at $\{z^{2^i}, -z^{2^i}\}$ for each step $i$.
+P would receive a challenge $z \in D$ set by V (where $D$ is the evaluation
+domain, $D \subset \mathbb{F}$), and P would open the commitments at $\{z^{2^i}, -z^{2^i}\}$ for each step $i$.
 (Recall, "opening" means that would provide a proof (MerkleProof) of it).
 
 \paragraph{Data sent from P to V}
@@ -284,7 +291,8 @@ $$|F_0| = \rho^{-1} \cdot d$$
 \section{FRI as polynomial commitment scheme}
 This section overviews the trick from \cite{cryptoeprint:2019/1020} to convert FRI into a polynomial commitment.
 
-Want to check that the evaluation of $f(x)$ at $r$ is $f(r)$, which is equivalent to proving that $\exists ~Q \in \mathbb{F}[x]$ with $deg(Q)=d-1$, such that
+Want to check that the evaluation of $f(x)$ at $r$ is $f(r)$, for $r \notin D, r
+\in^R \mathbb{F}$; which is equivalent to proving that $\exists ~Q \in \mathbb{F}[x]$ with $deg(Q)=d-1$, such that
 
 $$
 f(x)-f(r) = Q(x) \cdot (x-r)
