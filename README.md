@@ -15,5 +15,6 @@ Notes, code and documents done while reading books and papers.
 - [Notes on Spartan](notes_spartan.pdf)
 - [Notes on Nova](notes_nova.pdf)
 - [Notes on HyperNova](notes_hypernova.pdf)
+- [Notes on NTT](notes_ntt.pdf)
 
 Also some Sage implementations can be found in the `*.sage` files of this repo.
