@@ -6,6 +6,7 @@
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{amssymb}
+\usepackage{tikz} % diagram
 
 \begin{filecontents}[overwrite]{galois-theory-notes.bib}
 @misc{ianstewart,
@@ -14,9 +15,24 @@
   year = {2004}
 }
 
+@misc{milneFT,
+  author={Milne, James S.},
+  title={Fields and Galois Theory (v5.10)},
+  year={2022},
+  note={Available at \url{https://jmilne.org/math/} },
+  pages={144}
+}
+
+@misc{berlekamp,
+  author={Elmyn Berlekamp},
+  title={Algebraic Coding Theory},
+  year={1984},
+  note={Revised Edition from 1984}
+}
+
 @misc{dihedral,
-  author = {Gaurab Bardhan and Palash Nath and Himangshu Chakraborty}
-  title = {Subgroups and normal subgroups of dihedral group up to isomorphism}
+  author = {Gaurab Bardhan and Palash Nath and Himangshu Chakraborty},
+  title = {Subgroups and normal subgroups of dihedral group up to isomorphism},
   year = {2010},
   note = {\url{https://scipp.ucsc.edu/~haber/ph251/Dn_subgroups.pdf}},
   url = {https://scipp.ucsc.edu/~haber/ph251/Dn_subgroups.pdf}
@@ -62,7 +78,7 @@
 \maketitle
 
 \begin{abstract}
-	Notes taken while studying Galois Theory, mostyly from Ian Stewart's book "Galois Theory" \cite{ianstewart}.
+	Notes taken while studying Galois Theory, mostly from Ian Stewart's book "Galois Theory" \cite{ianstewart}.
 
 	Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
 
@@ -158,7 +174,7 @@
   From \ref{shorttowerlaw}.
 \end{proof}
 
-[...]
+[...] TODO: pending to add key parts up to Chapter 15.
 
 
 \newpage
@@ -180,6 +196,9 @@ for $k=0, \ldots, n-1$.
 So, by Euler's formula:
 $$z_k = \sqrt[n]{r} \cdot e^{i (\frac{\theta + 2 k \pi}{n})}$$
 
+Usually we will set $\alpha=\sqrt[n]{r}$ and $\zeta = e^{\frac{2 \pi i}{n}}$,
+and find the $\mathbb{Q}$-automorphisms from there (see \ref{ex:galoisgroups} for examples).
+
 \subsection{Einsenstein's Criterion} \label{einsenstein}
 \emph{reference: Stewart's book}
 
@@ -198,9 +217,110 @@ Then, $f$ is irreducible over $\mathbb{Q}$.
 \emph{TODO from orange notebook, page 36}
 
 \subsection{Cyclotomic polynomials} \label{cyclotomicpoly}
-\emph{TODO theory from brown muji notebook, page 82}
+\subsubsection{From Elmyn Berlekamp's "Algebraic Coding Theory" book}
+The notes in this section are from the book "Algebraic Coding Theory" by Elmyn
+Berlekamp \cite{berlekamp}.
 
-Examples:
+\vspace{0.3cm}
+
+Some times we might find polynomials that have the shape of $t^n - 1$, those are \emph{cyclotomic polynomials}, and have some properties that might be useful.
+
+Observe that in a finite field of order $q$, factoring $x^q - x$ gives
+$$x^q-x = x(x^{q-1} -1)$$
+
+The factor $x^{q-1} -1$ is a special case of $x^n -1$: if we assume that the
+field contains an element $\alpha$ of order $n$, then the roots of $x^n-1=0$ are
+$$1, \alpha, \alpha^2, \alpha^3, \ldots, \alpha^{n-1}$$
+and $\deg(x^n-1)=n$, thus $x^n-1$ has at most $n$ roots in any field, henceforth
+the powers of $\alpha$ must include all the $n$-th roots of unity.
+
+There fore, in any field which contains a primitive $n$-th root of unity we have:
+
+\begin{thm}{4.31}
+  $$x^n -1 = \prod_{i=0}^{n-1} (x - \alpha^i) = \prod_{i=1}^n (x-\alpha^i)$$
+\end{thm}
+
+If $n=k \cdot d$, then $\alpha^k, \alpha^{2k}, \alpha^{3k}, \ldots, \alpha^{dk}$ are all roots of $x^d -1 =0$
+
+Every element with order dividing $n$, must be a power of $\alpha$, since an
+element of order $d$ is a $d$-th root of unity.
+
+Every power of $\alpha$ has order which divides $n$, and every field element
+whose order divides $n$ is a power of $\alpha$. This suggests that we partition
+the powers of $\alpha$ according to their orders:
+$$x^n -1 = \prod_{\stackrel{d,}{d|n}} \prod_{\beta} (x- \beta)$$
+where at each iteration, $\beta$ is a field element of order $d$ for each $d$.
+
+The polynomial whose roots are the field elements of order $d$ is called the
+\emph{cyclotomic polynomial}, denoted by $Q^{(d)}(x)$.
+
+\begin{thm}{4.32}
+  $$x^n -1 = \prod_{\stackrel{d,}{d|n}} Q^{(d)}(x)$$
+\end{thm}
+
+
+\subsubsection{From Ian Stewart's ``Galois Theory'' book}
+Notes from Ian Stewart's book \cite{ianstewart}.
+
+Consider the case $n=12$, let $\zeta=e^{\pi i /6}$ be a primitive $12$-th root of unity.
+Classify its powers ($\zeta^j$) according to their minimal power $d$ such that
+$(\zeta^j)^d = 1$ (ie. when they are primitive $d$-th roots of unity).
+
+\begin{enumerate}[]
+  \item $d=1,~~~ 1$
+  \item $d=2,~~~ \zeta^6$
+  \item $d=3,~~~ \zeta^4, \zeta^8$
+  \item $d=4,~~~ \zeta^3, \zeta^9$
+  \item $d=6,~~~ \zeta^2, \zeta^{10}$
+  \item $d=12,~~~ \zeta, \zeta^5, \zeta^7, \zeta^{11}$
+\end{enumerate}
+
+Observe that we can factorize $t^{12} -1$ by grouping the corresponding zeros:
+\begin{align*}
+  t^{12}-1 = &(t-1) \times\\
+	     &(t-\zeta^6) \times\\
+	     &(t-\zeta^4) (t-\zeta^8) \times\\
+	     &(t-\zeta^3) (t-\zeta^9) \times\\
+	     &(t-\zeta^2) (t-\zeta^{10}) \times\\
+	     &(t-\zeta) (t-\zeta^5)(t-\zeta^7) (t-\zeta^{11})
+\end{align*}
+which simplifies to
+$$t^{12}-1=(t-1)(t+1)(t^2+t+1)(t^2+1)(t^2-t+1)F(t)$$
+where $F(t) = (t-\zeta) (t-\zeta^5)(t-\zeta^7) (t-\zeta^{11}) = t^4 -t^2 + 1$ (this last step can be obtained either by multiplying $(t-\zeta)(t-\zeta^5)(t-\zeta^7) (t-\zeta^{11})$ together, or by dividing $t^{12}-1$ by all the other factors).
+
+
+Let $\Phi_d(t)$ be the factor corresponding to primitive $d$-th roots of unity, then we have proved that
+$$t^{12}-1 = \Phi_1 \Phi_2 \Phi_3 \Phi_4 \Phi_6 \Phi_{12}$$
+
+
+\begin{defn}{21.5}
+  The polynomial $\Phi_d(t)$ defined by
+  $$\Phi_n(t) = \prod_{a\in \mathbb{Z}_n,(a,n)=1} (t- \zeta^a)$$
+  is the $n$-th \emph{cyclotomic polynomial} over \mathbb{C}.
+\end{defn}
+
+\begin{cor}{21.6}
+  $\forall n \in \mathbb{N}$, the polynomial $\Phi_n(t)$ lies in $\mathbb{Z}[t]$ and is monic and irreducible.
+\end{cor}
+
+\begin{thm}{21.9}
+  \begin{enumerate}
+  \item The Galois group $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q})$ consists of the
+  $\mathbb{Q}$-automorphisms $\psi_j$ defined by
+  $$\psi_j(\zeta)=\zeta^j$$
+  where $0 \leq j \leq n-1$ and $j$ is prime to $n$.
+
+  \item $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q}) \stackrel{iso}{\cong} \mathbb{Z}_n^*$, and is an abelian group.
+  \item its order is $\phi(n)$
+  \item if $n$ is prime, $\mathbb{Z}_n^*$ is cyclic
+\end{thm}
+
+
+
+\vspace{1cm}
+
+\subsubsection{Examples}
+Examples of cyclotomic polynomials:
 
 \begin{align*}
   \Phi_n(x) &= x^{n-1} + x^{n-2} + \ldots + x^2 + x + 1 = \sum_{i=0}^{n-1} x^i\\
@@ -210,7 +330,7 @@ Examples:
 
 
 \subsection{Lemma 1.42 from J.S.Milne's book}
-\emph{TODO add reference to Milne's book}
+Lemma from J.S.Milne's book \cite{milneFT}.
 
 Useful for when dealing with $x^p - 1$ with $p$ prime.
 
@@ -249,7 +369,7 @@ Properties:
 \begin{itemize}
   \item are non-abelian (for $n>2$), ie. $rs \neq sr$
   \item order $2n$
-  \item generated by a rotation $r$ and a reflextion $s$
+  \item generated by a rotation $r$ and a reflection $s$
   \item $r^n = s^2 = id,~~~(rs)^2=id$
 \end{itemize}
 Subgroups of $\mathbb{D}_n$:
@@ -281,7 +401,7 @@ For $n \geq 3, ~~\mathbb{D}_n \subseteq \mathbb{S}_n$ (subgroup of the Symmetry 
 
 \section{Exercises}
 
-\subsection{Galois groups}
+\subsection{Galois groups}\label{ex:galoisgroups}
 
 \subsubsection[t6-7]{$t^6-7 \in \mathbb{Q}$}
 
@@ -364,7 +484,39 @@ $$\begin{aligned}
 for $0 \leq k \leq 5$ and $j = \pm 1$.
 
 \vspace{0.5cm}
-\emph{TODO diagram}
+
+NOTE: WIP diagram.
+\begin{tikzpicture}[node distance=2cm]
+  \def \radius{2}
+  \draw (0,0) circle (\radius);
+
+  \foreach \k in {0,...,5} {
+    % \node (a\k) at ({360/6 * \k}:\radius) {$\alpha \zeta^{\k}$};
+    \node (a\k) at ({360/6 * \k}:\radius+0.5) {$\alpha \zeta^{\k}$};
+    \fill ({360/6 * \k}:\radius) circle (2pt);
+  }
+  % real & im axis
+  \draw[->] (-2.5,0) -- (2.5,0) node[right] {};
+  \draw[->] (0,-2.5) -- (0,2.5) node[above] {};
+
+
+  % tau:
+  \draw[<->] (3,1) -- (3,-1) node[right] {$\tau$};
+  % sigma:
+  % \foreach \k [evaluate=\k as \next using int(mod(\k+1,6))] in {0,...,5} {
+  %   \coordinate (p\k) at ({360/6 * \k}:\radius);
+  %   \coordinate (p\next) at ({360/6 * \next}:\radius);
+  % 
+  %   \draw[->, bend left=30] (p\k.center) -- node[above] {$\sigma$} (p\next.center);
+  % }
+  \foreach \k in {0,...,5} {
+    \coordinate (p\k) at ({360/6 * \k}:\radius);
+  }
+  \foreach \k [evaluate=\k as \next using int(mod(\k+1,6))] in {0,...,5} {
+    \draw[->, bend left=30] (p\k) -- node[above] {$\sigma$} (p\next);
+  }
+\end{tikzpicture}
+
 \vspace{0.5cm}
 
 Observe, that $\Gamma$ is generated by the combination of $\sigma$ and $\tau$,
