@@ -37,6 +37,21 @@
   note = {\url{https://scipp.ucsc.edu/~haber/ph251/Dn_subgroups.pdf}},
   url = {https://scipp.ucsc.edu/~haber/ph251/Dn_subgroups.pdf}
 }
+
+@misc{judson,
+  author={Thomas W. Judson},
+  title={Abstract Algebra: theory and applications},
+  year={1994},
+  note={Available at \url{http://abstract.ups.edu/download.html} },
+  pages={438}
+}
+
+@misc{dummitfoote,
+  author={David S. Dummit and Richard M. Foote},
+  title={Abstract Algebra (Third Edition)},
+  year={2004},
+  pages={945}
+}
 \end{filecontents}
 \nocite{*}
 
@@ -87,7 +102,8 @@
 
 \tableofcontents
 
-\section{Recap on the degree of field extensions}
+\section{Galois Theory notes}
+\subsection{Chapters 4-6}
 (Definitions, theorems, lemmas, corollaries and examples enumeration follows from Ian Stewart's book \cite{ianstewart}).
 
 \begin{defn}{4.10}
@@ -175,6 +191,201 @@
 \end{proof}
 
 [...] TODO: pending to add key parts up to Chapter 15.
+
+\subsection{Detour: Isomorphism Theorems}
+\begin{thm}{}(\emph{First Isomorphism Theorem}) \label{1stisothm}
+
+  \begin{minipage}{0.75\textwidth}
+  If $\psi: G \longrightarrow H$ a group homomorphism, then $ker(\psi) \triangleleft G$.\\
+  Let $\phi: G \longrightarrow G/ker(\psi)$ be the canonical homomorphism.\\
+  Then $\exists$ unique isomorphism $\eta: G/ker(\psi) \longrightarrow \psi(G)$ such that $\psi = \eta \phi$.\\
+  $\Longleftrightarrow$ ie. $G/ker(\psi) \cong \psi(G)$.
+  \end{minipage}
+\hfill
+\begin{minipage}{0.2\textwidth}
+  \begin{tikzpicture}[node distance=2.5cm, auto]
+    \node (G)    {$G$};
+    \node (H) [right of=G] {$H$};
+    \node (GmodK) [below of=G, xshift=1.25cm] {$G/\ker(\psi)$};
+
+    \draw[->] (G) to node {$\psi$} (H);
+    \draw[->] (G) to node [swap] {$\phi$} (GmodK);
+    \draw[->] (GmodK) to node [swap] {$\eta$} (H);
+  \end{tikzpicture}
+\end{minipage}
+\end{thm}
+\begin{proof}
+  \emph{(proof from Thomas W. Judson book "Abstract Algebra" \cite{judson})}\\
+
+  Let $K=ker(\psi)$.
+  Since
+  $$\eta: G/K \longrightarrow \psi(G)$$
+  let
+  $$\eta: gK \longrightarrow \psi(g)$$
+  ie. $\eta(gK)=\psi(g)$.
+
+  \begin{enumerate}[i.]
+    \item show that $\eta$ is a \emph{well defined} map:
+
+      if $g_1 K=g_2 K$, then for some $k \in K$, $g_1 k =g_2$, so
+      $$\eta(g_1K)=\psi(g_1) = \psi(g_1)\psi(k) = \psi(g_1 k) = \psi(g_2) = \eta(g_2 k)$$
+
+      Thus, $\eta$ does not depend on the choice of coset representatives, and
+      the map $\eta: G/ker(\psi) \longrightarrow \psi(G)$ is uniquely defined
+      since $\psi=\eta\phi$.
+
+    \item show that $\eta$ is a homomorphism:
+
+      Observe:
+      $$\eta(g_1 K g_2 K) = \eta(g_1 g_2 K) = \psi(g_1 g_2) = \psi(g_1) \psi(g_2) = \eta(g_1 K) \eta(g_2 K)$$
+      $\Longrightarrow$ so $\eta$ is a homomorphism.
+
+    \item show that $\eta$ is an isomorphism:
+
+      Since each element of $H=\psi(G)$ has at least a preimage, then $\eta$ is \emph{surjective} (onto $\psi(G)$).
+
+      Show that it is also \emph{injective} (onet-to-one):
+      
+      Suppose 2 different preimatges lead to the same image in $\psi(G)$, ie.
+      $\eta(g_1 K) = \eta(g_2 K)$
+
+      then,
+      $$\psi(g_1) = \psi(g_2)$$
+      which implies $\psi(g_1^{-1} g_2) = e$, ie. $g_1^{-1} g_2 \in ker(\psi)$,
+      hence
+      $$g_1^{-1} g_2 K = K$$
+      $$g_1 K = g_2 K$$
+      so $\eta$ is injective.
+  \end{enumerate}
+
+  Since $\eta$ is injective and surjective $\Longrightarrow$ $\eta$ is a bijective homomorphism,\\
+  ie. $\eta$ is an \emph{isomorphism}.
+\end{proof}
+
+
+\begin{thm}{}(\emph{Second Isomorphism Theorem}) \label{2ndisothm}
+  Let $H \subseteq G$, $N \triangleleft G$. Then
+  \begin{enumerate}[i.]
+    \item $HN \subseteq G$
+    \item $H \cap N \triangleleft H$
+    \item $\frac{H}{H \cap N} \cong \frac{HN}{N}$
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \emph{(proof from Thomas W. Judson book "Abstract Algebra" \cite{judson})}\\
+
+  \begin{enumerate}[i.]
+    \item show $HN \subseteq G$:\\
+      Note that $HN = \{ hn : h\in H, n\in N \}$. Let $h_1 n_1, h_2 n_2 \in HN$.
+
+      Since $N$ normal $\Longrightarrow~ h_2^{-1} n_1 h_2 \in N$, so
+      $$(h_1 n_1)(h_2 n_2) = h_1 h_2 (h_2^{-1} n_1 h_2) \in HN$$
+
+      [Recall: since $N \triangleleft G$, $gN=Ng ~\forall g \in G$ $\Longrightarrow gn=n'g$ for some $n' \in N$.]
+
+      To see that $(hn)^{-1} \in HN$:\\
+      since $(hn)^{-1} = n^{-1} h^{-1} = h^{-1} (h n^{-1} h^{-1})$, thus $(hn)^{-1} \in HN$.
+
+      Thus $HN \subseteq G$.
+
+
+      In fact, $$HN = \bigcup_{h \in H} hN$$
+
+      (TODO: diagram)
+
+    \item show that $H \cap N \triangleleft H$:\\
+      Let $h \in H,~ n \in H \cap N$ (recall: $H \cap N \subseteq H$).\\
+      Then $h^{-1}nh \in H$ $\longleftarrow$ since $h^{-1}, n, h \in H$.\\
+      Since $N \triangleleft G$, $h^{-1} n h \in N$.\\
+      Therefore, $h^{-1}nh \in H \cap N$ $\Longrightarrow~ H \cap N \triangleleft H$
+
+    \item show that $\frac{H}{H \cap N} \cong \frac{HN}{N}$:\\
+      Define a map
+      \begin{align*}
+	\phi: &H \longrightarrow \frac{HN}{N}\\
+	\text{by}~ \phi: &h \longmapsto hN
+      \end{align*}
+
+      $\phi$ is surjective (onto), since any coset $hnN=hN$ is the image of $h \in H$, ie. $\phi(h)$
+
+      $\phi$ is a homomorphism, since
+      $$\phi(h h') = h h' N = hN h'N = \phi(h)\phi(h')$$
+
+      By the First Isomorphism Theorem \ref{1stisothm},
+      $$\frac{HN}{N} \cong \frac{H}{ker(\phi)}$$
+
+      and since
+      \begin{align*}
+	&ker(\phi) = \{ h \in H : h \in N\}\\
+	&\text{then}~~ker(\phi) = H \cap N
+      \end{align*}
+
+      so then,
+      $$\frac{HN}{N} = \phi(H) \cong \frac{H}{ker(\phi)} = \frac{H}{H \cap N}$$
+      thus
+      $$\frac{HN}{N} \cong \frac{H}{H \cap N}$$
+
+  \end{enumerate}
+\end{proof}
+
+
+\begin{thm}{}(\emph{Third Isomorphism Theorem}) \label{2ndisothm}\\
+  Let $H \subseteq K$ and $K \triangleleft G,~ H \triangleleft G$.\\
+  Then
+  $\frac{K}{H} \triangleleft \frac{G}{H}$
+  and
+  $$\frac{ G/H }{ K/H } \cong \frac{G}{K}$$
+\end{thm}
+\begin{proof}
+  \emph{(proof from Dummit and Foote book ``Abstract Algebra" \cite{dummitfoote})}\\
+
+  Easy to see that $\frac{K}{H} \triangleleft \frac{G}{H}$.
+
+  Define
+      \begin{align*}
+	\psi: &\frac{G}{H} \longrightarrow \frac{G}{K}\\
+	\text{by}~ \psi: &gH \longmapsto gK
+      \end{align*}
+
+  To show that $\psi$ is \emph{well defined}:\\
+  suppose $g_1 H = g_2 H$, then $g_1 = g_2 h$ for some $h \in H$.\\
+  Since $H \subseteq K \Longrightarrow~ h \in K$, hence $g_1 K = g_2 K$,\\
+  ie. $\psi(g_1 H) = \psi(g_2 H)$, which shows that $\psi$ is well defined.
+
+  Since $g \in G$ may be chosen arbitrarily in $G$, $\psi$ is a surjective homomorphism.
+
+
+  Finally,
+  \begin{align*}
+    ker(\psi) &= \{ gH \in \frac{G}{H} \mid \psi(gH)=1K \}\\
+    &= \{ gH \in \frac{G}{H} \mid gK =1K \}\\
+    &= \{ gH \in \frac{G}{H} \mid g \in K \}\\
+    &= \frac{K}{H}
+  \end{align*}
+
+
+  By the First Isomorphism Theorem (\ref{1stisothm}),
+
+  \begin{tikzpicture}[node distance=2.5cm, auto]
+    \node (GmodH)    {$\frac{G}{H}$};
+    \node (GmodK) [right of=GmodH] {$\frac{G}{K}$};
+    \node (GmodHmodKer) [below of=G, xshift=1.25cm] {$\frac{G/H}{\ker(\psi)} = \frac{G/H}{K/H}$};
+
+    \draw[->] (GmodH) to node {$\psi$} (GmodK);
+    \draw[->] (GmodH) to node [swap] {$\phi$} (GmodHmodKer);
+    \draw[->] (GmodHmodKer) to node [swap] {$\eta$} (GmodK);
+  \end{tikzpicture}
+
+  So, by
+  $$\eta: \frac{G/H}{K/H} \longrightarrow \frac{G}{K}$$
+  since $\eta$ is
+  bijective (we know it by the First Isomorphism Theorem), $\eta$ it is the isomorphism:
+  $$\frac{ G/H }{ K/H } \cong \frac{G}{K}$$
+
+
+\end{proof}
+
+\subsection{Chapter 14}
 
 
 \newpage
@@ -296,7 +507,7 @@ $$t^{12}-1 = \Phi_1 \Phi_2 \Phi_3 \Phi_4 \Phi_6 \Phi_{12}$$
 \begin{defn}{21.5}
   The polynomial $\Phi_d(t)$ defined by
   $$\Phi_n(t) = \prod_{a\in \mathbb{Z}_n,(a,n)=1} (t- \zeta^a)$$
-  is the $n$-th \emph{cyclotomic polynomial} over \mathbb{C}.
+  is the $n$-th \emph{cyclotomic polynomial} over $\mathbb{C}$.
 \end{defn}
 
 \begin{cor}{21.6}
@@ -305,14 +516,15 @@ $$t^{12}-1 = \Phi_1 \Phi_2 \Phi_3 \Phi_4 \Phi_6 \Phi_{12}$$
 
 \begin{thm}{21.9}
   \begin{enumerate}
-  \item The Galois group $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q})$ consists of the
-  $\mathbb{Q}$-automorphisms $\psi_j$ defined by
-  $$\psi_j(\zeta)=\zeta^j$$
-  where $0 \leq j \leq n-1$ and $j$ is prime to $n$.
+    \item The Galois group $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q})$ consists of the
+    $\mathbb{Q}$-automorphisms $\psi_j$ defined by
+    $$\psi_j(\zeta)=\zeta^j$$
+    where $0 \leq j \leq n-1$ and $j$ is prime to $n$.
 
-  \item $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q}) \stackrel{iso}{\cong} \mathbb{Z}_n^*$, and is an abelian group.
-  \item its order is $\phi(n)$
-  \item if $n$ is prime, $\mathbb{Z}_n^*$ is cyclic
+    \item $\Gamma(\mathbb{Q}(\zeta):\mathbb{Q}) \stackrel{iso}{\cong} \mathbb{Z}_n^*$, and is an abelian group.
+    \item its order is $\phi(n)$
+    \item if $n$ is prime, $\mathbb{Z}_n^*$ is cyclic
+  \end{enumerate}
 \end{thm}
 
 
