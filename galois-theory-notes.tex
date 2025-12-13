@@ -73,7 +73,7 @@
 {\renewcommand\theinnerlemma{#1}\innerlemma}
 {\endinnerlemma}
 
-\newtheorem{innercor}{Lemma}
+\newtheorem{innercor}{Corollary}
 \newenvironment{cor}[1]
 {\renewcommand\theinnercor{#1}\innercor}
 {\endinnercor}
@@ -134,6 +134,24 @@
   Therefore, $r-s=0$, so $r=s$, proving uniqueness.
 \end{proof}
 
+\begin{thm}{5.10}
+  $\forall 0 \neq f \in \frac{K[t]}{<m>},~~ \exists f^{-1}$ iff $m$ is irreducible in $K[t]$.\\
+  Then $\frac{K[t]}{<m>}$ is a field.
+\end{thm}
+\begin{thm}{5.12} \label{5.12}
+  Let $K(\alpha):K$ simple algebraic extension, let $m$ minimal polynomial of $\alpha$ over $K$.\\
+  $K(\alpha):K$ is isomorphic to $\frac{K[t]}{<m>}$.\\
+  The isomorphism $\frac{K[t]}{<m>} \longrightarrow K(\alpha)$ can be chosen to map $t$ to $\alpha$.
+
+\end{thm}
+\begin{cor}{5.13}
+  Let $K(\alpha):K$ and $K(\beta):K$ be simple algebraic extensions.\\
+  If $\alpha,~ \beta$ have same minimal polynomial $m$ over $K$, then the two extensions are isomorphic, and the isomorphism of the larger fields map $\alpha$ to $\beta$.
+\end{cor}
+\begin{proof}
+  By \ref{5.12}, both extensions are isomorphic to $\frac{K[t]}{<m>}$.
+\end{proof}
+
 \begin{lemma}{5.14}
   Let $K(\alpha):K$ be a simple algebraic extension, let $m$ be the minimal polynomial of $\alpha$ over $K$, let $\delta m =n$.
 
@@ -176,9 +194,15 @@
       So the elements $x_i y_j$ are linearly independent over $K$.
 
     \item prove that $x_i y_j$ span $M$ over $K$:\\
-      Any $x \in M$ can be written $x=\sum_j \lambda_j y_j$ for $\lambda_j \in L$, because $y_j$ spans $M$ over $L$.
-      Similarly, $\forall j\in J,~ \lambda_j = \sum_i \lambda_{ij} x_i y_j$ for  $\lambda_{ij} \in K$.\\
-      Putting the pieces together, $x=\sum_{ij} \lambda_{ij} x_i y_j$ as required.
+      Any $x \in M$ can be written
+      $$x=\sum_j \lambda_j y_j$$
+      for $\lambda_j \in L$, because $y_j$ spans $M$ over $L$.
+      Similarly,
+      $$\forall j\in J,~ \lambda_j = \sum_i \lambda_{ij} x_i y_j$$
+      for  $\lambda_{ij} \in K$.\\
+      Putting the pieces together,
+      $$x=\sum_{ij} \lambda_{ij} x_i y_j$$
+      as required.
   \end{enumerate}
 \end{proof}
 
@@ -190,7 +214,184 @@
   From \ref{shorttowerlaw}.
 \end{proof}
 
-[...] TODO: pending to add key parts up to Chapter 15.
+\begin{thm}{6.7}
+  if $K(\alpha):K$
+  \begin{itemize}
+    \item transcendental $\Longrightarrow~~[K(\alpha):K] = \inf$
+    \item algebraic $\Longrightarrow~~[K(\alpha):K] = \delta m$
+  \end{itemize}
+  (where $m$ is the minimal polynomial of $\alpha$ over $K$).
+\end{thm}
+
+\begin{defn}{8.1}
+  $L:K$, a \emph{$K$-automorphism} of $L$ is an automorphism $\alpha$ of $L$ such that $\alpha(k)=k ~~ \forall k \in K$.\\
+  ie. $\alpha$ \emph{fixes} $k$.
+\end{defn}
+
+\begin{thm}{8.2, 8.3}
+  The set of all $K$-automorphisms of $L$ forms a group, $\Gamma(L:K)$, the Galois group of $L:K$.
+\end{thm}
+\begin{lemma}{8.18}
+  Let $q \in L$. The minimal polynomial of $q$ over $K$ \emph{splits} into linear factors over L.
+\end{lemma}
+
+\begin{defn}{9.1}
+  For $K \subseteq \mathbb{C}$, and $f \in K[t]$, $f$ \emph{splits} over $K$ if it can be expressed as a product of linear factors
+  $$f(t) = k \cdot (t- \alpha_1) \cdot \ldots \cdot (t - \alpha_n)$$
+  where $k, \alpha_i \in K$.
+
+  $\Longrightarrow$ (Thm 9.3) if $f$ splits over $\Sigma$, $\Sigma$ is the \emph{splitting field}.\\
+  If $K \subseteq \Sigma' \subseteq \Sigma$ and $f$ splits over $\Sigma'$, then $\Sigma' = \Sigma$.
+\end{defn}
+
+\begin{thm}{9.6} \label{9.6}
+  TODO
+\end{thm}
+
+\begin{defn}{9.8}
+  $L:K$ is \emph{normal} if every irreducible polynomial $f \in K[t]$ that has at least one zero in $L$, splits in $L$.
+\end{defn}
+
+\begin{thm}{9.9} \label{9.9}
+  TODO
+\end{thm}
+
+\begin{thm}{9.10}
+  An irreducible polynomial $f \in K[t]$ ($K \subseteq \mathbb{C}$) is \emph{separable over} $K$ if it has simple zeros in $\mathbb{C}$, or equivelently, simple zeros in its splitting field.
+\end{thm}
+
+\begin{lemma}{9.13}
+  $f \in K[t]$ with splitting field $\Sigma$. $f$ has multiple zeros (in $\Sigma$ or $\mathbb{C}$) iff $f$ and $Df$ have a common factor of degree $\geq 1$ in $\Sigma[t]$.\\
+  More details at Rolle's theorem (\ref{rolle}) section.
+\end{lemma}
+
+\begin{thm}{10.5} \label{10.5}
+  $|\Gamma(K:K_0)| = [K:K_0]$, where $K_0$ is the fixed field of $\Gamma(K:K_0)$.
+\end{thm}
+
+
+\begin{defn}{11.1}
+  $K \subseteq L$, $K \subseteq L$. A $K$-monomorphism of $M$ into $L$ is a field monomorphism
+  $$\phi: M \longrightarrow L$$
+  such that $\phi(k)=k ~~ \forall k \in K$.
+\end{defn}
+
+\begin{thm}{11.3}
+  $L:K$ normal, $K \subseteq M \subseteq L$. Let $\tau$ any $K$-monomorphism $\tau: M \longarrow L$.\\
+  Then, $\exists$ a $K$-automorphism $\sigma$ of $L$ such that $\sigma\biggr\vert_M=\tau$.
+\end{thm}
+\begin{proof}
+  $L:K$ normal $\Longrightarrow$ by Thm \ref{9.9}, $L$ splitting field for some poly $f \in K[t]$.
+
+  Hence, $L$ is splitting field over $M$ for $f$ and over $\tau(M)$ for $\tau(f)$.
+
+  Since $\tau \biggr\vert_K$ is the identity, $\tau(f)=f$.
+
+  \vspace{0.5cm}
+  We have
+
+  \begin{tikzpicture}[node distance=1.5cm, auto]
+    \node (M)    {$M$};
+    \node (L) [right of=M] {$L$};
+    \node (t) [below of=M] {$\tau(M)$};
+    \node (L2) [below of=L] {$L$};
+
+    \draw[->] (M) to node {$ $} (L);
+    \draw[->] (M) to node {$\tau$} (t);
+    \draw[->] (t) to node {$ $} (L2);
+    \draw[->] (L) to node {$ $} (L2);
+  \end{tikzpicture}
+
+  with $\sigma$ yet to be formed.
+
+  By Theorem \ref{9.6}, $\exists$ isomorphism $\sigma: L \longrightarrow L$ such that $\sigma \biggr\vert_M = \tau$.\\
+  Therefore, $\sigma$ is an automorphism of $L$, and since $\sigma\biggr\vert_K = \tau\biggr\vert_K=id$, $\sigma$ is a $K$-automorphism of $L$.
+\end{proof}
+
+\begin{lemma}{11.8} \label{11.8}
+  $K \subseteq L \subseteq N \subseteq M$, $L:K$ finite, $N$ normal closure of $L:K$.\\
+  Let $\tau$ any $K$-monomorphism $\tau: L \longrightarrow M$.\\
+  Then $\tau(L) \subseteq N$.
+\end{lemma}
+\begin{proof}
+  $\alpha \in L$, $m$ minimal polynomial of $\alpha$ over $K$.\\
+  $\Longrightarrow ~~ m(\alpha)=0$, so $\tau(m(\alpha))=0$
+
+  (since $\tau$ is a $K$-automorphism, ie. maps the zeros of $m(t)$).\\
+
+  Since $\tau$ is a $K$-monomorphism, $\tau(m(\alpha))=m(\tau(\alpha))=0$
+
+  $\Longrightarrow~~ \tau(\alpha)$ is a zero of $m$.\\
+
+  Therefore, $\tau(\alpha)$ lies in $N$, since $N:K$ is normal.\\
+  Henceforth, $\tau(L) \subseteq N$.
+\end{proof}
+
+\begin{thm}{11.9}
+  The following are equivalent:
+  \begin{enumerate}
+    \item $L:K$ normal
+    \item $\exists$ finite normal extension $N$ of $K$ containing $L$,\\
+      such that every $K$-monomorphism $\tau: L \longrightarrow N$ is a $K$-automorphism of $L$.
+    \item for every finite extension $M$ of $K$ containing $L$,\\
+      every $K$-monomorphism $\tau: L \longrightarrow M$ is a $K$-automorphism of $L$.
+  \end{enumerate}
+\end{thm}
+
+\begin{thm}{11.10}
+  $[L:N]=1,~ N$ normal closure of $L:K$. Then,
+
+  $\exists~ n~ K$-monomorphisms $L \longrightarrow N$.\\
+  (the ones proven by Lemma \ref{11.8}).
+\end{thm}
+
+\begin{cor}{11.11} \label{11.11}
+  $|\Gamma(L:K)| = [L:K]$ (if $L:K$ is normal).
+
+  ie. there are precisely $[L:K]$ distinct $K$-automorphisms of $L$.
+\end{cor}
+
+\begin{thm}{11.12}
+  $\Gamma(L:K) = G$. If $L:K$ normal, then $K$ is the fixed field of $G$.
+\end{thm}
+\begin{proof}
+  let $K_0$ be the fixed field of $G$. Let $[L:K]=n$.\\
+  By \ref{11.11}, $|G| = [L:K] = n$.\\
+  By \ref{10.5}, $[L:K_0]=n$ ($K_0$ fixed field).\\
+  Since $K \subseteq K_0$, we must have $K=K_0$.
+
+  $\Longrightarrow$ thus $K$ is the fixed field of $G$.
+\end{proof}
+
+\begin{thm}{11.14}
+  if $L$ any field, $G$ any finite group of automorphisms of $L$, and $K$ its fixed field,
+
+  then $L:K$ is \emph{finite} and \emph{normal}, with Galois group $G$.
+\end{thm}
+
+
+\begin{thm}{12.2}(Fundamental Theorem of Galois Theory)
+  if $L:K$ finite and normal inside $\mathbb{C}$, with $\Gamma(L:K)=G$, then:
+  \begin{enumerate}
+    \item $|\Gamma(L:K)| = [L:K]$
+      (by Corollary \ref{11.11})
+    \item the maps * and $\dagger$ are mutual inverses, and setup an order-reversing one-to-one correspondence between $\mathcal{F}$ and $\mathcal{G}$.
+    \item if $M$ an intermediate field, then
+      $$[L:M] = |M^*|~~~~~~~ [M:K]=\frac{|G|}{|M^*|}$$
+    \item for $M$ an intermediate field, $M:K$ normal iff
+      $$\underbrace{\Gamma(M:K)}_{=M^*} \lhd \underbrace{\Gamma(L:K)}_{=G}$$
+    \item for $M$ intermediate, if $M:K$ normal, then
+      $$\Gamma(M:K) \cong \frac{G}{M^*}$$
+      ie.
+      $$\Gamma(M:K) \cong \frac{\Gamma(L:K)}{\Gamma(L:M)}$$
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  TODO
+\end{proof}
+
+[Chapter 13 is basically a full example. More examples can be found at section \ref{ex:galoisgroups}]
+
 
 \subsection{Detour: Isomorphism Theorems}
 \begin{thm}{i.1}(\emph{First Isomorphism Theorem}) \label{1stisothm}
@@ -387,6 +588,17 @@
 
 \subsection{Chapter 14}
 
+\begin{defn}{14.1}
+  a group $G$ is soluble if it has a finite series of subgroups
+  $$1=G_0 \subseteq G_1 \subseteq \ldots \subseteq G_n = G$$
+  such that
+  \begin{enumerate}[i.]
+    \item $G_i \lhd G_{i+1}$ for $i=0,\ldots,n-1$
+    \item $\frac{G_{i+1}}{G_{i+1}}$ is Abelian for for $i=0,\ldots,n-1$
+  \end{enumerate}
+
+  (Note: $G_i \lhd G_{i+1} \lhd G_{i+2}$ does not imply $G_i \lhd G_{i+2}$)
+\end{defn}
 
 \begin{thm}{14.4}
   $H \subseteq G,~~ N \triangleleft G$, then
@@ -411,7 +623,7 @@
       (*): to see why, $H_i = G_i \cap H = G_i \cap H_i = G_i \cap H_{i+1} = G_i \cap (G_{i+1} \cap H)$.
       (**): by the 2nd Isomorphism Theorem (\ref{2ndisothm}).
 
-      [TODO: diagram of subgroups]
+      [TODO: diagram of subgroups] % TODO %
       
       Notice that $\frac{G_{i+1}}{G_i}$ is Abelian, thus the left-hand-side of the congruence is also Abelian.
       Therefore, $\frac{H_{i+1}}{H_i}$ is Abelian, thus $H$ is soluble.
@@ -422,7 +634,7 @@
       The series clearly exists, so now we show that the quotients are Abelian, so that $G/N$ is soluble:
 
       $$
-      \frac{G_{i+1} N}{G_i N} = \frac{G_{i+1}(G_i N)}{G_i N} \stackrel{*}{\cong}
+      \frac{G_{i+1} N}{G_i N} = \frac{G_{i+1}(G_i N)}{G_i N} \stackrel{(*)}{\cong}
       \frac{G_{i+1}}{G_{i+1} \cap (G_i N)} \cong \frac{G_{i+1}/G_i}{(G_{i+1}
       \cap (G_i N))/G_i}
       $$
@@ -675,6 +887,8 @@ $s(6) = 1+2+3+6 = 12$; henceforth, the total amount of subgroups is $d(n)+s(n) =
 \vspace{0.3cm}
 For $n \geq 3, ~~\mathbb{D}_n \subseteq \mathbb{S}_n$ (subgroup of the Symmetry group).
 
+\subsection{Rolle's theorem} \label{rolle}
+TODO
 
 
 \newpage
