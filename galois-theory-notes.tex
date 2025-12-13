@@ -193,7 +193,7 @@
 [...] TODO: pending to add key parts up to Chapter 15.
 
 \subsection{Detour: Isomorphism Theorems}
-\begin{thm}{}(\emph{First Isomorphism Theorem}) \label{1stisothm}
+\begin{thm}{i.1}(\emph{First Isomorphism Theorem}) \label{1stisothm}
 
   \begin{minipage}{0.75\textwidth}
   If $\psi: G \longrightarrow H$ a group homomorphism, then $ker(\psi) \triangleleft G$.\\
@@ -263,7 +263,7 @@
 \end{proof}
 
 
-\begin{thm}{}(\emph{Second Isomorphism Theorem}) \label{2ndisothm}
+\begin{thm}{i.2}(\emph{Second Isomorphism Theorem}) \label{2ndisothm}
   Let $H \subseteq G$, $N \triangleleft G$. Then
   \begin{enumerate}[i.]
     \item $HN \subseteq G$
@@ -329,7 +329,7 @@
 \end{proof}
 
 
-\begin{thm}{}(\emph{Third Isomorphism Theorem}) \label{2ndisothm}\\
+\begin{thm}{i.3}(\emph{Third Isomorphism Theorem}) \label{2ndisothm}\\
   Let $H \subseteq K$ and $K \triangleleft G,~ H \triangleleft G$.\\
   Then
   $\frac{K}{H} \triangleleft \frac{G}{H}$
@@ -387,6 +387,74 @@
 
 \subsection{Chapter 14}
 
+
+\begin{thm}{14.4}
+  $H \subseteq G,~~ N \triangleleft G$, then
+  \begin{enumerate}
+    \item if $G$ soluble $\Longrightarrow H$ soluble
+    \item if $G$ soluble $\Longrightarrow G/N$ soluble
+    \item if $N$ and $G/N$ soluble $\Longrightarrow G$ soluble
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \begin{enumerate}
+    \item Since $G$ soluble, by definition: $\exists~~ 1=G_0 \triangleleft G_1 \triangleleft \ldots \triangleleft G_r = G$ with Abelian quotients $\frac{G_{i+1}}{G_i}$.
+
+      Let $H_i = G_i \cap H$, then $H$ has a series $1=H_0 \triangleleft H_1
+      \triangleleft \ldots \triangleleft H_r = H$, next we show that the
+      quotients $\frac{H_{i+1}}{H_i}$ are Abelian (so that H is soluble):
+
+      $$\frac{H_{i+1}}{H_i} = \frac{G_{i+1} \cap H}{G_i \cap H} \stackrel{(*)}{=} \frac{G_{i+1} \cap H}{G_i \cap (G_{i+1}\cap H)}
+      \stackrel{(**)}{\cong} \frac{G_i(G_{i+1} \cap H)}{G_i} \subseteq \frac{G_{i+1}}{G_i}
+      $$
+
+      (*): to see why, $H_i = G_i \cap H = G_i \cap H_i = G_i \cap H_{i+1} = G_i \cap (G_{i+1} \cap H)$.
+      (**): by the 2nd Isomorphism Theorem (\ref{2ndisothm}).
+
+      [TODO: diagram of subgroups]
+      
+      Notice that $\frac{G_{i+1}}{G_i}$ is Abelian, thus the left-hand-side of the congruence is also Abelian.
+      Therefore, $\frac{H_{i+1}}{H_i}$ is Abelian, thus $H$ is soluble.
+
+    \item For $G/N$ to be soluble, (by definition) it would have the series $\frac{N}{N} = G_0 \frac{N}{N} \triangleleft G_1 \frac{N}{N} \triangleleft \ldots \triangleleft G_r \frac{N}{N} = \frac{G}{N}$,
+      and any quotient being $\frac{G_{i+1}\frac{N}{N}}{G_i \frac{N}{N}}$.
+
+      The series clearly exists, so now we show that the quotients are Abelian, so that $G/N$ is soluble:
+
+      $$
+      \frac{G_{i+1} N}{G_i N} = \frac{G_{i+1}(G_i N)}{G_i N} \stackrel{*}{\cong}
+      \frac{G_{i+1}}{G_{i+1} \cap (G_i N)} \cong \frac{G_{i+1}/G_i}{(G_{i+1}
+      \cap (G_i N))/G_i}
+      $$
+
+      (*): by the 2nd Isomorphism Theorem (\ref{2ndisothm}).
+
+      The last quotient is a quotient of the Abelian group $G_{i+1}/G_i$, so it is Abelian.
+
+      Hence, $\frac{G_{i+1}N}{G_i N}$ is also Abelian; so $\frac{G}{N}$ is soluble.
+
+    \item
+      By the definition of $N$ and $G/N$ being soluble,
+      \begin{align*}
+	N \text{soluble} \Longrightarrow~~ 1 &= N_0 \triangleleft N_1 \triangleleft \ldots \triangleleft N_r = N\\
+	G/N \text{soluble} \Longrightarrow~~ 1= \frac{N}{N} &= \frac{G_0}{N} \triangleleft \frac{G_1}{N} \triangleleft \ldots \triangleleft \frac{G_r}{N} = \frac{G}{N}
+    \end{align*}
+    both with Abelian quotients.
+
+    Consider the series of $G$ given by combining the two previous series:
+
+    $$
+      1 &= N_0 \triangleleft N_1 \triangleleft \ldots \triangleleft N_r = N = G_0 \triangleleft G_1 \triangleleft \ldots \triangleleft G_r = G
+    $$
+    the quotients are either
+    \begin{itemize}
+      \item $\frac{N_{i+1}}{N_i}$, Abelian
+      \item $\frac{G_{i+1}}{G_i}$, isomorphic to $\frac{G_{i+1}/N}{G_i/N}$,
+	which is Abelian.
+    \end{itemize}
+  \end{enumerate}
+  Therefore, the quotients are always Abelian; hence $G$ is soluble.
+\end{proof}
 
 \newpage
 
