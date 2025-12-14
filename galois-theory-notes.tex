@@ -73,6 +73,11 @@
 {\renewcommand\theinnerlemma{#1}\innerlemma}
 {\endinnerlemma}
 
+\newtheorem{innerprop}{Proposition}
+\newenvironment{prop}[1]
+{\renewcommand\theinnerprop{#1}\innerprop}
+{\endinnerprop}
+
 \newtheorem{innercor}{Corollary}
 \newenvironment{cor}[1]
 {\renewcommand\theinnercor{#1}\innercor}
@@ -82,6 +87,11 @@
 \newenvironment{eg}[1]
 {\renewcommand\theinnereg{#1}\innereg}
 {\endinnereg}
+
+\newtheorem{innerex}{Exercise}
+\newenvironment{ex}[1]
+{\renewcommand\theinnerex{#1}\innerex}
+{\endinnerex}
 
 
 \title{Galois Theory notes}
@@ -144,7 +154,7 @@
   The isomorphism $\frac{K[t]}{<m>} \longrightarrow K(\alpha)$ can be chosen to map $t$ to $\alpha$.
 
 \end{thm}
-\begin{cor}{5.13}
+\begin{cor}{5.13} \label{5.13}
   Let $K(\alpha):K$ and $K(\beta):K$ be simple algebraic extensions.\\
   If $\alpha,~ \beta$ have same minimal polynomial $m$ over $K$, then the two extensions are isomorphic, and the isomorphism of the larger fields map $\alpha$ to $\beta$.
 \end{cor}
@@ -231,9 +241,19 @@
 \begin{thm}{8.2, 8.3}
   The set of all $K$-automorphisms of $L$ forms a group, $\Gamma(L:K)$, the Galois group of $L:K$.
 \end{thm}
+
+\begin{defn}{8.12}(Radical Extension) \label{8.12}
+  $L:K$ is radical if $L=K(\alpha_1, \ldots, \alpha_m)$ where for each $j=1, \ldots, m$, $\exists~ n_j$ such that $\alpha_j^{n_j} \in K(\alpha_1, \ldots, \alpha_{j-1})~~(j\geq 1)$
+\end{defn}
+
 \begin{lemma}{8.18}
   Let $q \in L$. The minimal polynomial of $q$ over $K$ \emph{splits} into linear factors over L.
 \end{lemma}
+
+\begin{ex}{E.8.7}
+  TODO
+\end{ex}
+
 
 \begin{defn}{9.1}
   For $K \subseteq \mathbb{C}$, and $f \in K[t]$, $f$ \emph{splits} over $K$ if it can be expressed as a product of linear factors
@@ -276,8 +296,8 @@
   such that $\phi(k)=k ~~ \forall k \in K$.
 \end{defn}
 
-\begin{thm}{11.3}
-  $L:K$ normal, $K \subseteq M \subseteq L$. Let $\tau$ any $K$-monomorphism $\tau: M \longarrow L$.\\
+\begin{thm}{11.3} \label{11.3}
+  $L:K$ normal, $K \subseteq M \subseteq L$. Let $\tau$ any $K$-monomorphism $\tau: M \longrightarrow L$.\\
   Then, $\exists$ a $K$-automorphism $\sigma$ of $L$ such that $\sigma\biggr\vert_M=\tau$.
 \end{thm}
 \begin{proof}
@@ -306,6 +326,17 @@
 
   By Theorem \ref{9.6}, $\exists$ isomorphism $\sigma: L \longrightarrow L$ such that $\sigma \biggr\vert_M = \tau$.\\
   Therefore, $\sigma$ is an automorphism of $L$, and since $\sigma\biggr\vert_K = \tau\biggr\vert_K=id$, $\sigma$ is a $K$-automorphism of $L$.
+\end{proof}
+
+\begin{prop}{11.4} \label{11.4}
+  $L:K$ finite normal, $\alpha,~\beta$ are zeros in $L$ of the irreducible polynomial $p \in K[t]$.
+
+  Then, $\exists$ a $K$-automorphism $\sigma$ of $L$ such that $\sigma(\alpha)=\beta$.
+\end{prop}
+\begin{proof}
+  By Corollary \ref{5.13}, $\exists$ isomorphism $\tau: K(\alpha) \longrightarrow K(\beta)$ such that $\tau \biggr\vert_K$ is the identity, and $\tau(\alpha)=\beta$.
+
+  By Theorem \ref{11.3}, $\tau$ extends to a $K$-automorphism $\sigma$ of $L$.
 \end{proof}
 
 \begin{lemma}{11.8} \label{11.8}
@@ -588,7 +619,7 @@
 
 \subsection{Chapter 14}
 
-\begin{defn}{14.1}
+\begin{defn}{14.1} \label{14.1}
   a group $G$ is soluble if it has a finite series of subgroups
   $$1=G_0 \subseteq G_1 \subseteq \ldots \subseteq G_n = G$$
   such that
@@ -656,7 +687,7 @@
     Consider the series of $G$ given by combining the two previous series:
 
     $$
-      1 &= N_0 \triangleleft N_1 \triangleleft \ldots \triangleleft N_r = N = G_0 \triangleleft G_1 \triangleleft \ldots \triangleleft G_r = G
+      1 = N_0 \triangleleft N_1 \triangleleft \ldots \triangleleft N_r = N = G_0 \triangleleft G_1 \triangleleft \ldots \triangleleft G_r = G
     $$
     the quotients are either
     \begin{itemize}
@@ -666,6 +697,139 @@
     \end{itemize}
   \end{enumerate}
   Therefore, the quotients are always Abelian; hence $G$ is soluble.
+\end{proof}
+
+
+\begin{defn}{14.5}
+  $G$ is \emph{simple} if it's nontrivial and it's only normal subgroups are $1$ and $G$.
+\end{defn}
+
+\begin{thm}{14.6} \label{14.6}
+  A \emph{soluble} group is \emph{simple} iff it is cyclic of prime order.
+\end{thm}
+\begin{thm}{14.7} \label{14.7}
+  if $n \geq 5$, then $\mathbb{A}_n$ is simple.
+\end{thm}
+\begin{cor}{14.8}
+  $\mathbb{S}_n$ is not soluble if $n \geq 5$.
+\end{cor}
+\begin{proof}
+  if $\mathbb{S}_n$ were soluble, then $\mathbb{A}_n$ would be soluble by Theorem \ref{14.1}(i), and simple by Theorem \ref{14.7}, hence of prime order by Theorem \ref{14.6}.
+  
+  But observe: $|\mathbb{A}_n|=\frac{1}{2}(n!)$ is not prime if $n \geq 5$.\\
+  Thus $\mathbb{S}_n$ is not soluble if $n \geq 5$.
+\end{proof}
+
+\begin{lemma}{14.14} \label{14.14}
+  if $A$ finite and abelian group with $p \biggr\vert |A|$ ($p$ prime), then $A$ has an element of order $p$.
+\end{lemma}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item if $|A|$ prime and Abelian $\Longrightarrow$ then $A$ is cyclic.
+
+      Since $p \vert |A| ~~ \Longrightarrow ~~ \exists! ~ B \subseteq A$ such that $|B|=p$, where $B = <b>$ with $ord(b)=p$. So the lemma is proven.
+
+    \item if $|A|$ non-prime:
+
+      take $M \subseteq A$ with $|M|=m$, $m$ maximal. Then
+
+      \begin{enumerate}[a.]
+	\item if $p|m ~~ \Longrightarrow ~~ \exists! ~ B'=<b'>,~ b' \in A$ with $|B'|=p$ and $ord(b')=p$.
+	\item if $p \nmid m$:
+	  Let $b \in A \not M$ and $B=<b>$.\\
+	  Then $MB \supseteq M$, and by maximility must be $MB=A$.
+
+	  By the 1st Isomorphism Theorem (\ref{1stisothm}),
+	  $$|A| = |MB| = \frac{|M| \cdot |B|}{|M \cap B|}$$
+	  both $|A|$ and $|B|$ are divisible by $p$ (but recall that $p \nmid m=|M|$), since $B$ is cyclic and $p \vert |B|$
+
+	  $\Longrightarrow$ thus, $B$ has an element of order $p$.
+	  
+	  So, if $|B|=r$, and $p|r ~~ \Longrightarrow~~ ord(b^{r/p}) = p$.\\
+
+	  Hence, in all cases i, ii.a, ii.b, $A$ contains an element of order $p$.
+      \end{enumerate}
+  \end{enumerate}
+\end{proof}
+
+\begin{thm}{14.15}(Cauchy's Theorem)
+  if $p \biggr\vert |G|$ ($p$ prime), then $\exists ~ x \in G$ such that $ord(x)=p$.
+\end{thm}
+\begin{proof}
+  (induction on $|G|$)
+
+  For $|G|=1,2,3$, trivial.
+
+  Induction step: class equation
+  $$|G|=1+|C_2|+ \ldots + |C_r|$$
+  since $p \biggr\vert |G|$, must have $p \nmid |C_j|$ for some $j \geq 2$.
+
+  If $x \in C_j ~~\Longrightarrow p \biggr\vert |C_G(x)|$ (since $|C_j|=|G|/|C_G(x)|$, recall $p\biggr\vert |G|$).
+
+  \begin{enumerate}[i.]
+    \item if $C_G(x) \neq G$:\\
+      (by induction) since $p \biggr\vert |C_G(x)|$,
+
+      $\exists a \in C_G(x)$ with $ord(a)=p$, and $a \in G$ (since $C_G(x) \subset G$).
+    \item otherwise, $C_G(x)=G$:\\
+      implies $x \in Z(G)$, by choice $x\neq 1$, so $Z(G)\neq 1$.
+
+      Then either
+      \begin{enumerate}[I.]
+	\item $p \biggr\vert |Z(G)| ~~ \longrightarrow$ Abelian case, Lemma \ref{14.14}.
+	\item $p \not\biggr\vert |Z(G)|$:
+	  by induction, $\exists x \in G$ such that $\hat{x} \in G/Z(G)$, with $ord(\hat{x})=p$. (where $\hat{x}$ is the image of $x$).
+
+	  $\Longrightarrow~~ x^p \in Z(G)$, but $x \not\in Z(G)$.
+
+	  Let $X=<x>$, cyclic.\\
+	  $XZ(G)$ is Abelian, and $p \biggr\vert |XZ(G))|$\\
+	  $\Longrightarrow$ by Lemma \ref{14.14}, it has an element of order $p$, and this element belongs to $G$.
+      \end{enumerate}
+
+  \end{enumerate}
+\end{proof}
+
+\begin{defn}{15.1}(Soluble by radicals)
+  let $f \in K[t],~ K \subseteq \mathbb{C}$, and $\Sigma$ a splitting field of $f$ over $K$.
+
+  $f$ is \emph{soluble by radicals} if\\
+  $\exists$ a field $M$ with $\Sigma \subseteq M$ such that $M:K$ is a radical extension (\ref{8.12}).
+
+  Note: not required $\Sigma:K$ to be radical.
+\end{defn}
+
+\begin{lemma}{15.3}
+  $L:K$ radical extension $\mathbb{C}$, and $M$ normal enclosure of $L:K$, then $M:K$ is radical.
+\end{lemma}
+\begin{proof}
+  let $L=K(\alpha_1, \ldots, \alpha_r)$ with $\alpha_i^{n_i} \in K(\alpha_1, \ldots, \alpha_{j-1})$ (by definition of $L:K$ being a radical extension).
+
+  Let $f_i$ be the minimal polynimal of $\alpha_i$ over $K$.
+
+  Then, $M \supseteq L$ is spliting field of $\Prod_{i=1}^r f_i$, since $M$ is normal enclosure of $L:K$.
+
+  For every zero $\beta_{ij}$ of $f_i$ in $M$,\\
+  $\exists$ an isomorphism $\sigma: K(\alpha_i) \longrightarrow K(\beta_{ij})$ by Corollary \ref{5.13}.
+
+  By Proposition \ref{11.4}, since $K(\alpha_i),~K(\beta_{ij}) \subset M$,
+  $\sigma$ extends to a $K$-automorphism
+  $$\tau: M \longrightarrow M$$
+  since $M$ is splitting field (ie. contains the zeros of $\Prod f_i$).
+
+  Since $\alpha$ is a member of radical sequence for a subfield of $M$, so it is $\beta_{ij}$.
+
+  By combining the sequences for $M$, $M:K$ is a radical extension.
+\end{proof}
+
+
+\vspace{0.5cm}
+
+The next two lemmas show that certain Galois groups are Abelian.
+
+\begin{lemma}{15.4}
+\end{lemma}
+\begin{proof}
 \end{proof}
 
 \newpage
