@@ -1,0 +1,543 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+% \usepackage{yfonts} % WIP
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{tikz} % diagram
+
+\begin{filecontents}[overwrite]{commutative-algebra-notes.bib}
+@misc{am,
+  author = {M. F. Atiyah and I. G. MacDonald},
+  title = {{Introduction to Commutative Algebra}},
+  year = {1969}
+}
+@misc{reid,
+  author = {Miles Reid},
+  title = {{Undergraduate Commutative Algebra}},
+  year = {1995}
+}
+@misc{mit-course,
+  author = {Steven Kleiman},
+  title = {{Commutative Algebra - MIT OpenCourseWare}},
+  year = {2008},
+  note = {\url{https://ocw.mit.edu/courses/18-705-commutative-algebra-fall-2008/}},
+  url = {https://ocw.mit.edu/courses/18-705-commutative-algebra-fall-2008/}
+}
+\end{filecontents}
+\nocite{*}
+
+
+\theoremstyle{definition}
+
+\newtheorem{innerdefn}{Definition}
+\newenvironment{defn}[1]
+{\renewcommand\theinnerdefn{#1}\innerdefn}
+{\endinnerdefn}
+
+\newtheorem{innerthm}{Theorem}
+\newenvironment{thm}[1]
+{\renewcommand\theinnerthm{#1}\innerthm}
+{\endinnerthm}
+
+\newtheorem{innerlemma}{Lemma}
+\newenvironment{lemma}[1]
+{\renewcommand\theinnerlemma{#1}\innerlemma}
+{\endinnerlemma}
+
+\newtheorem{innerprop}{Proposition}
+\newenvironment{prop}[1]
+{\renewcommand\theinnerprop{#1}\innerprop}
+{\endinnerprop}
+
+\newtheorem{innercor}{Corollary}
+\newenvironment{cor}[1]
+{\renewcommand\theinnercor{#1}\innercor}
+{\endinnercor}
+
+\newtheorem{innereg}{Example}
+\newenvironment{eg}[1]
+{\renewcommand\theinnereg{#1}\innereg}
+{\endinnereg}
+
+\newtheorem{innerex}{Exercise}
+\newenvironment{ex}[1]
+{\renewcommand\theinnerex{#1}\innerex}
+{\endinnerex}
+
+\newcommand{\aA}{\mathfrak{a}} % TODO: use goth font
+\newcommand{\mM}{\mathfrak{m}}
+
+\title{Commutative Algebra notes}
+\author{arnaucube}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Notes taken while studying Commutative Algebra, mostly from Atiyah \& MacDonald book \cite{am} and Reid's book \cite{reid}.
+
+    Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
+
+    The proofs may slightly differ from the ones from the books, since I try to extend them for a deeper understanding.
+\end{abstract}
+
+\tableofcontents
+
+\section{Ideals}
+
+\subsection{Definitions}
+% WIP
+
+\subsection{Lemmas, propositions and corollaries}
+\begin{thm}{1.X}{Zorn's lemma} \label{zorn}
+  TODO
+\end{thm}
+
+\begin{thm}{1.3} \label{1.3}
+  Every ring $A \neq 0$ has at lleast one maximal ideal.
+\end{thm}
+\begin{proof}
+  By Zorn's lemma \ref{zorn}.
+\end{proof}
+
+\begin{cor}{1.4} \label{1.4}
+  if $I \neq (1)$ an ideal of $A$, $\exists$ a maximal ideal of $A$ containing $I$.
+\end{cor}
+
+\begin{cor}{1.5} \label{1.5}
+  Every non-unit of $A$ is contained in a maximal ideal.
+\end{cor}
+
+\begin{defn}{Jacobson radical}
+  The \emph{Jacobson radical} of a ring $A$ is the intersection of all the maximal ideals of $A$.
+
+  Denoted $Jac(A)$.
+  
+  $Jac(A)$ is an ideal of $A$.
+\end{defn}
+
+\begin{prop}{1.9} \label{1.9}
+  $x \in Jac(A)$ iff $(1 - xy)$ is a unit in $A$, $\forall y \in A$.
+\end{prop}
+\begin{proof}
+  Suppose $1-xy$ not a unit.
+
+  By \ref{1.5}, $1-xy \in \mM$ for $\mM$ some maximal ideal.
+
+  But $x \in Jac(A) \subseteq \mM$, since $Jac(A)$ is the intersection of all maximal ideals of $A$.
+
+  Hence $xy \in \mM$, and therefore $1 \in \mM$, which is absurd, thus $1-xy$ is a unit.
+
+  Conversely:\\
+  Suppose $x \not\in \mM$ for some maximal ideal $\mM$.
+
+  Then $\mM$ and $x$ generte the unit ideal $(1)$, so that we have $u + xy = 1$ for some $u \in \mM$ and some $y \in A$.
+
+  Hence $1 -xy \in \mM$, and is therefore not a unit.
+\end{proof}
+
+\section{Modules}
+
+\subsection{Modules}
+
+\subsection{Cayley-Hamilton theorem, Nakayama lemma, and corollaries}
+
+\begin{prop}{2.4}(Cayley-Hamilton Theorem) \label{2.4}
+  Let $M$ a fingen $A$-module. Let $\aA$ an ideal of $A$, let $\psi$ an
+  $A$-module endomorphism of $M$ such that $\psi(M) \subseteq \aA M$.
+
+  Then $\psi$ satisfies
+  
+  $$\psi^n + a_1 \psi^{n-1} + \ldots + a_{n-1} \psi + a_n = 0$$
+
+  with $a_i \in \aA$.
+\end{prop}
+\begin{proof}
+  Since $M$ fingen, let $\{ x_1, \ldots, x_n \}$ be generators of $M$.\\
+  By hypothesis, $\psi(M) \subseteq \aA M$; so for any generator $x_i$, it's image $\psi(x_i) \in \aA M$.
+
+  Any element in $\aA M$ is a linear combination of the generators with coefficients in the ideal $\aA$, thus
+  $$\psi(x_i)= \sum_{j=1}^n a_{ij} x_j$$
+  with $a_{ij} \in \aA$.
+  
+  Thus, for a module with $n$ generators, we have $n$ different $\psi(x_i)$ equations:
+
+  $$
+  \left.
+  \begin{aligned}
+    \psi(x_1) &= a_{1,1} x_1 + a_{1,2} x_2 + \ldots + a_{1,n} x_n\\
+    \psi(x_2) &= a_{2,1} x_1 + a_{2,2} x_2 + \ldots + a_{2,n} x_n\\
+    \ldots\\
+    \psi(x_n) &= a_{n,1} x_1 + a_{n,2} x_2 + \ldots + a_{n,n} x_n
+  \end{aligned}
+  \right\}
+  \begin{aligned}
+      &\text{n elements $\psi(x_i) \in \aA M$ which}\\
+      &\text{are linear combinations of the}\\
+      &\text{$n$ generators of $M$}
+  \end{aligned}
+  $$
+  
+  Next step: rearrange in order to use matrix algebra.
+
+  Observe that each row equals $0$, and rearranging the elements at each row we get
+
+  \begin{align*}
+    &\psi(x_1) - (a_{1,1} x_1 + a_{1,2} x_2 + \ldots + a_{1,n} x_n) = 0\\
+    &\psi(x_2) - (a_{2,1} x_1 + a_{2,2} x_2 + \ldots + a_{2,n} x_n) = 0\\
+    &\ldots\\
+    &\psi(x_n) - (a_{n,1} x_1 + a_{n,2} x_2 + \ldots + a_{n,n} x_n) = 0
+  \end{align*}
+
+  Then, group the $x_i$ terms together; as example, take the row $i=1$:
+    $$(\psi - a_{1,1})x_1 - a_{1,2} x_2 - \ldots - a_{1,n} x_n = 0$$
+
+    for $i=2$:
+    $$-a_{2,1} x_1 + (\psi - a_{2,2}) x_2 - \ldots - a_{2,n} x_n = 0$$
+    
+  So, $\forall i \in [n]$, as a matrix:
+  
+  $$
+  \begin{pmatrix}
+    \psi - a_{1,1} & -a_{1,2} & \ldots & -a_{1,n}\\
+    -a_{2,1} & \psi-a_{2,2} & \ldots & -a_{2,n}\\
+    \vdots\\
+    -a_{n,1} & -a_{n,2} & \ldots & \psi-a_{n,n}\\
+  \end{pmatrix}
+  \begin{pmatrix}
+    x_1\\ x_2\\ \vdots\\ x_n
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    0\\ 0\\ \vdots\\ 0
+  \end{pmatrix}
+  $$
+
+  Kronecker delta:
+  $\delta_{ij} =
+  \begin{cases}
+    1 & \text{if } i = j,\\
+    0 & \text{otherwise}
+  \end{cases}$
+
+  With the Kronecker delta, $\psi(x_i)$ can be expressed as
+  $$\psi(x_i) = \sum_{j=1}^n \delta_{ij} \psi(x_j)$$
+  so the previous matrix ccan be characterized as
+  $$\sum_{j=1}^n (\delta_{ij} \psi - a_{ij}) x_j = 0$$
+
+  The entries of the matrix are \emph{endomorphisms} (elements of the ring $A[\psi]$)
+  \begin{itemize}
+    \item the term $(\psi - a_{11})$ is an operator that acts on $x_1$; as $(\psi(x_1)-a_{11}\cdot x_1)$
+    \item the term $(-a_{12})$ is an operator that acts on $x_2$; as multiplication by it, ie. $(-a_{12} \cdot x_2)$
+  \end{itemize}
+
+  Since $A$ is a commutative ring, and $\psi$ commutes with any $a \in A$,
+  the ring of operators $A[\psi]$ is a commutative ring.
+
+  $\Longrightarrow~$ so we can treat the matrix as a matrix of real numbers and calculate its determinant.
+
+  We're interested in the determinant because it is the only way to turn a system of multiple equations in a single scalar-like equation that describes the endomorphism $\psi$.\\
+  $\rightarrow$ Because in module theory, we lack of "division", so can not "solve for $\psi$" the system of equations.\\
+  $\rightarrow$ The determinant provides a way to find a polynomial that \emph{annihilates} the module; the \emph{characteristic polynomial}, which related $\psi$ to the ideal $\aA$
+
+  $$det(M) \cdot x_i = 0~~ \forall i$$
+  where $x_i$ are the generators of $M$.
+
+  Since $det(M)$ kills every generator, it must kill every element in $M$\\
+  $\Longrightarrow~~ det(M)$ is the zero map.
+
+  Leibniz formula of the determinant of an $n \times n$ matrix:
+  $$
+  det(M) = \sum_{\sigma \in S_n} sign(\sigma) \prod_{i=1}^n M_{i, \sigma(i)}
+  $$
+  
+  so,
+  $$(\psi - a_{11}) (\psi - a_{22}) \ldots (\psi - a_{nn})$$
+  expanding it,
+  \begin{itemize}
+    \item highest power is $1 \cdot \psi^n$
+    \item coefficient of $\psi^{n-1}$ is $-( \underbrace{ a_{11} + a_{22} + \ldots + a_{nn} }_{a_1})$,\\
+      where, since each $a_{ii} \in \aA,~~ a_1 \in \aA$
+    \item the rest of coefficients of $\psi^k$ are also elements in $\aA$
+  \end{itemize}
+
+  So we have
+  $$p(\psi) = \psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n$$
+  with $a_i \in \aA$.
+
+  Since this determinant annihilates the generators (ie. $det(M)x_i=0$), the resulting enddomorphism $p(\psi)$ is the zero map on the entire module $M$, so:
+  $$\psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n = 0$$
+  with $a_i \in \aA$, as stated in the Cayley-Hamilton theorem.
+\end{proof}
+
+
+
+\begin{cor}{2.5} \label{2.5}
+  Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA M = M$.
+
+  Then, $\exists~ x \equiv 1 \pmod \aA$ such that $xM = 0$.
+\end{cor}
+\begin{proof}
+  take $\psi = \text{identity}$. Then in Cayley-Hamilton (\ref{2.4}):
+  \begin{align*}
+    &\psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n = 0\\
+    \Longrightarrow~ &id_M + a_1 id_M + a_2 id_M + \ldots + a_{n-1} id_M + a_n = 0\\
+    \Longrightarrow~ &(1 + a_1 + \ldots + a_n) id_M = 0
+  \end{align*}
+  apply it to $m \in M$, where since $id_M(m)=m$ (by definition of the identity), we then have
+  $$(1 + a_1 + \ldots + a_n) \cdot m = 0$$
+  with $a_i \in \aA$.
+
+  \begin{enumerate}[\text{part} i.]
+    \item $xM=0$:\\
+      Thus the scalar $x = (1 + a_1 + \ldots + a_n)$ annihilates every $m \in M$, ie. the entire module $M$.
+
+    \item $x \equiv 1 \pmod \aA$:\\
+      $x \equiv 1 \pmod \aA ~~ \Longleftrightarrow (x-1) \in \aA$\\
+      then from $x = (1 + \underbrace{a_1 + \ldots + a_n}_b) \in \aA$, set $b=a_1 + \ldots + a_n$,\\
+      so that $x=(1+b) \in \aA$.\\
+
+      Then $x-1 = (1+b)-1 = b \in \aA$\\
+      so $x-1 \in \aA$, thus $x \equiv 1 \pmod \aA$ as stated.
+  \end{enumerate}
+\end{proof}
+
+
+
+\begin{prop}{2.6}{Nakayama's lemma} \label{2.6}
+  Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA \subseteq Jac(A)$.
+
+  Then $\aA M = M$ implies $M=0$.
+\end{prop}
+\begin{proof}
+  By \ref{2.5}: since $\aA M = M$, we have $x M =0$ for some $x \equiv 1 \pmod {Jac(A)}$. (notice that at \ref{2.5} is $\pmod \aA$ but here we use $\pmod {Jac(A)}$, since we have $\aA \subseteq Jac(A)$).
+
+  By \ref{1.9}, $x$ is a unit in $A$.
+
+  Hence $M = x^{-1} \cdot \underbrace{x \cdot M}_{=0~ \text{(by \ref{2.5})}} = 0$.
+
+  Thus, if $\aA M = M$ then $M=0$.
+\end{proof}
+
+
+
+\begin{cor}{2.7} \label{2.7}
+  Let $M$ a fingen $A$-module, let $N \subseteq M$ a submodule of $M$, let $\aA \subseteq Jac(A)$ an ideal.
+
+  Then $M = \aA M + N \stackrel{\text{implies}}{\Longrightarrow} M=N$.
+\end{cor}
+\begin{proof}
+  The idea is to apply Nakayama (\ref{2.6}) to $M/N$.
+
+  Since $M$ fingen $\Longrightarrow~~ M/N$ is fingen and an $A$-module.
+
+  Since $\aA \subseteq Jac(A) ~\Longrightarrow~$ Nakayama applies to $M/N$ too.
+
+  By definition,
+  $$\aA M = \left\{ \sum a_i \cdot m_i ~~|~~ a_i \in \aA, m_i \in M \right\}$$
+  where $m_i$ are the generators of $M$.
+
+  Then, for $M/N$,
+  $$\aA (\frac{M}{N}) = \left\{ \sum a_i \cdot (m_i + N) ~~|~~ a_i \in \aA, m_i \in M \right\}$$
+
+  observe that $a_i(m_i+N)= a_i m_i +N$, thus
+  $$\sum_i a_i \cdot (m_i + N) = \underbrace{(\sum_i a_i \cdot m_i)}_{\in \aA M} + N \in \aA M + N$$
+
+  Hence,
+
+  \begin{equation}
+    \aA (\frac{M}{N}) = \left\{ x + N ~~|~~ x \in \aA M \right\} = \aA M + N
+    \label{eq:2.7.1}
+  \end{equation}
+
+  By definition, if we take $\frac{\aA M + N}{N}$, then
+  $$\frac{\aA M + N}{N} = \left\{ y + N ~~|~~ y \in \aA M +N \right\} = \aA M + N$$
+
+  thus every $y \in \aA M +N$ can be written as
+  $$y=x+n,~~ \text{with} x \in \aA M,~ n\in M$$
+  which comes from \eqref{eq:2.7.1}.
+
+  Thus, $y + N = (x+n)+N = x+N$, since $n \in N$ is zero in the quotient.
+  
+  Hence, every element of $\frac{\aA M +N}{N}$ has the form
+  $$\frac{\aA M + N}{N} = \left\{ x + N ~~|~~ x \in \aA M \right\}$$
+  as in \eqref{eq:2.7.1}.
+
+  Thus
+  \begin{equation}
+    \aA (\frac{M}{N}) = \aA M + N = \frac{\aA M +N}{N}
+    \label{eq:2.7.2}
+  \end{equation}
+
+  By the Collorary assumption, $M = \aA M + N$; quotient it by $N$:
+  \begin{equation}
+    \frac{M}{N} = \frac{\aA M +N}{N}
+  \label{eq:2.7.3}
+  \end{equation}
+
+  So, from \eqref{eq:2.7.2} and \eqref{eq:2.7.3}:
+  $$\aA (\frac{M}{N}) = \aA M +N = \frac{\aA M +N}{N} = \frac{M}{N}$$
+  thus, $\aA (\frac{M}{N}) = \frac{M}{N}$.
+
+  By Nakayama's lemma \ref{2.6}, if $\aA (\frac{M}{N}) = \frac{M}{N} ~\stackrel{implies}{\Longrightarrow}~ \frac{M}{N}=0$
+
+  Note that
+  $$\frac{M}{N} = \{ m + N ~|~ m \in M \}$$
+  (the zero element in $\frac{M}{N}$ is the coset $N=0+N$)
+
+  Then, $\frac{M}{N}=0$ means that the quotient has exactly one element, the zero coset $N$.
+
+  Thus, every coset $m + N$ equals the zero coset $N$, so $m-0 \in N ~\Longrightarrow~ m \in N$.
+
+  Hence every $m \in M$ lies in $N$, ie. $\forall m \in M,~ m \in N$.
+
+  So $M \subseteq N$. But notice that by the Corollary, we had $N \subseteq M$, therefore $M = N$.
+
+  Thus, if $M = \aA M + N \stackrel{implies}{\Longrightarrow} M = N$.
+\end{proof}
+
+
+
+\begin{prop}{2.8} \label{2.8}
+  Let $x_i \forall i \in [n]$ be elements of $M$ whose images $\frac{M}{m M}$ from a basis of this vecctor space. Then the $x_i$ generate $M$.
+\end{prop}
+\begin{proof}
+  Let $N$ submodule $M$, generated by the $x_i$.
+
+  Then the composite map $N \longrightarrow M \longrightarrow \frac{M}{m M}$ maps $N$ onto $\frac{M}{m M}$, hence $N + \aA M = M$, which by \ref{2.7} implies $N = M$.
+\end{proof}
+
+
+\subsection{Noetherean rings}
+
+
+
+
+
+\section{Exercises}
+
+For the exercises, I follow the assignements listed at \cite{mit-course}.
+
+The exercises that start with \textbf{R} are the ones from the book \cite{reid}, and the ones starting with \textbf{AM} are the ones from the book \cite{am}.
+
+\subsection{Exercises Chapter 1}
+
+\begin{ex}{R.1.1}
+  Ring $A$ and ideals $I, J$ such that $I \cup J$ is not an ideal. What's the smallest ideal containing $I$ and $J$?
+\end{ex}
+\begin{proof}
+  Take ring $A= \mathbb{Z}$. Set $I = 2 \mathbb{Z},~ J=3 \mathbb{Z}$.
+
+  $I,~J$ are ideals of $A$ ($=\mathbb{Z}$). And $I \cup J = 2 \mathbb{Z} \cup 3 \mathbb{Z}$.\\
+  Observe that for $2 \in I,~ 3 \in J ~\Longrightarrow~ 2,3 \in I \cup J$, but $2+3 = 5 \not\in I \cup J$.
+
+  Thus $I \cup J$ is not closed under addition; thus is not an ideal.
+
+
+  Smallest ideal of $\mathbb{Z}$ ($=A$) containing $I$ and $J$ is their sum:
+
+  $$I+J = \{ a+b | a \in I, b \in J \}$$
+
+  $gcd(2,3)=1$, so $I+J = \mathbb{Z}$.
+
+  Therefore, smallest ideal containing $I$ and $J$ is the whole ring $\mathbb{Z}$.
+\end{proof}
+
+\begin{ex}{R.1.5}
+  let $\psi: A \longrightarrow B$ a ring homomorphism. Prove that $\psi^{-1}$ takes prime ideals of $B$ to prime ideals of $A$.\\
+  In particular if $A \subset B$ and $P$ a prime ideal of $B$, then $A \cap P$ is a prime ideal of $A$.
+\end{ex}
+\begin{proof}
+  (Recall: prime ideal is if $a,b \in R$ and $a \cdot b \in P$ (with $R \neq P$), implies $a \in P$ or $b \in P$).
+
+  Let
+  $$\psi^{-1}(P) = \{ a \in A | \psi(a) \in P \} = A \cap P$$
+  The claim is that $\psi^{-1}(P)$ is prime iddeal of $A$.
+
+  \begin{enumerate}[i.]
+    \item show that $\psi^{-1}(P)$ is an ideal of $A$:\\
+      $0_A \in \psi^{-1}(P)$, since $\psi(0_A)=0_B \in P$ (since every ideal contains $0$).
+
+      If $a,b \in \psi^{-1}(P)$, then $\psi(a), \psi(b) \in P$, so
+      $$\psi(a-b)= \psi(a) - \psi(b) \in P$$
+      hence $a-b \in \psi^{-1}(P)$.
+
+      If $a \in \psi^{-1}(P)$ and $r \in A$, then $\psi(ra) = \psi(r) \psi(a) \in P$, since $P$ is an ideal.\\
+      Thus $ra \in \psi^{-1}(P)$.
+
+      $\Longrightarrow$ so $\psi^{-1}$ is an ideal of $A$.
+
+    \item show that $\psi^{-1}(P)$ is prime:\\
+      $\psi^{-1}(P) \neq A$, since if $\psi^{-1}(P)=A$, then $1_A \in \psi^{-1}(P)$, so $\psi(1_A)=1_B \in P$, which would mean that $P=B$, a contradiction since $P$ is prime ideal of $B$.
+
+      Take $a,b \in A$ with $ab \in \psi^{-1}(P)$; then $\psi(ab) \in P$, and since $\psi$ is a ring homomorphism, $\psi(ab) = \psi(a)\psi(b)$.
+
+      Since $P$ prime ideal, then $\psi(a)\psi(b) \in P$ implies either $\psi(a) \in P$ or $\psi(b) \in P$.\\
+      Thus $a \in \psi^{-1}(P)$ or $b \in \psi^{-1}(P)$.
+
+      Hence $\psi^{-1}(P)$ ($=A \cap P$) is a prime ideal of $A$.
+  \end{enumerate}
+\end{proof}
+
+
+\begin{ex}{R.1.6}
+  prove or give a counter example:
+  \begin{enumerate}[a.]
+    \item the intersection of two prime ideals is prime
+    \item the ideal $P_1+P_2$ generated by $2$ prime ideals $P_1,P_2$ is prime
+    \item if $\psi: A \longrightarrow B$ ring homomorphism, then $\psi^{-1}$ takes maximal ideals of $B$ to maximal ideals of $A$
+  \end{enumerate}
+\end{ex}
+\begin{proof}
+  \begin{enumerate}[a.]
+    \item let $I = 2 \mathbb{Z} = (2)$, $J = 3 \mathbb{Z} = (3)$ be ideals of $\mathbb{Z}$, both prime.
+
+      Then $I \cap J = (2) \cap (3) = (6)$.
+
+      The ideal $(6)$ is not prime in $\mathbb{Z}$, since $2 \cdot 3 \in (6)$, but $2 \neq (6)$ and $3 \neq (6)$.
+
+      Thus the intersection of two primes can not be prime.
+
+    \item $P_1=(2),~ P_2=(3)$, both prime.
+
+      Then,
+      $$P_1 + P_2 = (2)+(3)=\{ a+b | a \in P_1, b \in P_2 \}$$
+
+      $\longrightarrow~$ in a principal ideal domain (like $\mathbb{Z}$), the sum of two principal ideals is again principal, and given by $(m)+(n)=(gcd(m,n))$.
+
+      (recall: principal= generated by a single element)
+
+      So, $P_1+P_2= (2)+(3) = (gcd(2,3))=(1)=\mathbb{Z}$.
+
+      The whole ring is not a prime ideal (by the definition of the prime ideal), so $P_1+P_2$ is not a prime ideal.
+
+      Henceforth, the sum of two prime ideals is not necessarily prime.
+
+    \item let $A=\mathbb{Z},~ B=\mathbb{Q},~ \psi: A \longrightarrow B$.
+
+      Since $\mathbb{Q}$ is a field, its only maximal ideal is $(0)$.
+
+      Then
+      \begin{align*}
+        \psi^{-1}( (0) ) &= (0) \subset \mathbb{Z}\\
+        \text{ie.}~ \psi^{-1}( m_B ) &= (m_B) \subset A
+      \end{align*}
+
+      But $(0)$ is not maximal in $\mathbb{Z}$, because $\mathbb{Z}/(0) \cong \mathbb{Z}$ is not a field.
+
+      Thus the preimages of maximal ideals under arbitrary ring homomorphisms need not be maximal.
+  \end{enumerate}
+\end{proof}
+
+\subsection{Exercises Chapter 2}
+
+\bibliographystyle{unsrt}
+\bibliography{commutative-algebra-notes.bib}
+
+\end{document}
