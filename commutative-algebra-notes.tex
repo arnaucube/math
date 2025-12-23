@@ -95,22 +95,22 @@
 % WIP
 
 \subsection{Lemmas, propositions and corollaries}
-\begin{thm}{1.X}{Zorn's lemma} \label{zorn}
+\begin{thm}{AM.1.X}{Zorn's lemma} \label{zorn}
   TODO
 \end{thm}
 
-\begin{thm}{1.3} \label{1.3}
+\begin{thm}{AM.1.3} \label{1.3}
   Every ring $A \neq 0$ has at lleast one maximal ideal.
 \end{thm}
 \begin{proof}
   By Zorn's lemma \ref{zorn}.
 \end{proof}
 
-\begin{cor}{1.4} \label{1.4}
+\begin{cor}{AM.1.4} \label{1.4}
   if $I \neq (1)$ an ideal of $A$, $\exists$ a maximal ideal of $A$ containing $I$.
 \end{cor}
 
-\begin{cor}{1.5} \label{1.5}
+\begin{cor}{AM.1.5} \label{1.5}
   Every non-unit of $A$ is contained in a maximal ideal.
 \end{cor}
 
@@ -122,7 +122,7 @@
   $Jac(A)$ is an ideal of $A$.
 \end{defn}
 
-\begin{prop}{1.9} \label{1.9}
+\begin{prop}{AM.1.9} \label{1.9}
   $x \in Jac(A)$ iff $(1 - xy)$ is a unit in $A$, $\forall y \in A$.
 \end{prop}
 \begin{proof}
@@ -146,9 +146,30 @@
 
 \subsection{Modules}
 
+Let $A$ be a ring. An $A$-module is an Abelian group $M$ with a multiplication
+map
+\begin{align*}
+  A \times M &\longrightarrow M\\
+  (f, m) &\longmapsto fm
+\end{align*}
+satisfying $\forall~ f,g \in A,~~ m, n \in M$.
+\begin{enumerate}[i.]
+  \item $f(m \pm n)=fm \pm fn$
+  \item $(f \pm g) m = fm \pm gm$
+  \item $(fg) m = f(gm)$
+  \item $1_A m = m$
+\end{enumerate}
+
+Let $\psi: M \longrightarrow M$ an $A$-linear endomorphism of $M$.\\
+$A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi$.
+\begin{itemize}
+\item since $\psi$ is $A$-linear, $A[\psi]$ is a commutative ring.
+\item $M$ is a module over $A[\psi]$, so $\psi$ beomes multiplication by a ring element.
+\end{itemize}
+
 \subsection{Cayley-Hamilton theorem, Nakayama lemma, and corollaries}
 
-\begin{prop}{2.4}(Cayley-Hamilton Theorem) \label{2.4}
+\begin{prop}{AM.2.4}(Cayley-Hamilton Theorem) \label{2.4}
   Let $M$ a fingen $A$-module. Let $\aA$ an ideal of $A$, let $\psi$ an
   $A$-module endomorphism of $M$ such that $\psi(M) \subseteq \aA M$.
 
@@ -228,7 +249,7 @@
 
   With the Kronecker delta, $\psi(x_i)$ can be expressed as
   $$\psi(x_i) = \sum_{j=1}^n \delta_{ij} \psi(x_j)$$
-  so the previous matrix ccan be characterized as
+  so the previous matrix can be characterized as
   $$\sum_{j=1}^n (\delta_{ij} \psi - a_{ij}) x_j = 0$$
 
   The entries of the matrix are \emph{endomorphisms} (elements of the ring $A[\psi]$)
@@ -278,7 +299,7 @@
 
 
 
-\begin{cor}{2.5} \label{2.5}
+\begin{cor}{AM.2.5} \label{2.5}
   Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA M = M$.
 
   Then, $\exists~ x \equiv 1 \pmod \aA$ such that $xM = 0$.
@@ -310,7 +331,7 @@
 
 
 
-\begin{prop}{2.6}{Nakayama's lemma} \label{2.6}
+\begin{prop}{AM.2.6}{Nakayama's lemma} \label{2.6}
   Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA \subseteq Jac(A)$.
 
   Then $\aA M = M$ implies $M=0$.
@@ -318,16 +339,16 @@
 \begin{proof}
   By \ref{2.5}: since $\aA M = M$, we have $x M =0$ for some $x \equiv 1 \pmod {Jac(A)}$. (notice that at \ref{2.5} is $\pmod \aA$ but here we use $\pmod {Jac(A)}$, since we have $\aA \subseteq Jac(A)$).
 
-  By \ref{1.9}, $x$ is a unit in $A$.
+  By \ref{1.9}, $x$ is a unit in $A$ (thus $x^{-1}\cdot x=1$).
 
-  Hence $M = x^{-1} \cdot \underbrace{x \cdot M}_{=0~ \text{(by \ref{2.5})}} = 0$.
+  Hence $M = x^{-1} \cdot \underbrace{x~ \cdot M}_{=0~ \text{(by \ref{2.5})}} = 0$.
 
   Thus, if $\aA M = M$ then $M=0$.
 \end{proof}
 
 
 
-\begin{cor}{2.7} \label{2.7}
+\begin{cor}{AM.2.7} \label{2.7}
   Let $M$ a fingen $A$-module, let $N \subseteq M$ a submodule of $M$, let $\aA \subseteq Jac(A)$ an ideal.
 
   Then $M = \aA M + N \stackrel{\text{implies}}{\Longrightarrow} M=N$.
@@ -404,7 +425,7 @@
 
 
 
-\begin{prop}{2.8} \label{2.8}
+\begin{prop}{AM.2.8} \label{2.8}
   Let $x_i \forall i \in [n]$ be elements of $M$ whose images $\frac{M}{m M}$ from a basis of this vecctor space. Then the $x_i$ generate $M$.
 \end{prop}
 \begin{proof}
@@ -414,11 +435,85 @@
 \end{proof}
 
 
-\subsection{Noetherean rings}
+\begin{prop}{AM.2.10} \label{2.10}
+  Split exact sequence. TODO
+\end{prop}
+
+\section{Noetherean rings}
+
+\begin{defn}{}{Ascending Chain Condition}
+  A partially orddered set $\Sigma$ has the \emph{ascending chain condition} (a.c.c.) if every chain
+  $$s_1 \leq s_2 \leq \ldots \leq s_k \leq \ldots$$
+  eventually breaks off, that is, $s_k = s_{k+1} = \ldots$ for some $k$.
+\end{defn}
+
+$\Longrightarrow~ \Sigma$ has the a.c.c. iff every non-empty subset $S \subset \Sigma$ has a maximal element.\\
+\hspace*{2em} if $\empty \neq S \subset \Sigma$ does not have a maximal element, choose $s_1 \in S$, and for each $s_k$, an element $s_{k+1}$ with $s_k < s_{k+1}$, thus contradicting the a.c.c.
+
+\begin{defn}{R.3.2}{Noetherian ring}
+  Let $A$ a ring; 3 equivalent conditions:
+  \begin{enumerate}[i.]
+    \item the set $\Sigma$ of ideals of $A$ has the a.c.c.; in other words, every increasing chain of ideals
+      $$I_1 \subset I_2 \subset \ldots \subset I_k \subset \ldots$$
+      eventually stops, that is $I_k = I_{k+1}=\ldots$ for some $k$.
+    \item every nonempty set $S$ of iddeals has a maximal element
+    \item every iddeal $I \subset A$ is finitely generated
+  \end{enumerate}
+  If these conditions hold, then $A$ is \emph{Noetherian}.
+\end{defn}
+\begin{proof}
+  TODO
+\end{proof}
+
+\begin{defn}{R.3.4.D}{Noetherian modules}
+  An $A$-module $M$ is Noetherian if the submoles of $M$ have the a.c.c.,\\
+  that is, ay increasing chain
+  $$M_1 \subset M_2 \subset \ldots \subset M_k \subset \ldots$$
+  of submodules eventually stops.
+\end{defn}
+
+As in with rings, it is equivalent to say that
+\begin{enumerate}[i.]
+  \item any nonempty set of modulesof $M$ has a maximal element
+  \item every submodule of $M$ is finite
+\end{enumerate}
 
 
 
+\begin{prop}{R.3.4.P}
+  Let $0 \longrightarrow L \xrightarrow{\ \alpha \ } M \xrightarrow{\ \beta \ } N \longrightarrow 0$ be a s.e.s. (split exact sequence, \ref{2.10}).
 
+  Then, $M$ is Noetherian $\Longleftrightarrow~ L$ and $N$ are Noetherian.
+\end{prop}
+\begin{proof}
+  $\Longrightarrow$: trivial, since ascending chains of submodules in $L$ and $N$ correspond one-to-one to certain chains in $M$.
+
+  $\Longleftarrow$: suppose $M_1 \subset M_2 \subset \ldots \subset M_k \subset \ldots$ is an increasing chain of submodules of $M$.
+
+  Then identifying $\alpha(L)$ with $L$ and taking intersection gives a chain
+  $$L \cap M_1 \subset L \cap M_2 \subset \ldots \subset L \cap M_k \subset \ldots$$
+  of submodules of $L$, and applying $\beta$ gives a chain
+  $$\beta(M_1) \subset \beta(M_2) \subset \ldots \beta(M_k) \subset \ldots$$
+  of submodules of $N$.
+
+  Each of these two chains eventually stop, by the assumption on $L$ and $N$, so that we only need to prove the following lemma which completes the proof.
+\end{proof}
+
+\begin{lemma}{R.3.4.L}
+  for submodules $M_1 \subset M_2 \subset M$,\\
+
+  $L \cap M_1 = L \cap M_2$ and $\beta(M_1) = \beta(M_2) ~\Longrightarrow~ M_1 = M_2$.
+\end{lemma}
+\begin{proof}
+  if $m\in M_2$, then $\beta(m) \in \beta(M_1) = \beta(M_2)$, so that there is an $n \in M_1$ such that $\beta(m)=\beta(m)$.
+
+  Then $\beta(m-n)=0$, so that
+  $$m - n \in M_2 \cap ker(\beta)=M_1 \cap ker(\beta)$$
+
+  Hence $m \in M_1$, thus $M_1 = M_2$.
+\end{proof}
+
+\newpage
 
 \section{Exercises}
 
