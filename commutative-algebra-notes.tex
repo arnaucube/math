@@ -324,47 +324,66 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
   \end{pmatrix}
   $$
 
-  Kronecker delta:
-  $\delta_{ij} =
-  \begin{cases}
-    1 & \text{if } i = j,\\
-    0 & \text{otherwise}
-  \end{cases}$
 
-  With the Kronecker delta, $\psi(x_i)$ can be expressed as
-  $$\psi(x_i) = \sum_{j=1}^n \delta_{ij} \psi(x_j)$$
-  so the previous matrix can be characterized as
-  $$\sum_{j=1}^n (\delta_{ij} \psi - a_{ij}) x_j = 0$$
-
-  The entries of the matrix are \emph{endomorphisms} (elements of the ring $A[\psi]$)
-  \begin{itemize}
-    \item the term $(\psi - a_{11})$ is an operator that acts on $x_1$; as $(\psi(x_1)-a_{11}\cdot x_1)$
-    \item the term $(-a_{12})$ is an operator that acts on $x_2$; as multiplication by it, ie. $(-a_{12} \cdot x_2)$
-  \end{itemize}
-
-  Since $A$ is a commutative ring, and $\psi$ commutes with any $a \in A$,
-  the ring of operators $A[\psi]$ is a commutative ring.
-
-  $\Longrightarrow~$ so we can treat the matrix as a matrix of real numbers and calculate its determinant.
-
-  We're interested in the determinant because it is the only way to turn a system of multiple equations in a single scalar-like equation that describes the endomorphism $\psi$.\\
-  $\rightarrow$ Because in module theory, we lack of "division", so can not "solve for $\psi$" the system of equations.\\
-  $\rightarrow$ The determinant provides a way to find a polynomial that \emph{annihilates} the module; the \emph{characteristic polynomial}, which related $\psi$ to the ideal $\aA$
-
-  $$det(M) \cdot x_i = 0~~ \forall i$$
-  where $x_i$ are the generators of $M$.
-
-  Since $det(M)$ kills every generator, it must kill every element in $M$\\
-  $\Longrightarrow~~ det(M)$ is the zero map.
-
-  Leibniz formula of the determinant of an $n \times n$ matrix:
-  $$
-  det(M) = \sum_{\sigma \in S_n} sign(\sigma) \prod_{i=1}^n M_{i, \sigma(i)}
-  $$
   
-  so,
-  $$(\psi - a_{11}) (\psi - a_{22}) \ldots (\psi - a_{nn})$$
-  expanding it,
+  Denote the previous matrix by $\Phi$. Let $m$ denote the vector $(x_1, x_2, \ldots, x_n)^T$ (ie. the vector of generators of the $A$-module $M$).\\
+  \hspace*{4em}Then we can write the previous equality as
+  \begin{equation}
+    \Phi \cdot m = 0
+    \label{eq:2.4.1}
+  \end{equation}
+
+  We know that
+  \begin{equation}
+    adj(\Phi) \Phi = det(\Phi) I
+    \label{eq:2.4.2}
+  \end{equation}
+  (aka. fundamental identity for the adjugate matrix).
+
+  So if at \eqref{eq:2.4.1} we multiply both sides by $adj(\Phi)$,
+  \begin{align*}
+    adj(\Phi) \cdot \Phi \cdot &m = 0\\
+    (\text{recall from \eqref{eq:2.4.2}:}~ &det(\Phi)\cdot I ~)\\
+    =det(\Phi) \cdot I \cdot &m = 0
+  \end{align*}
+
+  Thus,
+  \begin{align*}
+    det(\Phi) \cdot I \cdot &m = 0\\
+  \begin{pmatrix}
+    det(\Phi) & 0 & \ldots & 0\\
+    0 & det(\Phi) & \ldots & 0\\
+    \vdots\\
+    0 & 0 & \ldots & det(\Phi)
+  \end{pmatrix}
+  \cdot
+  &\begin{pmatrix}
+    x_1\\ x_2\\ \vdots\\ x_n
+  \end{pmatrix}
+                              =
+  \begin{pmatrix}
+    0\\ 0\\ \vdots\\ 0
+  \end{pmatrix}
+  \end{align*}
+
+  $\Longrightarrow$
+  \begin{equation}
+    det(\Phi) \cdot x_i = 0 ~~\forall i \in [n]
+    \label{eq:2.4.3}
+  \end{equation}
+
+  ie. $det(\Phi)$ is an \emph{annihilator} of the generators $x_i$ of $M$, thus of the entire module $M$.
+
+
+  So, we're interested into calculating the $det(\Phi)$.
+
+  By the Leibniz formula,
+  $$\det(A) = \sum_{\sigma \in S_n} sgn(\sigma) \prod_{i=1}^n a_{i, \sigma(i)}$$
+
+  thus,
+  $$det(\Phi) = \underbrace{(\psi - a_{11}) (\psi - a_{22}) \ldots (\psi - a_{nn})}_{\text{diagonal of $\Phi$, leading term of the determinant}} - \ldots$$
+
+  The \emph{determinant trick} is that the terms that go after the "leading term of the determinant", will belong to $\aA$ and their combinations with $\psi$ will not be bigger than $\psi^n$. Furthermore, when expanding it
   \begin{itemize}
     \item highest power is $1 \cdot \psi^n$
     \item coefficient of $\psi^{n-1}$ is $-( \underbrace{ a_{11} + a_{22} + \ldots + a_{nn} }_{a_1})$,\\
@@ -373,15 +392,111 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
   \end{itemize}
 
   So we have
-  $$p(\psi) = \psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n$$
+  $$det(\Phi) = \psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n$$
   with $a_i \in \aA$.
 
-  Since this determinant annihilates the generators (ie. $det(M)x_i=0$), the resulting enddomorphism $p(\psi)$ is the zero map on the entire module $M$, so:
+  \vspace{0.5cm}
+
+  Now, notice that we had $det(\Phi) \cdot x_i = 0 ~\forall~ i\in [n]$.
+
+  % next part might be removed
+  Since $M$ is a fingen $A$-module, any element $m \in M$ can be written as a linear combination of $M$'s generators $x_i$, ie.
+  $$m = r_1 x_1 + r_2 x_2 + \ldots r_n x_n \in M$$
+
+  If we multiply $m \in M$ by $d = det(\Phi)$,
+  \begin{align*}
+    d \cdot m &= d \cdot (r_1 x_1 + r_2 x_2 + \ldots r_n x_n)\\
+              &= r_1(d \cdot x_1) + r_2 (d \cdot x_2) + \ldots + r_n (d \cdot x_n)\\
+    (\text{every}~ &d \cdot x_i = det(\Phi)x_i = 0 ~\forall~ i)\\
+              &= r_1 (0) + \ldots + r_n (0)\\
+              &= 0
+  \end{align*}
+
+  Therefore, $det(\Phi) \cdot m = 0$.
+  % end of might be removed
+
+  The matrix $\Phi$ is the \emph{characteristic matrix}, $xI-A$, viewed as an operator. Then,
+  $$det(\Phi) = det(xI-A) = p(x)$$
+  where $p(x)$ is the \emph{characteristic polynomial}.
+
+  If a linear transformation turns every basis vector ($x_i$) into zero, then that transformation is the zero transformation. So in our case, $det(\Phi)$ is the zero transformation, thus $det(\Phi)=0$.
+  Therefore,
   $$\psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n = 0$$
-  with $a_i \in \aA$, as stated in the Cayley-Hamilton theorem.
+
+
+  %%%%%% OLD START
+
+  % \vspace{3cm}
+  % 
+  % Kronecker delta:
+  % $\delta_{ij} =
+  % \begin{cases}
+  %   1 & \text{if } i = j,\\
+  %   0 & \text{otherwise}
+  % \end{cases}$
+  % 
+  % With the Kronecker delta, $\psi(x_i)$ can be expressed as
+  % $$\psi(x_i) = \sum_{j=1}^n \delta_{ij} \psi(x_j)$$
+  % so the previous matrix can be characterized as
+  % $$\sum_{j=1}^n (\delta_{ij} \psi - a_{ij}) x_j = 0$$
+  % 
+  % The entries of the matrix are \emph{endomorphisms} (elements of the ring $A[\psi]$)
+  % \begin{itemize}
+  %   \item the term $(\psi - a_{11})$ is an operator that acts on $x_1$; as $(\psi(x_1)-a_{11}\cdot x_1)$
+  %   \item the term $(-a_{12})$ is an operator that acts on $x_2$; as multiplication by it, ie. $(-a_{12} \cdot x_2)$
+  % \end{itemize}
+  % 
+  % We need a single element $x \in A$ that \emph{annihilates} every $m \in M$ simultaneously, ie. $xM=0$. We're going to use the determinant for getting $x$.
+  % 
+  % Since $A$ is a commutative ring, and $\psi$ commutes with any $a \in A$,
+  % the ring of operators $A[\psi]$ is a commutative ring.
+  % 
+  % $\Longrightarrow~$ so we can treat the matrix as a matrix of real numbers and calculate its determinant.
+  % 
+  % 
+  % \vspace{0.75cm}
+  % This is called \emph{"the determinant trick"}.\\
+  % We're interested in the determinant because it is the only way to turn a system of multiple equations in a single scalar-like equation that describes the endomorphism $\psi$.\\
+  % $\rightarrow$ Because in module theory, we lack of "division", so can not "solve for $\psi$" the system of equations.\\
+  % $\rightarrow$ The determinant provides a way to find a polynomial that \emph{annihilates} the module; the \emph{characteristic polynomial}, which related $\psi$ to the ideal $\aA$
+  % 
+  % $$det(M) \cdot x_i = 0~~ \forall i$$
+  % where $x_i$ are the generators of $M$.
+  % 
+  % Use $\Phi$ to denote the previous matrix. The determinant is the only function that can take that matrix $\Phi$ and produce a single scalar $x=det(\Phi)$ such that the following identity holds: $adj(\Phi)\cdot \Phi=det(\Phi) \cdot \aA$.
+  % \vspace{0.5cm}
+  % 
+  % Since $det(M)$ kills every generator, it must kill every element in $M$\\
+  % $\Longrightarrow~~ det(M)$ is the zero map.
+  % 
+  % Leibniz formula of the determinant of an $n \times n$ matrix:
+  % $$
+  % det(M) = \sum_{\sigma \in S_n} sign(\sigma) \prod_{i=1}^n M_{i, \sigma(i)}
+  % $$
+  % 
+  % so,
+  % $$(\psi - a_{11}) (\psi - a_{22}) \ldots (\psi - a_{nn})$$
+  % expanding it,
+  % \begin{itemize}
+  %   \item highest power is $1 \cdot \psi^n$
+  %   \item coefficient of $\psi^{n-1}$ is $-( \underbrace{ a_{11} + a_{22} + \ldots + a_{nn} }_{a_1})$,\\
+  %     where, since each $a_{ii} \in \aA,~~ a_1 \in \aA$
+  %   \item the rest of coefficients of $\psi^k$ are also elements in $\aA$
+  % \end{itemize}
+  % 
+  % So we have
+  % $$p(\psi) = \psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n$$
+  % with $a_i \in \aA$.
+  % 
+  % Since this determinant annihilates the generators (ie. $det(M)x_i=0$), the resulting enddomorphism $p(\psi)$ is the zero map on the entire module $M$, so:
+  % $$\psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n = 0$$
+  % with $a_i \in \aA$, as stated in the Cayley-Hamilton theorem.
+  
+  %%%%% OLD END
 \end{proof}
 
 
+\vspace{0.5cm}
 
 \begin{cor}{AM.2.5} \label{2.5}
   Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA M = M$.
@@ -466,7 +581,7 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
   $$\frac{\aA M + N}{N} = \left\{ y + N ~~|~~ y \in \aA M +N \right\} = \aA M + N$$
 
   thus every $y \in \aA M +N$ can be written as
-  $$y=x+n,~~ \text{with} x \in \aA M,~ n\in N$$
+  $$y=x+n,~~ \text{with}~ x \in \aA M,~ n\in N$$
   which comes from \eqref{eq:2.7.1}.
 
   Thus, $y + N = (x+n)+N = x+N$, since $n \in N$ is zero in the quotient.
@@ -524,7 +639,7 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
   Split exact sequence. TODO
 \end{prop}
 
-\section{Noetherean rings}
+\section{Noetherian rings}
 
 \begin{defn}{}{Ascending Chain Condition}
   A partially orddered set $\Sigma$ has the \emph{ascending chain condition} (a.c.c.) if every chain
