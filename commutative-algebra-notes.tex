@@ -179,12 +179,21 @@
 \end{defn}
 
 \subsection{Lemmas, propositions and corollaries}
-\begin{thm}{AM.1.X}{Zorn's lemma} \label{zorn}
-  TODO
-\end{thm}
+
+Let $\Sigma$ be a partially orddered set. Given subset $S \subset \Sigma$, an \emph{upper bound} of $S$ is an element $u \in \Sigma$ such that $s<u \forall s \in S$.
+
+A \emph{maximal element} of $\Sigma$, is $m \in \Sigma$ such that $m<s$ does not hold for any $s \in \Sigma$.
+
+A subset $S \subset \Sigma$ is \emph{totally ordered} if for every pair $s_1,s_2 \in S$, either $s_1 \leq s_2$ or $s_2 \leq s_1$.
+
+\begin{lemma}{R.1.7}{Zorn's lemma} \label{zorn}
+  suppose $\Sigma$ a nonempty partially ordered set (ie. we are given a relation $x \leq y$ on $\Sigma$), and that any totally ordered subset $S \subset \Sigma$ has an upper bound in $\Sigma$.
+
+  Then $\Sigma$ has a maximal element.
+\end{lemma}
 
 \begin{thm}{AM.1.3} \label{1.3}
-  Every ring $A \neq 0$ has at lleast one maximal ideal.
+  Every ring $A \neq 0$ has at least one maximal ideal.
 \end{thm}
 \begin{proof}
   By Zorn's lemma \ref{zorn}.
@@ -293,18 +302,30 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
 
   Observe that each row equals $0$, and rearranging the elements at each row we get
 
-  \begin{align*}
+  $$
+  \left.
+  \begin{aligned}
     &\psi(x_1) - (a_{1,1} x_1 + a_{1,2} x_2 + \ldots + a_{1,n} x_n) = 0\\
     &\psi(x_2) - (a_{2,1} x_1 + a_{2,2} x_2 + \ldots + a_{2,n} x_n) = 0\\
     &\ldots\\
     &\psi(x_n) - (a_{n,1} x_1 + a_{n,2} x_2 + \ldots + a_{n,n} x_n) = 0
-  \end{align*}
+  \end{aligned}
+  \right\}
+  $$
 
   Then, group the $x_i$ terms together; as example, take the row $i=1$:
     $$(\psi - a_{1,1})x_1 - a_{1,2} x_2 - \ldots - a_{1,n} x_n = 0$$
 
-    for $i=2$:
-    $$-a_{2,1} x_1 + (\psi - a_{2,2}) x_2 - \ldots - a_{2,n} x_n = 0$$
+  $$
+  \left.
+  \begin{aligned}
+    &~~~~(\psi - a_{1,1})x_1 - a_{1,2} x_2 - \ldots - a_{1,n} x_n = 0\\
+    &-a_{2,1} x_1 + (\psi - a_{2,2}) x_2 - \ldots - a_{2,n} x_n = 0\\
+    &\ldots\\
+    &-a_{1,1} x_1 - a_{1,2} x_2 - \ldots + (\psi - a_{1,n}) x_n = 0\\
+  \end{aligned}
+  \right\}
+  $$
     
   So, $\forall i \in [n]$, as a matrix:
   
@@ -338,18 +359,18 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
     adj(\Phi) \Phi = det(\Phi) I
     \label{eq:2.4.2}
   \end{equation}
-  (aka. fundamental identity for the adjugate matrix).
+  (aka. \emph{fundamental identity for the adjugate matrix}).
 
   So if at \eqref{eq:2.4.1} we multiply both sides by $adj(\Phi)$,
   \begin{align*}
     adj(\Phi) \cdot \Phi \cdot &m = 0\\
-    (\text{recall from \eqref{eq:2.4.2}:}~ &det(\Phi)\cdot I ~)\\
+    (\text{recall from \eqref{eq:2.4.2}:}~ &adj(\Phi)\Phi=det(\Phi)\cdot I ~)\\
     =det(\Phi) \cdot I \cdot &m = 0
   \end{align*}
 
   Thus,
   \begin{align*}
-    det(\Phi) \cdot I \cdot &m = 0\\
+    det(\Phi) \cdot I \cdot &m = 0:\\
   \begin{pmatrix}
     det(\Phi) & 0 & \ldots & 0\\
     0 & det(\Phi) & \ldots & 0\\
@@ -372,7 +393,8 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
     \label{eq:2.4.3}
   \end{equation}
 
-  ie. $det(\Phi)$ is an \emph{annihilator} of the generators $x_i$ of $M$, thus of the entire module $M$.
+  ie. $det(\Phi)$ is an \emph{annihilator} of the generators $x_i$ of $M$, thus
+  is an annihilator of the entire module $M$.
 
 
   So, we're interested into calculating the $det(\Phi)$.
@@ -391,29 +413,13 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
     \item the rest of coefficients of $\psi^k$ are also elements in $\aA$
   \end{itemize}
 
-  So we have
+  Therefore we have
   $$det(\Phi) = \psi^n + a_1 \psi^{n-1} + a_2 \psi^{n-2} + \ldots + a_{n-1} \psi + a_n$$
   with $a_i \in \aA$.
 
   \vspace{0.5cm}
 
   Now, notice that we had $det(\Phi) \cdot x_i = 0 ~\forall~ i\in [n]$.
-
-  % next part might be removed
-  Since $M$ is a fingen $A$-module, any element $m \in M$ can be written as a linear combination of $M$'s generators $x_i$, ie.
-  $$m = r_1 x_1 + r_2 x_2 + \ldots r_n x_n \in M$$
-
-  If we multiply $m \in M$ by $d = det(\Phi)$,
-  \begin{align*}
-    d \cdot m &= d \cdot (r_1 x_1 + r_2 x_2 + \ldots r_n x_n)\\
-              &= r_1(d \cdot x_1) + r_2 (d \cdot x_2) + \ldots + r_n (d \cdot x_n)\\
-    (\text{every}~ &d \cdot x_i = det(\Phi)x_i = 0 ~\forall~ i)\\
-              &= r_1 (0) + \ldots + r_n (0)\\
-              &= 0
-  \end{align*}
-
-  Therefore, $det(\Phi) \cdot m = 0$.
-  % end of might be removed
 
   The matrix $\Phi$ is the \emph{characteristic matrix}, $xI-A$, viewed as an operator. Then,
   $$det(\Phi) = det(xI-A) = p(x)$$
