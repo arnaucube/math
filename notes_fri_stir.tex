@@ -76,7 +76,7 @@ Consider the following protocol:
 \end{enumerate}
 
 %/// TODO tabulate this next lines
-With high probablility, $\alpha$ will not cancel the coeffs with $deg \geq d+1$. % TODO check which is the name of this theorem or why this is true
+With high probability, $\alpha$ will not cancel the coeffs with $deg \geq d+1$. % TODO check which is the name of this theorem or why this is true
 
 Let $g(x)=a \cdot x^{d+1}, ~~ h(x)=b \cdot x^{d+1}$, and set $f(x) = g(x) + \alpha h(x)$.
 Imagine that P can chose $\alpha$ such that $a x^{d+1} + \alpha \cdot b x^{d+1} = 0$, then, in $f(x)$ the coefficients of degree $d+1$ would cancel.
@@ -314,14 +314,15 @@ $$g(z) = (f(z)-f(r))\cdot (z-r)^{-1}$$
 
 
 \section{STIR (main idea)}
-\emph{Update from 2024-03-22, notes from Héctor Masip Ardevol (\href{https://hecmas.github.io/}{https://hecmas.github.io}) explanations.}
+\emph{Update from 2024-03-22, notes from Héctor Masip Ardevol\\
+(\href{https://hecmas.github.io/}{https://hecmas.github.io}) explanations.}
 
 \vspace{0.3cm}
 Let $p \in \mathbb{F}[x]^{<n}$.
 
 In FRI we decompose $p(x)$ as
 $$p(x) = p_e(x^2) + x \cdot p_o(x^2)$$
-with $p_e, p_o \in \mahtbb{F}[x]^{<n}$ containing the even and odd powers respectively.
+with $p_e, p_o \in \mathbb{F}[x]^{<n}$ containing the even and odd powers respectively.
 
 The next FRI polynomial is
 $$p_1(x) = p_e(x) + \alpha p_o(x)$$
@@ -329,7 +330,7 @@ for $\alpha \in^R \mathbb{F}$.
 
 In STIR, this would be $q(x)=x^2$,
 $$Q(z,y) = p_e(y) + z \cdot p_o(y)$$
-and then, $p(x) = Q(x, q(x))$. And $Q$ fullfills the degree from Fact 4.6 from the STIR paper.
+and then, $p(x) = Q(x, q(x))$. And $Q$ fulfills the degree from Fact 4.6 from the STIR paper.
 
 We can generalize to a $q$ with bigger degree, or with another shape, and adapting $Q$ on the choice of $q$.
 

@@ -7,6 +7,7 @@ Notes, code and documents done while reading books and papers.
 - [Notes on "Abstract Algebra" book, by Charles C. Pinter](abstract-algebra-charles-pinter-notes.pdf)
 - [Notes on Weil pairing](weil-pairing.pdf)
 - [Notes on Galois Theory](galois-theory-notes.pdf)
+- [Notes on Commutative Algebra](commutative-algebra-notes.pdf)
 
 
 In-between math & crypto:

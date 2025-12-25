@@ -1,0 +1,10 @@
+[default.extend-words]
+thm = "thm"
+
+# equations stuff
+ba = "ba"
+nd = "nd"
+
+# names
+Strang = "Strang"
+Bootle = "Bootle"
