@@ -1,0 +1,5 @@
+[default.extend-words]
+thm = "thm"
+ba = "ba"
+Strang = "Strang" # name
+Bootle = "Bootle" # name
