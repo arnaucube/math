@@ -696,9 +696,112 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
 \end{proof}
 
 
-\begin{prop}{AM.2.10} \label{2.10}
-  Split exact sequence. TODO
+\begin{defn}{R.2.9.a}{Exact Sequence}
+  Let a sequence of homomorphisms
+$$L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N$$
+It is \emph{exact} at $M$ if $im(\alpha)=ker(\beta)$.
+
+ie. $\beta \circ \alpha = 0$ and $\alpha$ maps surjectively to
+$ker(\beta)$.
+\end{defn}
+
+\begin{defn}{R.2.9.b}{Short Exact Sequence (s.e.s.)} \label{2.9}
+$$0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$$
+is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
+\end{defn}
+
+\begin{prop}{R.2.10}{Split exact sequence} \label{2.10}
+  For the previous s.e.s., 3 equivalent conditions:
+  \begin{enumerate}[i.]
+    \item $\exists$ isomorphism $M \cong L \oplus N$, with
+      \begin{align*}
+        \alpha:~ &m \longmapsto (m,0)\\
+        \beta:~ &(m, n) \longmapsto n
+      \end{align*}
+
+    \item $\exists$ a \emph{section} of $\beta$, that is, a map $s: N \longrightarrow M$ such that $\beta \circ s = id_N$
+    \item $\exists$ a \emph{retraction} of $\alpha$, that is, a map $r: M \longrightarrow L$ such that $r \circ \allpha = id_L$
+  \end{enumerate}
+  
+  If all i, ii, iii are satisfied, it is a split exact sequence.
 \end{prop}
+\begin{proof}
+  Intuitively, when a s.e.s. \emph{splits} it means that the middle module $M$ is the direct sum of the other (outter) two modules, ie. $M = L \oplus N$.
+
+  \begin{itemize}
+    \item[(i \Longrightarrow ii, iii)]
+      if $M \cong L \oplus N$ such that $\alpha:~ m \longmapsto (m,0),~~ \beta:~ s(m, n) \longmapsto n$, we can define the maps
+
+      for ii:
+      \begin{align*}
+        s:~ N &\longrightarrow L \oplus N\\
+        s(n) &\longmapsto (0, n)
+      \end{align*}
+
+      Then $\beta(s(n))=\beta(0,n)$, so $\beta \circ s = id_N$.
+
+      for iii:
+      \begin{align*}
+        r:~ L \oplus N &\longrightarrow L\\
+        r(m,n) &\longmapsto m
+      \end{align*}
+
+      Then $r(\alpha(m))=r(m,0)$, so $r \circ \alpha = id_L$.
+
+    \item[(ii \Longrightarrow i)]
+      assume $s: N \longrightarrow M$ such that $\beta \circ s = id_M$
+
+      Want to show $M \cong im(\alpha) \oplus im(s)$.
+
+      $\forall m \in M$, consider $m - s(\beta(m))$, apply $\beta$ to it:\\
+      $\beta(m - s(\beta(m))) = \beta(m) - (\beta \circ s)(\beta(m)) = \beta(m) - \beta(m) = 0$
+
+      Since $ker(\beta) = im(\alpha),~~ \exists! l \in L ~\text{such that}~ \alpha(l) = m - s(\beta(m))$.
+
+      Thus $m = \alpha(l) + s(\beta(m))$.
+
+      \vspace{0.3cm}
+      Now, suppose $x \in im(\alpha) \cap im(s)$, then $x = \alpha(l)=s(n)$, apply $\beta$ to it: $\beta(\alpha(l)) = \beta(s(n)) ~\Longrightarrow~ 0=n$.
+
+      If $n=0$, then $s(n)=0$, so the intersection is $\{0\}$.
+
+      \vspace{0.3cm}
+      Define
+      \begin{align*}
+        \phi: L \oplus N &\longrightarrow M\\
+        \phi(l,n) &\longmapsto \alpha(l)+s(n)
+      \end{align*}
+      This isomorphism satisfies the required conditions.
+
+    \item[(iii \Longrightarrow i)] similar to the previous one.
+  \end{itemize}
+
+  \vspace{0.3cm}
+  TL;DR:\\
+
+$$
+0 \longrightarrow L
+  \substack{
+    \stackrel{\alpha}{\longrightarrow}\\
+    \stackrel{\longleftarrow}{r}
+  }
+  \substack{M \\[0.5ex] \cong L \oplus N}
+  \substack{
+    \stackrel{\beta}{\longrightarrow}\\
+    \stackrel{\longleftarrow}{s}
+  }
+  N \longrightarrow 0
+$$
+\begin{align*}
+  \alpha:~ &l \longmapsto (l,0)\\
+  r:~ &(m,n) \longmapsto m\\
+  \alpha &\circ r = id_L\\
+  \beta:~ &(l,n) \longmapsto n\\
+  s:~ &n \longmapsto (0,n)\\
+  \beta &\circ s = id_N
+\end{align*}
+
+\end{proof}
 
 \section{Noetherian rings}
 
