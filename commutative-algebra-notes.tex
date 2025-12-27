@@ -178,7 +178,7 @@
   $$A \supset \mM ~\text{or}~ (A, \mM) ~\text{or}~ (A, \mM, K)$$
 \end{defn}
 
-\subsection{$\mathbb{Z}$ and $K[X]$, two Principal Ideal Domains}
+\subsection{Z and K[X], two Principal Ideal Domains}
 
 
 \begin{lemma}{}
@@ -696,6 +696,8 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
 \end{proof}
 
 
+\subsection{Sequences}
+
 \begin{defn}{R.2.9.a}{Exact Sequence}
   Let a sequence of homomorphisms
 $$L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N$$
@@ -708,6 +710,14 @@ $ker(\beta)$.
 \begin{defn}{R.2.9.b}{Short Exact Sequence (s.e.s.)} \label{2.9}
 $$0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$$
 is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
+
+Properties:
+\begin{itemize}
+  \item $\alpha$ injective
+  \item $\beta$ surjective
+  \item $\alpha:~ L \Longrightarrow ker \beta$
+  \item $\beta$ induces $M/\alpha(L) \longrightarrow N$
+\end{itemize}
 \end{defn}
 
 \begin{prop}{R.2.10}{Split exact sequence} \label{2.10}
@@ -720,16 +730,16 @@ is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
       \end{align*}
 
     \item $\exists$ a \emph{section} of $\beta$, that is, a map $s: N \longrightarrow M$ such that $\beta \circ s = id_N$
-    \item $\exists$ a \emph{retraction} of $\alpha$, that is, a map $r: M \longrightarrow L$ such that $r \circ \allpha = id_L$
+    \item $\exists$ a \emph{retraction} of $\alpha$, that is, a map $r: M \longrightarrow L$ such that $r \circ \alpha = id_L$
   \end{enumerate}
   
   If all i, ii, iii are satisfied, it is a split exact sequence.
 \end{prop}
 \begin{proof}
-  Intuitively, when a s.e.s. \emph{splits} it means that the middle module $M$ is the direct sum of the other (outter) two modules, ie. $M = L \oplus N$.
+  Intuitively, when a s.e.s. \emph{splits} it means that the middle module $M$ is the direct sum of the other (outer) two modules, ie. $M = L \oplus N$.
 
   \begin{itemize}
-    \item[(i \Longrightarrow ii, iii)]
+    \item[(i to ii, iii)]
       if $M \cong L \oplus N$ such that $\alpha:~ m \longmapsto (m,0),~~ \beta:~ s(m, n) \longmapsto n$, we can define the maps
 
       for ii:
@@ -748,7 +758,7 @@ is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
 
       Then $r(\alpha(m))=r(m,0)$, so $r \circ \alpha = id_L$.
 
-    \item[(ii \Longrightarrow i)]
+    \item[(ii to i)]
       assume $s: N \longrightarrow M$ such that $\beta \circ s = id_M$
 
       Want to show $M \cong im(\alpha) \oplus im(s)$.
@@ -773,7 +783,7 @@ is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
       \end{align*}
       This isomorphism satisfies the required conditions.
 
-    \item[(iii \Longrightarrow i)] similar to the previous one.
+    \item[(iii to i)] similar to the previous one.
   \end{itemize}
 
   \vspace{0.3cm}
@@ -820,8 +830,8 @@ $\Longrightarrow~ \Sigma$ has the a.c.c. iff every non-empty subset $S \subset \
     \item the set $\Sigma$ of ideals of $A$ has the a.c.c.; in other words, every increasing chain of ideals
       $$I_1 \subset I_2 \subset \ldots \subset I_k \subset \ldots$$
       eventually stops, that is $I_k = I_{k+1}=\ldots$ for some $k$.
-    \item every nonempty set $S$ of iddeals has a maximal element
-    \item every iddeal $I \subset A$ is finitely generated
+    \item every nonempty set $S$ of ideals has a maximal element
+    \item every ideal $I \subset A$ is finitely generated
   \end{enumerate}
   If these conditions hold, then $A$ is \emph{Noetherian}.
 \end{defn}
@@ -868,7 +878,7 @@ As in with rings, it is equivalent to say that
   $$L \cap M_1 = L \cap M_2 ~\text{and}~ \beta(M_1) = \beta(M_2) ~\Longrightarrow~ M_1 = M_2$$
 \end{lemma}
 \begin{proof}
-  if $m\in M_2$, then $\beta(m) \in \beta(M_1) = \beta(M_2)$, so that there is an $n \in M_1$ such that $\beta(m)=\beta(m)$.
+  if $m\in M_2$, then $\beta(m) \in \beta(M_1) = \beta(M_2)$, so that there is an $n \in M_1$ such that $\beta(m)=\beta(n)$.
 
   Then $\beta(m-n)=0$, so that
   $$m - n \in M_2 \cap ker(\beta)=M_1 \cap ker(\beta)$$
@@ -916,7 +926,7 @@ The exercises that start with \textbf{R} are the ones from the book \cite{reid},
 
   Let
   $$\psi^{-1}(P) = \{ a \in A | \psi(a) \in P \} = A \cap P$$
-  The claim is that $\psi^{-1}(P)$ is prime iddeal of $A$.
+  The claim is that $\psi^{-1}(P)$ is prime ideal of $A$.
 
   \begin{enumerate}[i.]
     \item show that $\psi^{-1}(P)$ is an ideal of $A$:\\
@@ -1103,6 +1113,53 @@ The exercises that start with \textbf{R} are the ones from the book \cite{reid},
 \end{proof}
 
 \subsection{Exercises Chapter 2}
+
+\begin{ex}{R.2.9}
+$0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$ is a s.e.s. of $A$-modules. Prove that if $N, L$ are finite over $A$, then $M$ is finite over $A$.
+\end{ex}
+\begin{proof}
+  Denote the generators of $L$ and $N$ respectively as
+  \begin{align*}
+    \{l_1, \ldots, l_k \} &\subseteq L\\
+    \{n_1, \ldots, n_p \} &\subseteq N
+  \end{align*}
+
+  By s.e.s. definition, 
+  \begin{itemize}
+    \item[-] $\alpha$ is injective (one-to-one), so
+    $$\forall l_i \in L,~ \exists~ x_i \in M ~\text{s.th.}~ \alpha(l_i)=x_i$$
+
+  \item[-] $\beta$ is surjective (onto), so
+    $$\forall n_j \in N,~ \exists~ y_j \in M ~\text{s.th.}~ \beta(y_j)=n_j$$
+\end{itemize}
+
+  We will show that $\{x_1, \ldots, x_k, y_1, \ldots, y_p \}$ generate $M$, and thus $M$ is finite:
+
+  Let $m \in M$, then $\beta(m) \in N$, and
+  $$\beta(m) = \sum_{j=1}^p a_j n_j ~~~\text{with}~ a_j \in A$$
+
+  Take $m' \in M$, with $m' = \sum a_j y_j$, then
+  $$\beta(m') = \sum a_j \beta(y_j) = \sum a_j n_j = \beta(m)$$
+
+  Then, since $\beta(m)=\beta(m')~~ \Longrightarrow~~ \beta(m-m')=0$, thus
+  $$(m-m') \in ker(\beta)$$
+
+  By \emph{exactness} property, since $\alpha: L \longrightarrow ker(\beta)$, we have $ker(\beta)=im(\alpha)$.
+
+  Therefore, $\exists~ l \in L$ such that $\alpha(l)= m-m'$.
+
+  Since $\{l_i\}_k$ generate $L$,
+  $$l = \sum^k b_i l_i$$
+  thus
+  $$m-m' = \alpha(l) = \alpha(\underbrace{\sum b_i l_i}_{l}) = \sum b_i \underbrace{\alpha(l_i)}_{x_i} = \sum b_i x_i$$
+
+  Rearrange,
+  $$m = m' + \sum b_i x_i = \sum_{j=1}^p a_j y_j + \sum_{i=1}^k b_i x_i ~~~~~ \forall m \in M$$
+
+  So, $L$ provides $k$ generators for the kernel part of $M$, $N$ provides $p$ "lifts" for the quotient part of $M$; thus $M$ is generated by $k+p$ elements.\\
+  Thus $M$ is finitely generated over $A$.
+
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{commutative-algebra-notes.bib}
