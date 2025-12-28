@@ -813,7 +813,7 @@ $$
 
 \end{proof}
 
-\section{Noetherian rings}
+\section{Noetherian rings (and modules)}
 
 \begin{defn}{}{Ascending Chain Condition}
   A partially orddered set $\Sigma$ has the \emph{ascending chain condition} (a.c.c.) if every chain
@@ -854,7 +854,7 @@ As in with rings, it is equivalent to say that
 
 
 
-\begin{prop}{R.3.4.P}
+\begin{prop}{R.3.4.P}\label{R.3.4.P}
   Let $0 \longrightarrow L \xrightarrow{\ \alpha \ } M \xrightarrow{\ \beta \ } N \longrightarrow 0$ be a s.e.s. (split exact sequence, \ref{2.10}).
 
   Then, $M$ is Noetherian $\Longleftrightarrow~ L$ and $N$ are Noetherian.
@@ -885,6 +885,114 @@ As in with rings, it is equivalent to say that
 
   Hence $m \in M_1$, thus $M_1 = M_2$.
 \end{proof}
+
+
+
+\begin{cor}{R.3.5}{Properties of Noetherian modules.}\label{R.3.5}
+  \begin{enumerate}[i.]
+    \item if $\forall i \in [r],~~M_i$ are Noetherian modules, then
+      $\bigoplus_{i=1}^r M_i$ is Noetherian.
+    \item if $A$ a Noetherian ring, then an $A$-module $M$ is Noetherian iff it is finite over $A$.
+    \item if $A$ a Noetherian ring, $M$ a finite module, then any submodule $N \subset M$ is again finite.
+    \item if $A$ a Noetherian ring, and $\psi: A \longrightarrow B$ a ring homomorphism such that $B$ is a finite $A$-module, then $B$ is a Noetherian ring.
+  \end{enumerate}
+\end{cor}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item a direct sum $M_1 \oplus M_2$ is a particular case of an exact sequence.
+
+      Then, Proposition \ref{R.3.4.P} proves this statement when $r=2$. The case $r>2$ follows by induction.
+
+    \item if $M$ finite, then $\exists~$ surjective homomorphism
+      $$A^r \longrightarrow M \longrightarrow 0$$
+      for some $r$, so that $M$ is a quotient
+      $$M \cong A^r / N$$
+      for some submodule $N \subset A^r$.
+
+      $A^r$ is a Noetherian module by i., so $M$ is Noetherian due Proposition \ref{R.3.4.P}.
+
+      Conversely, $M$ Noetherian implies $M$ finite.
+      
+      item as in previous implications:\\
+      $M$ finite and $A$ Noetherian $\Longrightarrow$ $M$ is Noetherian,\\
+      $\Longrightarrow$ since $N \subseteq M$, then $N$ is Noetherian too\\
+      $\Longrightarrow$ which implies that $N$ is a finite $A$-module.
+
+    \item $B$ is Noetherian as an $A$-module; but ideals of $B$ are submodules of $B$ as an $A$-submodule, so that $B$ is a Noetherian ring.
+  \end{enumerate}
+\end{proof}
+
+
+\vspace{0.5cm}
+\begin{thm}{R.3.6}{Hilbert basis theorem} \label{hilbert-basis}
+  if $A$ a Noetherian ring, then so is the polynomial ring $A[x]$.
+\end{thm}
+\begin{proof}
+  Prove that any ideal $I \subset A[x]$ is fingen.
+
+  Define auxiliary sets $J_n \subset A$ by
+  $$J_n = \{ a \in A ~|~ \exists f \in I ~\text{s.th.}~ f = a x^n + b_{n-1}x^{n-1} + \ldots b_0 \}$$
+  ie. $J_n$ is the set of leading coefficients of $I$ of degree $n$.
+
+  $J_n$ is an ideal, since $I$ is an ideal.
+
+  $J_n \subset J_{n+1}$, since for $f \in I$ also $x f \in I$.
+
+  Therefore $J_1 \subset J_2 \subset \ldots \subset J_k \subset \ldots$ is an increasing chain of ideals.
+
+  Using the assumption that $A$ is Noetherian, deduce that $J_n = J_{n+1}$ for some $n$.
+
+  For each $m \leq n, ~~ J_m \subset A$ is fingen, ie.
+  $$J_m = (a_{m,1}, \ldots a_{m, r_m})$$
+
+  By definition of $J_m$, for each $a_{m,j}$ with $1 \leq j \leq r_m$,\\
+  $\exissts$ a polynomial $f_{m, j} \in I$ of degree $m$ having the leading coefficient $a_{m, j}$.
+
+  $$\Longrightarrow~~ \{ f_{m,j} \}_{m<n; 1 \leq j \leq r_m}$$
+  the set of elements of $I$.
+
+  Claim: this finite set ($\{ f_{m,j} \}$) generates $I$.
+
+  $\forall f \in I$, if $\deg f =m$, then its leading coefficient is $a \in J_m$,
+
+  hence if $m \geq n$, then $a \in J_m=J_n$, so that
+  $$a = \sum b_i a_{n,i} ~~ \text{with}~ b_i \in A$$
+  and
+  $$f - \sum b_i X^{m-n} \cdot f_{n, i}$$
+  has degree $<m$.
+
+  Similarly, if $m \leq n$, then $a \in J_m$, so that
+  $$a = \sum b_i a_{m, i} ~~\text{with}~ b_i \in A$$
+  and
+  $$f - \sum b_i f_{n, i}$$
+  has degree $<m$.
+
+
+  \vspace{0.3cm}
+  By induction on $m$, $f$ can be written as a linear combination of finitely many elements.
+
+  Thus, any ideal of $A[x]$ is finitely generated.
+\end{proof}
+
+\begin{cor}{R.3.6.C}
+  if $A$ a Noetherian ring, and $\psi: A \longrightarrow B$ a ring homomorphism such that $B$ is a fingen extension ring of $\psi(A)$, then $B$ is Noetherian.
+
+  In particular, any fingen algebra over $\mathbb{Z}$ or over a field $K$ is Noetherian.
+\end{cor}
+\begin{proof}
+  the assumption is that $B$ is a quotient of a polynomial ring,
+  $$B \cong A[x_1, \ldots, x_n] / I$$
+  for some ideal $I$.
+
+  By the Hilbert basis theorem \ref{hilbert-basis} and induction,\\
+  $A$ being Noetherian implies that $A[x_1, \ldots, x_n]$ is Noetherian.
+
+  And by Corollary \ref{R.3.5}(iv),\\
+  $A[x_1, \ldots, x_n]$ being Noetherian implies that $A[x_1, \ldots, x_n]/I$ is Noetherian.
+\end{proof}
+
+
+
 
 \newpage
 
