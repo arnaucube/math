@@ -80,7 +80,7 @@
 \maketitle
 
 \begin{abstract}
-    Notes taken while studying Commutative Algebra, mostly from Atiyah \& MacDonald book \cite{am} and Reid's book \cite{reid}.
+    Notes taken while studying Commutative Algebra, mostly from Atiyah \& MacDonald book \cite{am} and Reid's book \cite{reid}. For the exercises, I follow the assignments listed at \cite{mit-course}.
 
     Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
 
@@ -1341,6 +1341,74 @@ $0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\long
     \alpha^{-1}(M_1)=\alpha^{-1}(M_2)
   \end{align*}
   while having $M_1 \neq M_2$.
+\end{proof}
+
+
+
+\begin{ex}{R.3.3}
+Let $A$ a ring, $I_1, \ldots, I_k$ ideals such that each $A/I_i$ is a Noetherian ring.
+Prove that $\bigoplus A/I_i$ is a Noetherian $A$-module, and deduce that if $\bigcap I_i = 0$ then $A$ is also Noetherian.
+\end{ex}
+\begin{proof}
+\begin{enumerate}[i.]
+  \item by Corollary \ref{R.3.5} (i), if $M_i$ Noetherian modules, then $\bigoplus M_i$ is Noetherian.
+    $\Longrightarrow$ thus $\bigoplus A/I_i$ is Noetherian.
+  \item Take the canoncial homomorphism
+    $$\phi: A \longrightarrow \bigoplus_{i=1}^n A/ I_i$$
+    by $\phi(a) = (a+I_1, a+I_2, \ldots, a+I_n)$.
+
+    $\phi$ is injective: $ker(\phi)= \{ a \in A | a \in I_i \forall i \}$.
+
+    Since we're given $\cap I_i = 0$, then $ker(\phi)=\cap I_i$, and $\phi$ is injective.
+
+    Thus, $\phi$ is the isomorphism $A \cong im(\phi)$, where $im(\phi)$ is an $A$-submodule of $\bigoplus A/I_i$.
+
+    We know that any submodule of a Noetherian module is Noetherian, thus, since
+    \begin{itemize}
+      \item $A/I_i$ is Noetherian by hypothesis of the exercise
+      \item $A \cong im(\phi)$
+      \item $im(\phi)$ is an $A$-submodule of $\bigoplus A/I_i$
+  \end{itemize}
+  then, $A$ is Noetherian.
+\end{enumerate}
+\end{proof}
+
+\begin{ex}{R.3.4}
+  Prove that if A is a Noetherian ring and M a finite A-module, then there
+  exists an exact sequence $A^q \stackrel{\alpha}{\longrightarrow} A^p \stackrel{\beta}{\longrightarrow} M \longrightarrow 0$.
+  That is, M has a presentation as an A-module in terms of finitely many generators and relations.
+\end{ex}
+\begin{proof}
+  since $M$ fingen $~\Longrightarrow~$ generators $\{m_1, \ldots, m_2 \} \subseteq M$ span $M$.
+
+  Let $\beta$ be a surjective $A$-linear map, which forms a free $A$-module of rank $p$ onto $M$:
+  \begin{align*}
+    \beta: A^p &\longrightarrow M\\
+    (a_1, \ldots, a_p) &\longmapsto \sum_{i=1}^p a_i m_i
+  \end{align*}
+
+  Let $K=ker(\beta)$. By the 1st Isomorphism Theorem,
+  $$M \cong A^p / K$$
+
+  Since $A$ is a Noetherian ring, then every free $A$-module of finite rank (eg. $A^p$) is a Noetherian module.
+
+  Every submodule of a Noetherian module is fingen.
+
+  $\Longrightarrow~$ since $K \subseteq A^p, ~\Longrightarrow~ K ~~(=ker(\beta))$ is fingen.
+
+  Since $K$ fingen, let $\{k_1, \ldots, l_q\}$ be generators of $K$.
+
+  Define $\psi: A^q \longrightarrow K$.
+
+  Compose it with the inclusion map $i: K \longrightarrow A^p$,
+  $$\alpha = i \circ \psi:~ A^q \longrightarrow A^p$$
+
+  So we have the whole sequence $A^q \stackrel{\alpha}{\longrightarrow} A^p \stackrel{\beta}{\longrightarrow} M \longrightarrow 0$, where
+  \begin{itemize}
+    \item $\beta$ is surjective
+    \item $im(\alpha)=ker(\beta)$
+  \end{itemize}
+  so that it is a exact sequence, thus, $M$ has a finite presentation.
 \end{proof}
 
 \bibliographystyle{unsrt}
