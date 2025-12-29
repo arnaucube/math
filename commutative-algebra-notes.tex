@@ -80,7 +80,7 @@
 \maketitle
 
 \begin{abstract}
-    Notes taken while studying Commutative Algebra, mostly from Atiyah \& MacDonald book \cite{am} and Reid's book \cite{reid}.
+    Notes taken while studying Commutative Algebra, mostly from Atiyah \& MacDonald book \cite{am} and Reid's book \cite{reid}. For the exercises, I follow the assignments listed at \cite{mit-course}.
 
     Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
 
@@ -178,7 +178,7 @@
   $$A \supset \mM ~\text{or}~ (A, \mM) ~\text{or}~ (A, \mM, K)$$
 \end{defn}
 
-\subsection{$\mathbb{Z}$ and $K[X]$, two Principal Ideal Domains}
+\subsection{Z and K[X], two Principal Ideal Domains}
 
 
 \begin{lemma}{}
@@ -696,11 +696,124 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
 \end{proof}
 
 
-\begin{prop}{AM.2.10} \label{2.10}
-  Split exact sequence. TODO
-\end{prop}
+\subsection{Sequences}
 
-\section{Noetherian rings}
+\begin{defn}{R.2.9.a}{Exact Sequence}
+  Let a sequence of homomorphisms
+$$L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N$$
+It is \emph{exact} at $M$ if $im(\alpha)=ker(\beta)$.
+
+ie. $\beta \circ \alpha = 0$ and $\alpha$ maps surjectively to
+$ker(\beta)$.
+\end{defn}
+
+\begin{defn}{R.2.9.b}{Short Exact Sequence (s.e.s.)} \label{2.9}
+$$0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$$
+is exact $\Longleftrightarrow~ L \subset M$ and $N=M / L$.
+
+Properties:
+\begin{itemize}
+  \item $\alpha$ injective
+  \item $\beta$ surjective
+  \item $\alpha:~ L \Longrightarrow ker \beta$
+  \item $\beta$ induces $M/\alpha(L) \longrightarrow N$
+\end{itemize}
+\end{defn}
+
+\begin{prop}{R.2.10}{Split exact sequence} \label{2.10}
+  For the previous s.e.s., 3 equivalent conditions:
+  \begin{enumerate}[i.]
+    \item $\exists$ isomorphism $M \cong L \oplus N$, with
+      \begin{align*}
+        \alpha:~ &m \longmapsto (m,0)\\
+        \beta:~ &(m, n) \longmapsto n
+      \end{align*}
+
+    \item $\exists$ a \emph{section} of $\beta$, that is, a map $s: N \longrightarrow M$ such that $\beta \circ s = id_N$
+    \item $\exists$ a \emph{retraction} of $\alpha$, that is, a map $r: M \longrightarrow L$ such that $r \circ \alpha = id_L$
+  \end{enumerate}
+  
+  If all i, ii, iii are satisfied, it is a split exact sequence.
+\end{prop}
+\begin{proof}
+  Intuitively, when a s.e.s. \emph{splits} it means that the middle module $M$ is the direct sum of the other (outer) two modules, ie. $M = L \oplus N$.
+
+  \begin{itemize}
+    \item[(i to ii, iii)]
+      if $M \cong L \oplus N$ such that $\alpha:~ m \longmapsto (m,0),~~ \beta:~ s(m, n) \longmapsto n$, we can define the maps
+
+      for ii:
+      \begin{align*}
+        s:~ N &\longrightarrow L \oplus N\\
+        s(n) &\longmapsto (0, n)
+      \end{align*}
+
+      Then $\beta(s(n))=\beta(0,n)$, so $\beta \circ s = id_N$.
+
+      for iii:
+      \begin{align*}
+        r:~ L \oplus N &\longrightarrow L\\
+        r(m,n) &\longmapsto m
+      \end{align*}
+
+      Then $r(\alpha(m))=r(m,0)$, so $r \circ \alpha = id_L$.
+
+    \item[(ii to i)]
+      assume $s: N \longrightarrow M$ such that $\beta \circ s = id_M$
+
+      Want to show $M \cong im(\alpha) \oplus im(s)$.
+
+      $\forall m \in M$, consider $m - s(\beta(m))$, apply $\beta$ to it:\\
+      $\beta(m - s(\beta(m))) = \beta(m) - (\beta \circ s)(\beta(m)) = \beta(m) - \beta(m) = 0$
+
+      Since $ker(\beta) = im(\alpha),~~ \exists! l \in L ~\text{such that}~ \alpha(l) = m - s(\beta(m))$.
+
+      Thus $m = \alpha(l) + s(\beta(m))$.
+
+      \vspace{0.3cm}
+      Now, suppose $x \in im(\alpha) \cap im(s)$, then $x = \alpha(l)=s(n)$, apply $\beta$ to it: $\beta(\alpha(l)) = \beta(s(n)) ~\Longrightarrow~ 0=n$.
+
+      If $n=0$, then $s(n)=0$, so the intersection is $\{0\}$.
+
+      \vspace{0.3cm}
+      Define
+      \begin{align*}
+        \phi: L \oplus N &\longrightarrow M\\
+        \phi(l,n) &\longmapsto \alpha(l)+s(n)
+      \end{align*}
+      This isomorphism satisfies the required conditions.
+
+    \item[(iii to i)] similar to the previous one.
+  \end{itemize}
+
+  \vspace{0.3cm}
+  TL;DR:\\
+
+$$
+0 \longrightarrow L
+  \substack{
+    \stackrel{\alpha}{\longrightarrow}\\
+    \stackrel{\longleftarrow}{r}
+  }
+  \substack{M \\[0.5ex] \cong L \oplus N}
+  \substack{
+    \stackrel{\beta}{\longrightarrow}\\
+    \stackrel{\longleftarrow}{s}
+  }
+  N \longrightarrow 0
+$$
+\begin{align*}
+  \alpha:~ &l \longmapsto (l,0)\\
+  r:~ &(m,n) \longmapsto m\\
+  \alpha &\circ r = id_L\\
+  \beta:~ &(l,n) \longmapsto n\\
+  s:~ &n \longmapsto (0,n)\\
+  \beta &\circ s = id_N
+\end{align*}
+
+\end{proof}
+
+\section{Noetherian rings (and modules)}
 
 \begin{defn}{}{Ascending Chain Condition}
   A partially orddered set $\Sigma$ has the \emph{ascending chain condition} (a.c.c.) if every chain
@@ -717,8 +830,8 @@ $\Longrightarrow~ \Sigma$ has the a.c.c. iff every non-empty subset $S \subset \
     \item the set $\Sigma$ of ideals of $A$ has the a.c.c.; in other words, every increasing chain of ideals
       $$I_1 \subset I_2 \subset \ldots \subset I_k \subset \ldots$$
       eventually stops, that is $I_k = I_{k+1}=\ldots$ for some $k$.
-    \item every nonempty set $S$ of iddeals has a maximal element
-    \item every iddeal $I \subset A$ is finitely generated
+    \item every nonempty set $S$ of ideals has a maximal element
+    \item every ideal $I \subset A$ is finitely generated
   \end{enumerate}
   If these conditions hold, then $A$ is \emph{Noetherian}.
 \end{defn}
@@ -741,7 +854,7 @@ As in with rings, it is equivalent to say that
 
 
 
-\begin{prop}{R.3.4.P}
+\begin{prop}{R.3.4.P}\label{R.3.4.P}
   Let $0 \longrightarrow L \xrightarrow{\ \alpha \ } M \xrightarrow{\ \beta \ } N \longrightarrow 0$ be a s.e.s. (split exact sequence, \ref{2.10}).
 
   Then, $M$ is Noetherian $\Longleftrightarrow~ L$ and $N$ are Noetherian.
@@ -765,13 +878,121 @@ As in with rings, it is equivalent to say that
   $$L \cap M_1 = L \cap M_2 ~\text{and}~ \beta(M_1) = \beta(M_2) ~\Longrightarrow~ M_1 = M_2$$
 \end{lemma}
 \begin{proof}
-  if $m\in M_2$, then $\beta(m) \in \beta(M_1) = \beta(M_2)$, so that there is an $n \in M_1$ such that $\beta(m)=\beta(m)$.
+  if $m\in M_2$, then $\beta(m) \in \beta(M_1) = \beta(M_2)$, so that there is an $n \in M_1$ such that $\beta(m)=\beta(n)$.
 
   Then $\beta(m-n)=0$, so that
   $$m - n \in M_2 \cap ker(\beta)=M_1 \cap ker(\beta)$$
 
   Hence $m \in M_1$, thus $M_1 = M_2$.
 \end{proof}
+
+
+
+\begin{cor}{R.3.5}{Properties of Noetherian modules.}\label{R.3.5}
+  \begin{enumerate}[i.]
+    \item if $\forall i \in [r],~~M_i$ are Noetherian modules, then
+      $\bigoplus_{i=1}^r M_i$ is Noetherian.
+    \item if $A$ a Noetherian ring, then an $A$-module $M$ is Noetherian iff it is finite over $A$.
+    \item if $A$ a Noetherian ring, $M$ a finite module, then any submodule $N \subset M$ is again finite.
+    \item if $A$ a Noetherian ring, and $\psi: A \longrightarrow B$ a ring homomorphism such that $B$ is a finite $A$-module, then $B$ is a Noetherian ring.
+  \end{enumerate}
+\end{cor}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item a direct sum $M_1 \oplus M_2$ is a particular case of an exact sequence.
+
+      Then, Proposition \ref{R.3.4.P} proves this statement when $r=2$. The case $r>2$ follows by induction.
+
+    \item if $M$ finite, then $\exists~$ surjective homomorphism
+      $$A^r \longrightarrow M \longrightarrow 0$$
+      for some $r$, so that $M$ is a quotient
+      $$M \cong A^r / N$$
+      for some submodule $N \subset A^r$.
+
+      $A^r$ is a Noetherian module by i., so $M$ is Noetherian due Proposition \ref{R.3.4.P}.
+
+      Conversely, $M$ Noetherian implies $M$ finite.
+      
+      item as in previous implications:\\
+      $M$ finite and $A$ Noetherian $\Longrightarrow$ $M$ is Noetherian,\\
+      $\Longrightarrow$ since $N \subseteq M$, then $N$ is Noetherian too\\
+      $\Longrightarrow$ which implies that $N$ is a finite $A$-module.
+
+    \item $B$ is Noetherian as an $A$-module; but ideals of $B$ are submodules of $B$ as an $A$-submodule, so that $B$ is a Noetherian ring.
+  \end{enumerate}
+\end{proof}
+
+
+\vspace{0.5cm}
+\begin{thm}{R.3.6}{Hilbert basis theorem} \label{hilbert-basis}
+  if $A$ a Noetherian ring, then so is the polynomial ring $A[x]$.
+\end{thm}
+\begin{proof}
+  Prove that any ideal $I \subset A[x]$ is fingen.
+
+  Define auxiliary sets $J_n \subset A$ by
+  $$J_n = \{ a \in A ~|~ \exists f \in I ~\text{s.th.}~ f = a x^n + b_{n-1}x^{n-1} + \ldots b_0 \}$$
+  ie. $J_n$ is the set of leading coefficients of $I$ of degree $n$.
+
+  $J_n$ is an ideal, since $I$ is an ideal.
+
+  $J_n \subset J_{n+1}$, since for $f \in I$ also $x f \in I$.
+
+  Therefore $J_1 \subset J_2 \subset \ldots \subset J_k \subset \ldots$ is an increasing chain of ideals.
+
+  Using the assumption that $A$ is Noetherian, deduce that $J_n = J_{n+1}$ for some $n$.
+
+  For each $m \leq n, ~~ J_m \subset A$ is fingen, ie.
+  $$J_m = (a_{m,1}, \ldots a_{m, r_m})$$
+
+  By definition of $J_m$, for each $a_{m,j}$ with $1 \leq j \leq r_m$,\\
+  $\exissts$ a polynomial $f_{m, j} \in I$ of degree $m$ having the leading coefficient $a_{m, j}$.
+
+  $$\Longrightarrow~~ \{ f_{m,j} \}_{m<n; 1 \leq j \leq r_m}$$
+  the set of elements of $I$.
+
+  Claim: this finite set ($\{ f_{m,j} \}$) generates $I$.
+
+  $\forall f \in I$, if $\deg f =m$, then its leading coefficient is $a \in J_m$,
+
+  hence if $m \geq n$, then $a \in J_m=J_n$, so that
+  $$a = \sum b_i a_{n,i} ~~ \text{with}~ b_i \in A$$
+  and
+  $$f - \sum b_i X^{m-n} \cdot f_{n, i}$$
+  has degree $<m$.
+
+  Similarly, if $m \leq n$, then $a \in J_m$, so that
+  $$a = \sum b_i a_{m, i} ~~\text{with}~ b_i \in A$$
+  and
+  $$f - \sum b_i f_{n, i}$$
+  has degree $<m$.
+
+
+  \vspace{0.3cm}
+  By induction on $m$, $f$ can be written as a linear combination of finitely many elements.
+
+  Thus, any ideal of $A[x]$ is finitely generated.
+\end{proof}
+
+\begin{cor}{R.3.6.C}
+  if $A$ a Noetherian ring, and $\psi: A \longrightarrow B$ a ring homomorphism such that $B$ is a fingen extension ring of $\psi(A)$, then $B$ is Noetherian.
+
+  In particular, any fingen algebra over $\mathbb{Z}$ or over a field $K$ is Noetherian.
+\end{cor}
+\begin{proof}
+  the assumption is that $B$ is a quotient of a polynomial ring,
+  $$B \cong A[x_1, \ldots, x_n] / I$$
+  for some ideal $I$.
+
+  By the Hilbert basis theorem \ref{hilbert-basis} and induction,\\
+  $A$ being Noetherian implies that $A[x_1, \ldots, x_n]$ is Noetherian.
+
+  And by Corollary \ref{R.3.5}(iv),\\
+  $A[x_1, \ldots, x_n]$ being Noetherian implies that $A[x_1, \ldots, x_n]/I$ is Noetherian.
+\end{proof}
+
+
+
 
 \newpage
 
@@ -813,7 +1034,7 @@ The exercises that start with \textbf{R} are the ones from the book \cite{reid},
 
   Let
   $$\psi^{-1}(P) = \{ a \in A | \psi(a) \in P \} = A \cap P$$
-  The claim is that $\psi^{-1}(P)$ is prime iddeal of $A$.
+  The claim is that $\psi^{-1}(P)$ is prime ideal of $A$.
 
   \begin{enumerate}[i.]
     \item show that $\psi^{-1}(P)$ is an ideal of $A$:\\
@@ -1000,6 +1221,195 @@ The exercises that start with \textbf{R} are the ones from the book \cite{reid},
 \end{proof}
 
 \subsection{Exercises Chapter 2}
+
+\begin{ex}{R.2.9}
+$0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$ is a s.e.s. of $A$-modules. Prove that if $N, L$ are finite over $A$, then $M$ is finite over $A$.
+\end{ex}
+\begin{proof}
+  Denote the generators of $L$ and $N$ respectively as
+  \begin{align*}
+    \{l_1, \ldots, l_k \} &\subseteq L\\
+    \{n_1, \ldots, n_p \} &\subseteq N
+  \end{align*}
+
+  By s.e.s. definition, 
+  \begin{itemize}
+    \item[-] $\alpha$ is injective (one-to-one), so
+    $$\forall l_i \in L,~ \exists~ x_i \in M ~\text{s.th.}~ \alpha(l_i)=x_i$$
+
+  \item[-] $\beta$ is surjective (onto), so
+    $$\forall n_j \in N,~ \exists~ y_j \in M ~\text{s.th.}~ \beta(y_j)=n_j$$
+\end{itemize}
+
+  We will show that $\{x_1, \ldots, x_k, y_1, \ldots, y_p \}$ generate $M$, and thus $M$ is finite:
+
+  Let $m \in M$, then $\beta(m) \in N$, and
+  $$\beta(m) = \sum_{j=1}^p a_j n_j ~~~\text{with}~ a_j \in A$$
+
+  Take $m' \in M$, with $m' = \sum a_j y_j$, then
+  $$\beta(m') = \sum a_j \beta(y_j) = \sum a_j n_j = \beta(m)$$
+
+  Then, since $\beta(m)=\beta(m')~~ \Longrightarrow~~ \beta(m-m')=0$, thus
+  $$(m-m') \in ker(\beta)$$
+
+  By \emph{exactness} property, since $\alpha: L \longrightarrow ker(\beta)$, we have $ker(\beta)=im(\alpha)$.
+
+  Therefore, $\exists~ l \in L$ such that $\alpha(l)= m-m'$.
+
+  Since $\{l_i\}_k$ generate $L$,
+  $$l = \sum^k b_i l_i$$
+  thus
+  $$m-m' = \alpha(l) = \alpha(\underbrace{\sum b_i l_i}_{l}) = \sum b_i \underbrace{\alpha(l_i)}_{x_i} = \sum b_i x_i$$
+
+  Rearrange,
+  $$m = m' + \sum b_i x_i = \sum_{j=1}^p a_j y_j + \sum_{i=1}^k b_i x_i ~~~~~ \forall m \in M$$
+
+  So, $L$ provides $k$ generators for the kernel part of $M$, $N$ provides $p$ "lifts" for the quotient part of $M$; thus $M$ is generated by $k+p$ elements.\\
+  Thus $M$ is finitely generated over $A$.
+\end{proof}
+
+
+\subsection{Exercises Chapter 3}
+
+\begin{ex}{R.3.2}
+  $K$ a field, $A \supset K$ a ring which is finite dimensional as a $K$-vector space.
+   Prove that $A$ is Noetherian and Artinian.
+\end{ex}
+\begin{proof}
+  $dim(A)=n < \infty$, so every ideal $\aA$ of $A$ is a $K$-subspace of $A$, because if $x \in \aA$ and $c \in K$, then $c \cdot x \in \aA$.
+
+  \begin{enumerate}
+    \item Noetherian:\\
+      let $I_1 \subseteq I_2 \subseteq \ldots$ be an ascending chain of ideals in $A$.
+
+      Since each $I_i$ is a subspace, we have
+      $$dim_K(I_1) \leq dim_K(I_2) \leq \ldots \leq n$$
+      where at some $i=m$ we have $dim_K(I_m)=dim_K(I_{m+1})$; then since $I_m \subseteq I_{m+1}$, we have $I_m = I_{m+1}$. So $A$ is Noetherian.
+      
+    \item Artinian:\\
+      Similarly, if $I_1 \supseteq I_2 \supseteq \ldots$ a descending chain of ideals in $A$.
+
+      then
+      $$n \geq dim_K(I_1) \geq dim_K(I_2) \geq \ldots \geq 0$$
+      where at some $i=m$ we have $dim_K(I_m)=dim_K(I_{m+1})$; then since $I_m \subseteq I_{m+1}$, we have $I_m = I_{m+1}$. So $A$ is Artinian.
+  \end{enumerate}
+\end{proof}
+
+\begin{ex}{R.3.5}
+  Let $0 \longrightarrow L \stackrel{\alpha}{\longrightarrow} M \stackrel{\beta}{\longrightarrow} N \longrightarrow 0$ an exact sequence. Let $M_1, M_2 \subseteq M$ be submodules of $M$.
+
+  Prove if the following holds or not:
+  $$\beta(M_1)=\beta(M_2) ~\text{and}~ \alpha^{-1}(M_1)=\alpha^{-1}(M_2)~~\Longrightarrow~ M_1=M_2$$
+\end{ex}
+\begin{proof}
+  Counterexample showing that it does not hold:
+
+  Let $K$ a field, $M = K \oplus K~, L=K,~N=K$.
+
+  Set, for $l \in L,~ (m_1, m_2) \in M$,
+  \begin{align*}
+    \alpha:~ &l \longmapsto (l, 0)\\
+    \beta:~ &(m_1, m_2) \longmapsto m_2
+  \end{align*}
+
+  So we have
+  $$0 \longrightarrow K \stackrel{\alpha}{\longrightarrow} K^2 \stackrel{\beta}{\longrightarrow} K \longrightarrow 0$$
+
+  Then,
+  \begin{align*}
+    M_1 &= \{ (x, x) ~|~ x \in K\} ~~~~\sim\text{(diagonal line)} \\
+    M_2 &= \{ (0, x) ~|~ x \in K\} ~~~~\sim\text{(y-axis)}
+  \end{align*}
+
+  (Geometric interpretation: $M_1,~ M_2$ are the \emph{diagonal line} and \emph{y-axis} respectively; and $\alpha,~\beta$ capture information about the \emph{vertical} components (x-axis, y-axis respectively), but not about the \emph{diagonal} way a submodule is embedded in $M$).
+
+  Then,
+  \begin{align*}
+    \beta(M_1) &= \{ x ~|~ x \in K\} = K \\
+    \beta(M_2) &= \{ x ~|~ x \in K\} = K
+  \end{align*}
+  thus, $\beta(M_1) = \beta(M_2)$.
+
+  For $M_1,~~ (l,0)\in M$ iff $l=0$, thus $\alpha^{-1}(M_1) = \{0\}$,\\
+  for $M_2,~~ (l,0)\in M$ iff $l=0$, thus $\alpha^{-1}(M_2) = \{0\}$,\\
+  thus $\alpha^{-1}(M_1)=\alpha^{-1}(M_2)$.
+
+
+  So we've seen that
+  \begin{align*}
+    \beta(M_1) = \beta(M_2)\\
+    \alpha^{-1}(M_1)=\alpha^{-1}(M_2)
+  \end{align*}
+  while having $M_1 \neq M_2$.
+\end{proof}
+
+
+
+\begin{ex}{R.3.3}
+Let $A$ a ring, $I_1, \ldots, I_k$ ideals such that each $A/I_i$ is a Noetherian ring.
+Prove that $\bigoplus A/I_i$ is a Noetherian $A$-module, and deduce that if $\bigcap I_i = 0$ then $A$ is also Noetherian.
+\end{ex}
+\begin{proof}
+\begin{enumerate}[i.]
+  \item by Corollary \ref{R.3.5} (i), if $M_i$ Noetherian modules, then $\bigoplus M_i$ is Noetherian.
+    $\Longrightarrow$ thus $\bigoplus A/I_i$ is Noetherian.
+  \item Take the canoncial homomorphism
+    $$\phi: A \longrightarrow \bigoplus_{i=1}^n A/ I_i$$
+    by $\phi(a) = (a+I_1, a+I_2, \ldots, a+I_n)$.
+
+    $\phi$ is injective: $ker(\phi)= \{ a \in A | a \in I_i \forall i \}$.
+
+    Since we're given $\cap I_i = 0$, then $ker(\phi)=\cap I_i$, and $\phi$ is injective.
+
+    Thus, $\phi$ is the isomorphism $A \cong im(\phi)$, where $im(\phi)$ is an $A$-submodule of $\bigoplus A/I_i$.
+
+    We know that any submodule of a Noetherian module is Noetherian, thus, since
+    \begin{itemize}
+      \item $A/I_i$ is Noetherian by hypothesis of the exercise
+      \item $A \cong im(\phi)$
+      \item $im(\phi)$ is an $A$-submodule of $\bigoplus A/I_i$
+  \end{itemize}
+  then, $A$ is Noetherian.
+\end{enumerate}
+\end{proof}
+
+\begin{ex}{R.3.4}
+  Prove that if A is a Noetherian ring and M a finite A-module, then there
+  exists an exact sequence $A^q \stackrel{\alpha}{\longrightarrow} A^p \stackrel{\beta}{\longrightarrow} M \longrightarrow 0$.
+  That is, M has a presentation as an A-module in terms of finitely many generators and relations.
+\end{ex}
+\begin{proof}
+  since $M$ fingen $~\Longrightarrow~$ generators $\{m_1, \ldots, m_2 \} \subseteq M$ span $M$.
+
+  Let $\beta$ be a surjective $A$-linear map, which forms a free $A$-module of rank $p$ onto $M$:
+  \begin{align*}
+    \beta: A^p &\longrightarrow M\\
+    (a_1, \ldots, a_p) &\longmapsto \sum_{i=1}^p a_i m_i
+  \end{align*}
+
+  Let $K=ker(\beta)$. By the 1st Isomorphism Theorem,
+  $$M \cong A^p / K$$
+
+  Since $A$ is a Noetherian ring, then every free $A$-module of finite rank (eg. $A^p$) is a Noetherian module.
+
+  Every submodule of a Noetherian module is fingen.
+
+  $\Longrightarrow~$ since $K \subseteq A^p, ~\Longrightarrow~ K ~~(=ker(\beta))$ is fingen.
+
+  Since $K$ fingen, let $\{k_1, \ldots, l_q\}$ be generators of $K$.
+
+  Define $\psi: A^q \longrightarrow K$.
+
+  Compose it with the inclusion map $i: K \longrightarrow A^p$,
+  $$\alpha = i \circ \psi:~ A^q \longrightarrow A^p$$
+
+  So we have the whole sequence $A^q \stackrel{\alpha}{\longrightarrow} A^p \stackrel{\beta}{\longrightarrow} M \longrightarrow 0$, where
+  \begin{itemize}
+    \item $\beta$ is surjective
+    \item $im(\alpha)=ker(\beta)$
+  \end{itemize}
+  so that it is a exact sequence, thus, $M$ has a finite presentation.
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{commutative-algebra-notes.bib}
