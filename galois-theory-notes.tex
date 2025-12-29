@@ -461,8 +461,12 @@
   \begin{enumerate}[i.]
     \item show that $\eta$ is a \emph{well defined} map:
 
-      if $g_1 K=g_2 K$, then for some $k \in K$, $g_1 k =g_2$, so
-      $$\eta(g_1K)=\psi(g_1) = \psi(g_1)\psi(k) = \psi(g_1 k) = \psi(g_2) = \eta(g_2 k)$$
+      if we have two representatives of the same coset, ie. $g_1 K=g_2 K$, we want to show that $\eta(g_1 K) = \eta(g_2 K)$, so that $\eta$ is a well-defined map.
+      
+      \vspace{0.3cm}
+      By the coset properties for some $k \in K$, $g_1=g_2 k$, so
+
+      $$\eta(g_1K)=\psi(g_1) = \psi(g_2 k) = \eta(g_2 k K) = \eta(g_2 K)$$
 
       Thus, $\eta$ does not depend on the choice of coset representatives, and
       the map $\eta: G/ker(\psi) \longrightarrow \psi(G)$ is uniquely defined

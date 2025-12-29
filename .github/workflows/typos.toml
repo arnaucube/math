@@ -1,4 +1,9 @@
 [default.extend-words]
+iddeal = "ideal"
+iddeals = "ideals"
+allpha = "alpha"
+
+# strings that are not a typo:
 thm = "thm"
 
 # equations stuff
