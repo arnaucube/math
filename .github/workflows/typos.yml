@@ -1,7 +1,7 @@
 name: typos
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
     types: [ready_for_review, opened, synchronize, reopened]
   push:
     branches:
