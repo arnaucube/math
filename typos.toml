@@ -1,7 +1,0 @@
-# usage:
-# install `typos`: https://github.com/crate-ci/typos
-# run: typos --config typos.toml
-
-[default.extend-words]
-groth = "groth"
-pinter = "pinter"
