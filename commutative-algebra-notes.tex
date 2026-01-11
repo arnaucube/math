@@ -157,11 +157,11 @@
   $$nilrad A = \bigcap_{P \in Spec(A)} P$$
 \end{defn}
 
-\begin{defn}{}{idempotent}
+\begin{defn}{}[idempotent]
   $e \in A$ such that $e^2=e$.
 \end{defn}
 
-\begin{defn}{}{radical of an ideal}
+\begin{defn}{}[radical of an ideal]
   $$rad I = \{ f \in A | f^n \in I~ \text{for some} n \}$$
 
   $rad I$ is an ideal.
@@ -241,7 +241,7 @@ A \emph{maximal element} of $\Sigma$, is $m \in \Sigma$ such that $m<s$ does not
 
 A subset $S \subset \Sigma$ is \emph{totally ordered} if for every pair $s_1,s_2 \in S$, either $s_1 \leq s_2$ or $s_2 \leq s_1$.
 
-\begin{lemma}{R.1.7}{Zorn's lemma.} \label{zorn}
+\begin{lemma}{R.1.7}[Zorn's lemma] \label{zorn}
   Suppose $\Sigma$ a nonempty partially ordered set (ie. we are given a relation $x \leq y$ on $\Sigma$), and that any totally ordered subset $S \subset \Sigma$ has an upper bound in $\Sigma$.
 
   Then $\Sigma$ has a maximal element.
@@ -591,7 +591,7 @@ $A[\psi] \subset End M$ is the subring geneerated by $A$ and the action of $\psi
 
 
 
-\begin{prop}{AM.2.6}{Nakayama's lemma.} \label{2.6}
+\begin{prop}{AM.2.6}[Nakayama's lemma] \label{2.6}
   Let $M$ a fingen $A$-module, let $\aA$ an ideal of $A$ such that $\aA \subseteq Jac(A)$.
 
   Then $\aA M = M$ implies $M=0$.
@@ -720,7 +720,7 @@ Properties:
 \end{itemize}
 \end{defn}
 
-\begin{prop}{R.2.10}{Split exact sequence} \label{2.10}
+\begin{prop}{R.2.10}[Split exact sequence] \label{2.10}
   For the previous s.e.s., 3 equivalent conditions:
   \begin{enumerate}[i.]
     \item $\exists$ isomorphism $M \cong L \oplus N$, with
@@ -889,7 +889,7 @@ As in with rings, it is equivalent to say that
 
 
 
-\begin{cor}{R.3.5}{Properties of Noetherian modules.}\label{R.3.5}
+\begin{cor}{R.3.5}[Properties of Noetherian modules]\label{R.3.5}
   \begin{enumerate}[i.]
     \item if $\forall i \in [r],~~M_i$ are Noetherian modules, then
       $\bigoplus_{i=1}^r M_i$ is Noetherian.
@@ -926,7 +926,7 @@ As in with rings, it is equivalent to say that
 
 \vspace{0.5cm}
 \subsection{Hilbert basis}
-\begin{thm}{R.3.6}{Hilbert basis theorem.} \label{hilbert-basis}
+\begin{thm}{R.3.6}[Hilbert basis theorem] \label{hilbert-basis}
   If $A$ a Noetherian ring, then so is the polynomial ring $A[x]$.
 \end{thm}
 \begin{proof}
@@ -1060,7 +1060,7 @@ As in with rings, it is equivalent to say that
 \end{proof}
 
 
-\begin{prop}{R.4.3}{Tower Laws.}\label{R.4.3}
+\begin{prop}{R.4.3}[Tower Laws]\label{R.4.3}
   \\Let $B$ be an $A$-algebra.
   \begin{enumerate}[a.]
     \item Transitivity of finiteness: if $A \subset B \subset C$ are extension rings such that $C$ is a finite $B$-algebra and $B$ a finite $A$-algebra,\\
@@ -1136,38 +1136,42 @@ As in with rings, it is equivalent to say that
 \end{proof}
 
 \begin{lemma}{4.3.Aux}[Integrality implies finiteness] \label{integral-implies-finite}
-  If $y_n$ integral over $A$ then $A[y_n]$ is finite over $A$
+  If $y$ integral over $A$ then $A[y]$ is finite over $A$.
 
-  This extends on point (b) from the previous proposition \ref{R.4.3}:
+  This extends on point (b) from the previous proposition \ref{R.4.3}.
 \end{lemma}
 \begin{proof}
-  Suppose $y_n$ is integral over $A$. By definition $\exists~~ f \in A[T]$, with $f$ monic, such that $f(y_n)=0$.
+  Suppose $y$ is integral over $A$. By definition $\exists~~ f \in A[T]$, with
+  $f$ monic, such that $f(y)=0$.
 
-  Let $deg(f)=d$, so that for $f(y_n)=0$ we have
-  $$y_n^d + a_{d-1} y_n^{d-1} + \ldots + a_1 y_n + a_0 = 0 ~~~~ a_i \in A$$
+  Let $deg(f)=d$, so that for $f(y)=0$ we have
+  $$y^d + a_{d-1} y^{d-1} + \ldots + a_1 y + a_0 = 0 ~~~~ a_i \in A$$
 
   Since it is monic (leading coefficient is $1$), we can rearrange it to isolate the highest power:
   \begin{equation}
-    y_n^d = -(a_{d-1} y_n^{d-1} + \ldots + a_1 y_n + a_0)
+    y^d = -(a_{d-1} y^{d-1} + \ldots + a_1 y + a_0)
     \label{eq:yn}
   \end{equation}
-  Thus $y_n^d$ can be written using lower powers of $y_n$ with coefficients in $A$.
+  Thus $y^d$ can be written using lower powers of $y$ with coefficients in $A$.
 
   \vspace{0.5cm}
-  Consider any element $p \in A[y_n]$, $p = c_m y_n^m + c_{m-1} y_n^{m-1} + \ldots + c_0$.
+  Consider any element $p \in A[y]$, $p = c_m y^m + c_{m-1} y^{m-1} + \ldots + c_0$.
 
   if $m<d$, leave it as it is.\\
-  if $m \geq d$, use the monic equation \eqref{eq:yn} to replace $y_n^d$ with lower powers.
+  if $m \geq d$, use the monic equation \eqref{eq:yn} to replace $y^d$ with lower powers.
 
-  Repeating this process, can reduce any power of $y_n$ down to a linear combination of $\{1, y_n, y_n^2, \ldots, y_n^{d-1} \}$.
+  Repeating this process, can reduce any power of $y$ down to a linear
+  combination of $\{1, y, y^2, \ldots, y^{d-1} \}$.
 
-  Thus every elemen in $A[y_n]$ can be expressed as
-  $$\lambda_{d-1} y_n^{d-1} + \ldots + \lambda_2 y_n^2 + \lambda_1 y_n + \lambda_0 \cdot 1~~~~ \lambda_i \in A$$
+  Thus every element in $A[y]$ can be expressed as
+  $$\lambda_{d-1} y^{d-1} + \ldots + \lambda_2 y^2 + \lambda_1 y + \lambda_0 \cdot 1~~~~ \lambda_i \in A$$
 
-  Henceforth, the set $\{1, y_n, y_n^2, \ldots, y_n^{d-1} \}$ generates $A[y_n]$ as a finite $A$-module.
+  Henceforth, the set $\{1, y, y^2, \ldots, y^{d-1} \}$ generates $A[y]$ as a finite $A$-module.
 \end{proof}
 
 
+
+\vspace{0.5cm}
 \begin{defn}{4.4}[Integral closure]
   Given the ring $\tilde{A}$ from \ref{R.4.3}.(d), ie. $\tilde{A} = \{ y \in B ~|~ y ~\text{integral over}~ A \} \subset B$,
   $\tilde{A}$ is the \emph{integral closure} of $A$ in $B$.
@@ -1185,7 +1189,7 @@ As in with rings, it is equivalent to say that
 
 \subsection{Noether normalization}
 
-\begin{defn}{4.6}[Algebraically independent]
+\begin{defn}{4.6}[Algebraically independent] \label{R.4.6.D}
   $y_1, \ldots, y_n \in A$ are \emph{algebraically independent} over $K$ if the natural surjection $K[Y_1, \ldots, Y_n] \longrightarrow K[y_1, \ldots, y_n]$ is an isomorphism.
 
   $\Longrightarrow~~ \nexists~ F(y_1, \ldots, y_n)=0$ ($F$ nonzero) with coefficients in $K$.
@@ -1226,7 +1230,7 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
 
 
 \vspace{0.5cm}
-\begin{thm}{R.4.6}{Noether normalization lemma.} \label{noether-normalization}
+\begin{thm}{R.4.6}[Noether normalization lemma] \label{noether-normalization}
   Let $K$ a field, $A$ a fingen $K$-algebra.
 
   Then $\exists~ z_1, \ldots, z_m \in A$ such that
@@ -1240,43 +1244,47 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
   where $K \subset B$ is a polynomial extension, and $B \subset A$ is finite.
 \end{thm}
 \begin{proof}
-  (by induction on the number of generators ($n$) of $A$).
+  % (by induction on the number of generators ($n$) of $A$).
+  Let $y_1, \ldots, y_n$ be generators of $A = K[y_1, \ldots, y_n]$.
 
   if $n=0$, nothing to prove since $A$ is generated by $0$ elements $~\Longrightarrow~ A=K$, and $K$ is finite.
 
   if $n>0$ we have two cases:
   \begin{itemize}
-    \item[-] $y_1, \ldots, y_n$ are algebraically independent over $K$, then $A \cong K[y_1, \ldots, y_n]$, so that $A$ is a finite module over itself, with $m=n$.
+    \item[-] $y_1, \ldots, y_n$ are algebraically independent over $K$, then by
+      definition \ref{R.4.6.D} $A \cong K[y_1, \ldots, y_n]$, so that $A$ is a finite module over itself, with $m=n$.
     \item[-] $y_1, \ldots, y_n$ are algebraically dependent over $K$,
       $$\exists~ 0 \neq f \in K[y_1, \ldots, y_n] ~\text{s.th}~ f(y_1, \ldots, y_n)=0$$
   \end{itemize}
 
   Want $f$ to be \emph{monic}, so that $y_n$ is integral over new defined variables $y_1^*, \ldots, y_{n-1}^*$. In other words, want some polynomial like
-  $$y_n^d+ a_{d-1} y_n^{d-1} + \ldots + a_1 y_n + a_0 = 0~~~~~~~a_i \in K[y_1, \ldots, y_{n-1}]$$
-  \hspace*{2em} ie. monic, so that by definition (\ref{R.4.1}), $y_n$ is integral over $K[y_1, \ldots, y_{n-1}]$.
+  $$y_n^d+ a_{d-1} y_n^{d-1} + \ldots + a_1 y_n + a_0 = 0~~~~~~~a_i \in K[y_1^*,
+  \ldots, y_{n-1}^*]$$
+  \hspace*{2em} ie. monic, so that by definition (\ref{R.4.1}), $y_n$ is
+  integral over $K[y_1^*, \ldots, y_{n-1}^*]$.
 
   $~\longrightarrow~$ Change variables so that $f$ becomes monic in one of the variables ($y_n$); this allows to express one generator ($y_n$) as an integral element over the others.
 
 
   \vspace{0.3cm}
   Following from Lemma \ref{R.4.6.L}, define the new variables $y^*_1, \ldots, y^*_{n-1} \in A$ such that $y_n$ is integral over
-  $$A^* = K[y^*_1, \ldots, y^*_{n-1}] ~\text{and}~ A=A^*[y_n]$$
+  $$A^* = K[y^*_1, \ldots, y^*_{n-1}], ~~\text{and}~ A=A^*[y_n]$$
 
-  Setting $y_i^* = y_i - y_n^{r_i}$, so that $y_i = y_i^* + y_i^{r_i}$ $\forall i \in [n-1],~~ r_1, \ldots, r_{n-1} \geq 1 \in \mathbb{Z}$.
+  Setting $y_i^* = y_i - y_n^{r_i}$, so that $y_i = y_i^* + y_n^{r_i}$ $\forall i \in [n-1],~~ r_1, \ldots, r_{n-1} \geq 1 \in \mathbb{Z}$.
 
   Use those new variables at $f(y_1, \ldots, y_n)=0$:
-  $$f(y_1^* + y_n^{r_1}, y_2^* + y_n^{r_2}, \ldots, y_n^* + y_n^{r_n}, y_n) = 0$$
+  $$f(y_1^* + y_n^{r_1}, y_2^* + y_n^{r_2}, \ldots, y_{n-1}^* + y_n^{r_{n-1}}, y_n) = 0$$
 
   Then the highest power of $y_n$ in each term of $f$ will look like $y_n^{(\sum a_i r_i)}$, and with $r_i$ growing fast enough we ensure that each monomial in $f$ produces a unique power of $y_n$.
 
   Then we have $c \cdot y_n^D + \text{(terms with lower powers of $y_n$)} = 0$ with $c \in K \setminus \{0\}$. So that dividing by $c$ we get the shape $y_n^D + \ldots =0$, thus $y_n$ is integral over $A^* = K[y_1^*, \ldots, y_{n-1}^*]$.
 
   \vspace{0.3cm}
-  Now, $A$ is a finite module over $A^*=K[y_1^*, \ldots, y_{n-1}^*]$, so that $A^*$ is generated by $n-1$ elements.
+  Induction:\\
+  Since $y_n$ integral over $A^* ~~\Longrightarrow~ A=A^*[y_n]$ is finite over $A^*=K[y_1^*, \ldots, y_{n-1}^*]$ (by \ref{integral-implies-finite}).
 
   By inductive hypothesis on $A^*,~~ \exists~ z_1, \ldots, z_m \in A^*$ algebraically independent over $K$ and with $A^*$ finite over $B=K[z_1, \ldots, z_m]$.
 
-  Since $y_n$ integral over $A^* ~~\Longrightarrow~ A^*[y_n]$ is finite over $A^*$ (by \ref{integral-implies-finite}).\\
   Therefore, each step of $B \subset A^* \subset A^*[y_n]=A$ is finite, and $A$ is finite over $B$ as required.
 \end{proof}
 
@@ -1291,6 +1299,69 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
 
   This corresponds geometrically to tilting the hyperbola a little before projecting, so that no longer has a vertical asymptotic line.
 \end{eg}
+
+\vspace{1cm}
+
+\subsection{Weak Nullstellensatz}
+
+\begin{prop}{R.4.9}\label{R.4.9}
+  let $A \subset B$ be an integral extension of integral domain,\\
+  then $A$ is a field $\Longleftrightarrow~ B$ is a field.
+\end{prop}
+\begin{proof}
+  $\Longrightarrow$:\\
+  let $0 \neq x \in B$, then $\exists~~ x^n + a_{n-1} x^{n-1} + \ldots + a_0 = 0 ~~~~ a_i \in A$, monic.
+
+  Since $A$ is a field, $\exists$ inverse, observe that:
+  \begin{align*}
+    x^n &+ a_{n-1} x^{n-1} + \ldots + a_1 x + a_0 = 0\\
+    x(x^{n-1} &+ a_{n-1} x^{n-2} + \ldots + a_1) = - a_0\\
+    -a_0^{-1}(x^{n-1} &+ a_{n-1} x^{n-2} + \ldots + a_1) = x^{-1} \in B
+  \end{align*}
+  thus there exists inverse in $B$, so $B$ is a field too.
+
+  $\Longleftarrow$:\\
+  if $B$ is a field and $0 \neq x \in A$, then $x^{-1} \in B$, so $x^{-1}$ is integral over $A$.
+
+  So there is a relation of the form
+  $$(x^{-1})^n + a_{n-1} (x^{-1})^{n-1} + \ldots + a_0 =0$$
+
+  Therefore
+  \begin{align*}
+    (x^{-1})^n &+ a_{n-1} (x^{-1})^{n-1} + \ldots + a_0 = 0\\
+    (x^{-1})^n &= -a_{n-1} (x^{-1})^{n-1} - \ldots - a_0\\
+    x^{-n} &= -a_{n-1} x^{-n+1} - \ldots - a_0 ~~\text{(mult by $x^{n-1}$)}\\
+    x^{-n+(n-1)} &= -a_{n-1} x^{-n+1+(n-1)} - \ldots - a_0 x^{n-1}\\
+    x^{-1} &= -a_{n-1} - \ldots - a_0 x^{n-1} \in A
+  \end{align*}
+
+  thus there exists inverse in $A$, so $A$ is a field too.
+\end{proof}
+
+\begin{thm}{R.4.10}[Weak Nullstellensatz]
+  let $k$ a field, $K$ a $k$-algebra which
+  \begin{enumerate}
+    \item is finitely generated as a $k$-algebra
+    \item is a field
+  \end{enumerate}
+  Then $K$ is algebraic over $k$, so that $k \subset K$ is a finite field
+  extension. That is, $[K:k] < \infty$.
+\end{thm}
+\begin{proof}
+  by Noether normalization \ref{noether-normalization}, $\exists~ z_1, \ldots,
+  z_m \in K$ which are algebraically independent, and such that $K$ is finite
+  over $A=k[z_1, \ldots, z_m]$.
+\\
+  Now we're at the situation of \ref{R.4.9}:
+
+  $A \subset K$ is integral, $K$ is a field $~~\Longrightarrow~$ therefore $A$ is a field.
+
+  Since $z_1, \ldots, z_m \in K$ are algebraically independent,\\
+  \hspace*{2em}$\Longrightarrow~ A=k[z_1, \ldots, z_m]$ is a polynomial ring in $m$ indeterminates, and this is a field only if $m=0$, and $K$ is finite over $k$.
+\end{proof}
+
+
+
 
 
 \newpage
