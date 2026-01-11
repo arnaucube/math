@@ -1,3 +1,7 @@
+# usage:
+# install `typos`: https://github.com/crate-ci/typos
+# run: typos -c .github/workflows/typos.toml
+
 [default.extend-words]
 iddeal = "ideal"
 iddeals = "ideals"
@@ -12,4 +16,6 @@ nd = "nd"
 
 # names
 Strang = "Strang"
+Pinter = "Pinter"
 Bootle = "Bootle"
+Groth = "Groth"
