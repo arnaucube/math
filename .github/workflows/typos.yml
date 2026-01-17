@@ -5,7 +5,7 @@ on:
     types: [ready_for_review, opened, synchronize, reopened]
   push:
     branches:
-      - main
+      - master
 
 jobs:
   typos:
