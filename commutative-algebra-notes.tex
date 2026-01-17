@@ -162,7 +162,7 @@
 \end{defn}
 
 \begin{defn}{}[radical of an ideal]
-  $$rad I = \{ f \in A | f^n \in I~ \text{for some} n \}$$
+  $$rad I = \{ f \in A | f^n \in I~ \text{for some}~ n \}$$
 
   $rad I$ is an ideal.
 
@@ -1338,7 +1338,7 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
   thus there exists inverse in $A$, so $A$ is a field too.
 \end{proof}
 
-\begin{thm}{R.4.10}[Weak Nullstellensatz]
+\begin{thm}{R.4.10}[Weak Nullstellensatz - Zariski's lemma]
   let $k$ a field, $K$ a $k$-algebra which
   \begin{enumerate}
     \item is finitely generated as a $k$-algebra
@@ -1348,18 +1348,28 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
   extension. That is, $[K:k] < \infty$.
 \end{thm}
 \begin{proof}
-  by Noether normalization \ref{noether-normalization}, $\exists~ z_1, \ldots,
-  z_m \in K$ which are algebraically independent, and such that $K$ is finite
-  over $A=k[z_1, \ldots, z_m]$.
+  $K=k[z_1, \ldots, z_m]$ a field; want to show that $K$ is algebraic over $k$.
+  \vspace{0.3cm}
+
+  Since $K$ is a fingen $k$-algebra, by Noether normalization lemma (\ref{noether-normalization}),\\
+  $\exists~ z_1, \ldots, z_m \in K$ such that
+  \begin{itemize}
+    \item are algebraically independent
+    \item $K$ is integral over the polynomial ring $A=k[z_1, \ldots, z_m]$ (which by \ref{integral-implies-finite} is finite)
+  \end{itemize}
 \\
   Now we're at the situation of \ref{R.4.9}:
 
   $A \subset K$ is integral, $K$ is a field $~~\Longrightarrow~$ therefore $A$ is a field.
 
+  \vspace{0.2cm}
   Since $z_1, \ldots, z_m \in K$ are algebraically independent,\\
-  \hspace*{2em}$\Longrightarrow~ A=k[z_1, \ldots, z_m]$ is a polynomial ring in $m$ indeterminates, and this is a field only if $m=0$, and $K$ is finite over $k$.
-\end{proof}
+  \hspace*{2em}$\Longrightarrow~ A=k[z_1, \ldots, z_m]$ is a polynomial ring in $m$ indeterminates, and this is a field only if $m=0$
 
+  (since in $k[z_1]$ the element $z_1$ is not invertible, since $1/z_1$ is a rational function, not a polynomial).
+
+  So $A=k$; which by Noether normalization we saw that $K$ is integral over $A=k$, and by \ref{integral-implies-finite} that it is finite, thus $K$ is finite over $k$, ie. $[K:k],\infty$, and $K$ is algebraic over $k$.
+\end{proof}
 
 
 
@@ -1779,6 +1789,152 @@ Prove that $\bigoplus A/I_i$ is a Noetherian $A$-module, and deduce that if $\bi
     \item $im(\alpha)=ker(\beta)$
   \end{itemize}
   so that it is a exact sequence, thus, $M$ has a finite presentation.
+\end{proof}
+
+\subsection{Exercises Chapter 4}
+
+\begin{ex}{R.4.1.a}
+  $k[X^2] \subset k[X]$ is a finite extension, hence integral. Find the integral dependence relation for any $f \in k[X]$.
+\end{ex}
+\begin{proof}
+  $\forall f(X) \in k[X]$ can be uniquely decomposed into its even and odd parts:
+  $$f(X) = p(X^2) + X \cdot q(X^2)$$
+
+  with $p(X^2),~ q(X^2) \in k[X^2]$, and\\
+  $p(X^2)$: sum of all terms with even exponents\\
+  $q(X^2)$: sum of all terms with odd exponents, and then factoring out $X$.
+
+  \vspace{0.3cm}
+  (Observation: this is used in FRI cryptographic protocol\\
+  \href{https://github.com/arnaucube/math/blob/master/notes_fri_stir.pdf}{https://github.com/arnaucube/math/blob/master/notes\_fri\_stir.pdf})
+
+
+  Rearrange it
+  \begin{align*}
+    f(X) &- p(X^2) = X \cdot q(X^2), ~~\text{square:}\\
+    (f(X) &- p(X^2))^2 = X^2 \cdot q(X^2)^2\\
+    f(X)^2-2 p(X^2) f(X) &+ p(X^2)^2 = X^2 \cdot q(X^2)^2\\
+    f(X)^2 \underbrace{-[2 p(X^2)]}_{a_1} f(X) &+ \underbrace{[p(X^2)^2 - X^2 \cdot q(X^2)^2]}_{a_0} = 0
+  \end{align*}
+
+   Denote the last polynomial as $P(T) \in k[X^2]$, where $f(X)$ is a root of $P(T)$.
+
+   \vspace{0.2cm}
+   The integral dependence relation for any $f \in k[X]$ is given by the monic polynomial from \ref{R.4.1}.ii, in this case $T^2 + a_1 T + a_0 = 0$ with $a_i \in k[X^2]$.
+
+   We have that
+   \begin{align*}
+     a_1 &= -2 p(X^2)\\
+     a_0 &= p(X^2)^2 - X^2 q(X^2)^2
+   \end{align*}
+
+
+   So for example, for $f(X)= X^3 + X^2 + X + 1$:
+   \begin{align*}
+     f(X) = (X^2 + 1) &+ X (X^2 + 1)\\
+     (f(X) - (X^2+1))^2 &= X^2 (X^2 + 1)^2\\
+     (f(X) - p(X))^2 &= X^2 (q(X))^2
+   \end{align*}
+\end{proof}
+
+
+\begin{ex}{R.4.5}
+  Let $A=k[X,Y]/(Y^2 - X^2 - X^3)$. Prove that the normalization of $A$ is $k[t]$ where $t=Y/X$.
+\end{ex}
+\begin{proof}
+$A=k[X,Y]/(Y^2 - X^2 - X^3)$, express $X$ and $Y$ in terms of $t$:
+
+Since $t=Y/X$ then $Y=tX$, and combined with $Y^2 = X^2 + X^3$, then
+\begin{align*}
+  (tX)^2 &= X^2 + X^3\\
+  t^2 X^2 &= X^2 + X^3, ~~\text{assuming}~X \neq 0:\\
+  t^2 &= 1+X, ~\text{thus}\\
+  X&=t^2-1 \in k[X]
+\end{align*}
+
+Then, $Y=tX=t(t^2-1)=t^3-t \in k[X]$.
+
+Hence $X, Y \in k[X]$.
+
+Therefore, $k[X,Y]/(Y^2 - X^2 - X^3) \subseteq k[t]$.
+
+\vspace{0.4cm}
+By \ref{noether-normalization} (Noether normalization lemma), to show that $k[t]$ is the \emph{normalization}, must show that $k[t]$ is \emph{integral} over $A$.
+
+From $X=t^2-1 ~~\Longrightarrow~~ t^2-1-X=0 ~~\Longrightarrow~ t^2 - (1+X) = 0$.
+
+$(1+X) \in A$, so $t$ satisfies the monic polynomial
+$$P(T) = T^2 - (1+X) \in A[T]$$
+Thus $t$ is integral over $A$.
+
+Since $k[t]$ is generated by $t$ over $k$, and $k \subset A$, then the entire ring $k[t]$ is integral over $A$.
+
+Since $k[t]$ is a polynomial ring over a field, which is a UFD, it is integrally closed (since all UFD are integrally closed).
+
+$Frac A = k(X,Y)$, since $X=t^2-1, ~Y=t^3-t ~~\Longrightarrow~ k(X,Y) \subseteq k(t)$
+
+and $t=Y/X \in k(X,Y)$, thus $k(X,Y)=k(t)$.
+
+Since $k[t]$ is integrally closed and is the integral closure of $A$ in its fraction field $k(t)$, we conclude that the normalization of $A$ is $k[t]$.
+\end{proof}
+
+
+
+\begin{ex}{R.4.9}
+  $k$ a field, $A= k[X,Y,Z]/(X^2- Y^3 -1, XZ - 1)$, find $\alpha, \beta \in k$ such that $A$ is integral over $B = k[X + \alpha Y + \beta z]$, and write a set of generators of $A$ as a $B$-module.
+\end{ex}
+\begin{proof}
+  (want to find a linear combination of the coordinates such that the original variables satisfy monic polynomials over the new ring $B$)
+
+  The relations defining $A$ are
+  \begin{align*}
+    X^2-Y^3-1=0 ~~&\Longrightarrow~ Y^3 = X^2 -1 ~~~(*)\\
+    XZ -1=0 ~~&\Longrightarrow~ Z= 1/X = X^{-1}
+  \end{align*}
+
+Thus $A$ can be denoted as $A = k[X,Y,X^{-1}]/(Y^3 - X^2 - 1)$.
+
+
+Now, $Y$ is inegral over $k[X]$, since $Y^3 - (X^2 - 1) = 0$ is monic in $Y$ with coefficients in $k[X]$.
+
+$Z$ is not integral over $k[X]$, since $Z=1/X$ and $X$ is not a unit in $k[X]$.
+
+Choose $\alpha, \beta \in k$ such that $X$ (and thus $Z$) becomes integral over $B$:\\
+set $\alpha=0,~\beta=1 ~~\Longrightarrow~~ B=k[X+\alpha Y + \beta Z]= k[X+Z]$.
+
+Let $w=X+Z$; since $XZ=1$, we have
+$$w=X+\frac{1}{X} ~~\Longrightarrow~~ Xw=X^2+1 ~~\Longrightarrow~~ X^2 -w X +1 = 0 ~~(**)$$
+
+which is monic with coefficients in $k[w]$, thus $X$ is integral over $B$.
+
+Since $Z=w-X$, $Z$ is also integral.
+
+\vspace{0.4cm}
+Generators of $A$ as a $B$-module:
+
+we hadd $B=k[w]$ with $w=X+Z$.
+
+From $(**)$ we have $X^2 - wX + 1=0$, so $X^2 = wX -1$.
+
+Thus any polynomial in $X$ can be reduced to a linear form $b_1 X + b_0$ with $b_i \in k[w]$. Hence it's partial basis is $\{1, X\}$.
+
+Fitting $X^2$ into $(*)$,
+\begin{align*}
+  X^2 &- Y^3 -1 =0\\
+  Y^3 &= X^2-1\\
+  Y^3 &= wX -2
+\end{align*}
+
+thus any power of $Y$ higher than $2$ can be reduced (eg. $Y^4 = Y(wX-2) = w(XY) - 2Y$).
+
+So its partial basis is $\{1, Y, Y^2\}$.
+
+For $Z$, since $XZ=1$ and $w=X+Z \Longrightarrow Z=w-X$, thus $Z$ is a $B$-linear combination of $\{1,X\}$.
+
+\vspace{0.2cm}
+Combining the previous partial basis, the generators are
+$$\{ 1, X \} \times \{ 1,Y, Y^2 \} = \{ 1, Y, Y^2, X, XY, XY^2 \}$$
+
 \end{proof}
 
 \bibliographystyle{unsrt}
