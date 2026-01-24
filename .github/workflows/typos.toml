@@ -6,6 +6,7 @@
 iddeal = "ideal"
 iddeals = "ideals"
 allpha = "alpha"
+fieldd = "field"
 
 # strings that are not a typo:
 thm = "thm"
