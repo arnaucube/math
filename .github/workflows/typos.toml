@@ -3,6 +3,7 @@
 # run: typos -c .github/workflows/typos.toml
 
 [default.extend-words]
+ieal = "ideal"
 iddeal = "ideal"
 iddeals = "ideals"
 allpha = "alpha"
