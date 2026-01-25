@@ -27,6 +27,7 @@ In-between math & crypto:
 - [Notes on Spartan](notes_spartan.pdf)
 - [Notes on Nova](notes_nova.pdf)
 - [Notes on HyperNova](notes_hypernova.pdf)
+- [Notes on hash based signatures](notes_hash-based-signatures.pdf)
 
 ## code
 Also some Sage implementations can be found in the `*.sage` files of this repo.
