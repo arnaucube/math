@@ -117,8 +117,12 @@
   $x \in A$ such that $xy=1$ for some $y \in A$. ie. element \emph{which divides 1}.
 \end{defn}
 
+\begin{cor}{1.8} \label{1.8}
+  $A = A^{\times} \sqcup \bigcup m$ (where $\sqcup$ denotes ``disjoint union"), ie. $f \in A$ is either a unit or it is contained in a maximal ideal, not both.
+\end{cor}
+
 \begin{defn}{}[zerodivisor]
-  $x \in A$ such that $\exists 0 \neq y \in A$ such that $xy=0 \in A$. ie. $x$ \emph{divides 0}..
+  $x \in A$ such that $\exists~ 0 \neq y \in A$ such that $xy=0 \in A$. ie. $x$ \emph{divides 0}..
 
 
   If a ring does not have zerodivisors is an integral domain.
@@ -172,10 +176,15 @@
 \end{defn}
 
 \begin{defn}{}[local ring]
-  A \emph{local ring} has a unique maximal ideal.
+  A ring is \emph{local} if it has a unique maximal ideal.
 
   Notation: local ring $A$, its maximal ideal $\mM$, residue field $K=A/\mM$:
   $$A \supset \mM ~\text{or}~ (A, \mM) ~\text{or}~ (A, \mM, K)$$
+
+  \vspace{0.3cm}
+  By Corollary \ref{1.8}, $A$ is local\\
+    \hspace*{4em}$\Longleftrightarrow$ $A$ has only one maximal ideal.\\
+    \hspace*{4em}$\Longleftrightarrow$ all the nonunits of $A$ form an ideal.
 \end{defn}
 
 \subsection{Z and K[X], two Principal Ideal Domains}
@@ -1692,6 +1701,113 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
   $$\mathfrak{P} \in Spec A \longleftrightarrow X \subseteq V(J)$$
   where $X = V(\mathfrak{P})$.
 \end{proof}
+
+
+\section{Rings of fractions $S^{-1}A$ and localization}
+
+\begin{defn}{6.1}[ring of fractions]
+  let $A$ a ring, $S \subset A$ a multiplicative set ($1 \in S$, and $st \in S
+  ~\forall s, t \in S$).
+
+  Introduce th following relation $\sim$ on $A \times S$:
+  $$(a, s) \sim (b, t) \Longleftrightarrow \exist y \in S ~\text{such that}~ u(at - bs) = 0$$
+
+  (write $a/s$ for the equivalence class of $(a, s)$.
+
+  Then, the \emph{ring of fractions of $A$ with respect to $S$} is
+  $$S^{-1}A = (A \times S)/\sim$$
+
+  with ring op'ns defined by the usua arithmetic op'ns on fractions:
+  $$\frac{a}{s} \pm \frac{b}{t} = \frac{(at \pm bs)}{st} ~~\text{and}~~ \frac{a}{s} \cdot \frac{b}{t} = \frac{ab}{st}$$
+\end{defn}
+
+\begin{eg}{ }
+  TODO
+\end{eg}
+
+\begin{lemma}{6.2} \label{6.2}
+  For $f \in A$, write $S = \{ 1, f, f^2, \ldots \}$, and $A_f \cong A[X]/(Xf-1)$.
+
+  Then
+  $$A_f \cong \frac{A[X]}{(Xf-1)}$$
+\end{lemma}
+\begin{proof}
+  Define the homomorphism
+  \begin{align*}
+    \psi: A[X] &\longrightarrow A_f\\
+    a &\longmapsto a/1\\
+    X &\longmapsto 1/f
+  \end{align*}
+
+By the 1st isomorphism theorem:
+
+  \begin{tikzpicture}[node distance=1.5cm, auto]
+    \node (G)    {$A[X]$};
+    \node (H) [right of=G] {$A_f$};
+    \node (GmodK) [below of=G, xshift=0.75cm] {$A[X]/\ker(\psi)$};
+
+    \draw[->] (G) to node {$\psi$} (H);
+    \draw[->] (G) to node [swap] {$\phi$} (GmodK);
+    \draw[->] (GmodK) to node [swap] {$\eta$} (H);
+  \end{tikzpicture}
+
+  Thus we want to prove that $ker(\psi) = (Xf-1)$, so that $\frac{A[X]}{ker(\psi)} = \frac{A[X]}{(Xf-1)}$, and the lemma is proven.
+
+  \vspace{0.3cm}
+  First, observe that $\psi(Xf-1) = \psi(X)\psi(f)-\psi(1) = \frac{1}{f} \frac{f}{1} - 1 = 1-1=0$,
+  so $Xf-1 \in ker(\psi)$, ie. $(Xf-1) \subseteq ker(\psi)$.
+
+  Now, we want to prove that $ker(\psi) \subseteq (Xf-1)$.
+
+  Take $h \in ker(\psi)$, will prove that $h \in (Xf-1)~ \foracll~ h \in ker(\psi)$, and thus $ker(\psi) \subseteq(Xf-1)$.
+
+  \vspace{0.3cm}
+  Want to prove that $h(X)$ is a multiple of $(Xf-1)$.
+
+  Let
+  $$h(X)=a_n X^n + a_{n-1} X^{n-1} + \ldots + a_1 X + a_0$$
+
+  % Since $h \in ker(\psi) ~~\Longrightarrow~~ \psi(h)=0$, so
+  % $$\psi(h) = \frac{a_n}{f^n} + \frac{a_{n-1}}{f^{n-1}} + \ldots \frac{a_1}{f} + \frac{a_0}{1} = 0 \in A_f$$
+
+  multiply $h(X)$ by $f^n$:
+  $$f^n \cdot h(X)=a_n (f^n X^n) + a_{n-1} f (f^{n-1} X^{n-1}) + a_{n-2} f^2 (f^{n-2} X^{n-2})  \ldots$$
+
+  Note that since $\forall~ i \geq 1,~~ f^i X^i = (Xf -1)\cdot (f^{i-1} X^{i-1} + f^{i-2} X^{i-2} + \ldots + 1)$, then $f^i X^i \equiv 1 \pmod{Xf-1}$.
+
+  So,
+  $$f^n \cdot h(X)=\underbrace{a_n (1) + a_{n-1} f (1) + a_{n-2} f^2 (1) + \ldots + a_0 f^n}_{C~~\text{(constant)}} \pmod{Xf-1}$$
+
+  $$\Longrightarrow~~ f^n \cdot h(X)=C \pmod{Xf-1}$$
+  $$\Longleftrightarrow~~ f^n \cdot h(X)=Q(X) \cdot (Xf-1) + C$$
+
+  Want to remove $C$, but it is non-zero. Note that in $A_f$ (ring of fractions), $a\f^n = 0$ iff $\exist~ k$ such that $f^k \cdot a = 0$ in $A$.
+
+  So, multiply both sides by $f^k$:
+  $$f^k \cdot f^n \cdot h(X)=f^k \cdot (Q(X) \cdot (Xf-1) + C)$$
+  $$\underbrace{f^k f^n}_{f^{nk}} \cdot h(X)=\underbrace{f^k Q(X)}_{Q'(X)} \cdot (Xf-1) + \underbrace{f^k C}_{0}$$
+
+  $$\Longrightarrow~~ f^{n+k} \cdot h(X)=Q'(X) \cdot (Xf-1)$$
+  $$\Longleftrightarrow~~ f^{n+k} \cdot h(X) \equiv 0 \pmod{Xf-1}$$
+
+  multiply it by $X^{n+k}$:
+  $$X^{n+k} \cdot f^{n+k} \cdot h(X) \equiv X^{n+k} \cdot 0 \pmod{Xf-1}$$
+  $$(Xf)^{n+k} \cdot h(X) \equiv 0 \pmod{Xf-1}$$
+
+  Now, since we had $Xf \equiv 1$ in $\frac{A[X]}{(Xf-1)}$,
+  $$(1)^{n+k} \cdot h(X) \equiv 0 \pmod{Xf-1}$$
+  $$\Longrightarrow~~ h(X) \equiv 0 \pmod{Xf-1}$$
+  By definition this is saying $h(X) \in (Xf-1) ~\forall~ k \in ker(\psi)$.
+
+  Thus $ker(\psi) \subseteq (Xf-1)$.
+
+  Initially we saw that $(Xf-1) \subseteq ker(\psi)$. Therefore $ker(\psi)=(Xf-1)$.
+
+  Hence,
+  $$A_f \cong \frac{A[X]}{(Xf-1)}$$
+\end{proof}
+
+
 
 \newpage
 
