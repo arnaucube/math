@@ -2531,6 +2531,148 @@ $$\{ 1, X \} \times \{ 1,Y, Y^2 \} = \{ 1, Y, Y^2, X, XY, XY^2 \}$$
 
 \end{proof}
 
+
+\subsection{Exercises Chapter 6}
+
+\begin{ex}{R.6.3.a}
+  Let $A = A' \times A''$; prove that $A'$ and $A''$ are rings of fractions of $A$.
+\end{ex}
+\begin{proof}
+  ring of fractions of $A$ = $S^{-1}A$, so want to prove that $S^{-1}A \cong A'$.
+
+  Localization map
+  \begin{align*}
+    \psi: A &\longrightarrow A'\\
+    (a', a'') &\longmapsto a'
+  \end{align*}
+
+  note that $\psi$ is surjective, since $\forall~ a' \in A',~ \psi(a', 0)=a'$.
+
+  Let the multiplicative set $S$ be $S=\{ e_1 \}$ with $e_1 = (1,0)$.
+
+  Want $\underbrace{S^{-1}A}_{\text{localization}} \cong A'$.
+
+  In $S^{-1}A$, $x \in A$ maps to $0$ iff $s x = 0$ for some $s \in S$.
+  
+  Let $x=(a', a'')\in A$; then $sx=0 ~\Longrightarrow~ s \cdot (a', a'') =0$,
+
+  with $s \in S$, so $s=(1,0)$, hence
+  $$(1,0)\cdot(a',a'')=(0,0)$$
+  $$\Longrightarrow~ (a', 0) = (0, 0)$$
+  \hspace*{4em} which implies $a' = 0$.
+
+  $\Longrightarrow$ the elements that become zero in the localization are of the form $(0, a'')$
+
+  $$ker(\psi) = \{ (a',a'')\in A ~|~ \psi(a', a'')=0 \} = \{(0, a'') ~|~ a'' \in A'' \}$$
+
+  By the 1st isomorphism theorem, 
+
+  \begin{tikzpicture}[node distance=1.5cm, auto]
+    \node (G)    {$A$};
+    \node (H) [right of=G] {$A'$};
+    \node (GmodK) [below of=G, xshift=0.75cm] {$\frac{A}{ker(\psi)}$};
+
+    \draw[->] (G) to node {$\psi$} (H);
+    \draw[->] (G) to node [swap] {$\phi$} (GmodK);
+    \draw[<->] (GmodK) to node [swap] {$\eta$} (H);
+  \end{tikzpicture}
+  
+  $\Longrightarrow~ \frac{A}{ker(\psi)} \cong A'$
+
+
+  \vspace{0.5cm}
+  Take the localization map
+  \begin{align*}
+    \phi: A &\longrightarrow S^{-1}A\\
+    a &\longmapsto a/1
+  \end{align*}
+
+  $$ker(\phi) = \{ x \in A ~|~ sx=0 ~\text{for some}~ s \in S \}$$
+
+  and we've seen that $a'=0$, so $x \in A ~\Rightarrow~ x=(a', a'') = (0, a'')$
+
+  $$ker(\phi) = \{ (0, a'') ~|~ a'' \in A'' \}$$
+
+  which is the same as $ker(\psi)$; $ker(\psi) = ker(\phi)$.
+
+  \vspace{0.2cm}
+  $\Longrightarrow~~ A'$ and $S^{-1}A$ are both surjective images of $A$ with exact same kernel,
+  thus $A' \cong S^{-1}A$.
+\end{proof}
+
+\begin{ex}{R.6.4}
+  \begin{enumerate}[a.]
+  \item Give an example of a ring $A$ and distinct multiplicative sets $S,~ T$ such that $S^{-1}A = T^{-1}A$.
+  \item Prove that for fixed $S$, there is a maximal multiplicative set $T$ with this property defined by
+    $$T = \{ t \in A ~|~ at \in S ~\text{for some}~ a \in A \}$$
+  \end{enumerate}
+\end{ex}
+\begin{proof}
+  \begin{enumerate}[a.]
+    \item
+  (\emph{saturated sets})\\
+
+  General rule of saturation:\\
+  two multiplicative sets $S,~T$ yield the same localization, $S^{-1}A = T^{-1}A$, iff the have the same saturation.
+
+  Saturation of $S$: $\hat{S}$, set of all elements in $A$ that divide some element of $S$:
+  $$\hat{S} = \{ a \in A ~|~ \exist~ b \in A ~\text{s.th.}~ ab \in S \}$$
+
+  \vspace{0.4cm}
+  Example 1: $A=\mathbb{Z}$,\\
+
+  $$S = \{ 2^n ~|~ n \geq 0 \} = \{ 1, 2, 4, 8, 16, \ldots \}$$
+  localization:
+  $$S^{-1} \mathbb{Z} = \{ \frac{a}{2^n} ~|~ a \in \mathbb{Z},~ n \in \mathbb{N} \}$$
+
+  $$T = \{ \pm 1, \pm 2, \pm 4, \pm 8, \pm 16, \ldots \}$$
+
+  Notice that despite $S \neq T$, we have $S^{-1}\mathbb{Z} = T^{-1} \mathbb{Z}$,\\
+  since once $n \in \mathbb{Z}$ is invertible, $-n$ is automatically invertible: $(-n)^{-1} = - (n^{-1})$.
+
+  \vspace{0.4cm}
+  Example 2: $A= k[x]$,
+  $$S = \{ x^n ~|~ n \geq 0 \}$$
+  $$T = \{ (2x)^n ~|~ n \geq 0 \}$$
+  $$\Longrightarrow~ S^{-1}A = T^{-1} A = k[x, x^{-1}]$$
+
+  \item
+    Show that $T$ is a multiplicative set:
+
+    (must contain $1$ and be closed under multiplication)\\
+    Since $1 \in A$ and $1 \cdot 1 = 1 \in S$, then $1 \in T$.
+
+    Let $t_1,~ t_2 \in T$; by definition of $T$,
+    $$\exists~ a_1, a_2 \in A ~\text{such that}~ a_1 t_1,~ a_2 t_2 \in S$$
+
+    Since $S$ a multiplicative set, $(a_1 t_1)(a_2 t_2) \in S$\\
+    rearrange it: $(a_1 a_2)(t_1 t_2) \in S$.\\
+    Since $a_1 a_2 \in A,~~ t_1 t_2 \in T$.
+
+    Thus $T$ is a multiplicative set.
+
+    Next, we show that $T$ is maximal:
+
+    Suppose $U$ is the maximal instead of $T$, such that $U^{-1}A \cong S^{-1}A$.
+
+    Let $u \in U$; the image of $u$ in $S^{-1}A$ must be a unit.
+
+    Units in $S^{-1}A$ are the fractions $\frac{s}{a}$ such that their inverse exists.\\
+    \hspace*{2em} $\exist~ x=\frac{a}{s}$ such that $u \frac{a}{s} = \frac{1}{1}$\\
+    \hspace*{2em} $\Longrightarrow~ \frac{ua}{s} = \frac{1}{1} ~\Longrightarrow~ \exist s' \in S$ such that $s'(ua-s)=0$\\
+    $\Longrightarrow~ s'ua=s's \in S$
+
+    since $s,s' \in S$, their product is also in $S$.
+
+    Let $b=s'a$, then $ub \in S$.
+
+    By definition of $T$, $u \in T$.
+
+    Therefore, $U \subseteq T$; thus $T$ is maximal.
+\end{enumerate}
+\end{proof}
+
+
 \bibliographystyle{unsrt}
 \bibliography{commutative-algebra-notes.bib}
 
