@@ -1742,7 +1742,7 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
 \end{eg}
 
 \begin{lemma}{6.2} \label{6.2}
-  For $f \in A$, write $S = \{ 1, f, f^2, \ldots \}$, and $A_f \cong A[X]/(Xf-1)$.
+  For $f \in A$, write $S = \{ 1, f, f^2, \ldots \}$, and $A_f \cong S^{-1}A$.
 
   Then
   $$A_f \cong \frac{A[X]}{(Xf-1)}$$
@@ -1775,7 +1775,7 @@ By the 1st isomorphism theorem:
 
   Now, we want to prove that $ker(\psi) \subseteq (Xf-1)$.
 
-  Take $h \in ker(\psi)$, will prove that $h \in (Xf-1)~ \foracll~ h \in ker(\psi)$, and thus $ker(\psi) \subseteq(Xf-1)$.
+  Take $h \in ker(\psi)$, will prove that $h \in (Xf-1)~ \forall~ h \in ker(\psi)$, and thus $ker(\psi) \subseteq(Xf-1)$.
 
   \vspace{0.3cm}
   Want to prove that $h(X)$ is a multiple of $(Xf-1)$.
@@ -1797,7 +1797,8 @@ By the 1st isomorphism theorem:
   $$\Longrightarrow~~ f^n \cdot h(X)=C \pmod{Xf-1}$$
   $$\Longleftrightarrow~~ f^n \cdot h(X)=Q(X) \cdot (Xf-1) + C$$
 
-  Want to remove $C$, but it is non-zero. Note that in $A_f$ (ring of fractions), $a\f^n = 0$ iff $\exist~ k$ such that $f^k \cdot a = 0$ in $A$.
+  Want to remove $C$, but it is non-zero. Note that in $A_f$ (ring of
+  fractions), $\frac{a}{f^n} = 0$ iff $\exists~ k$ such that $f^k \cdot a = 0$ in $A$.
 
   So, multiply both sides by $f^k$:
   $$f^k \cdot f^n \cdot h(X)=f^k \cdot (Q(X) \cdot (Xf-1) + C)$$
@@ -2559,7 +2560,7 @@ $$\{ 1, X \} \times \{ 1,Y, Y^2 \} = \{ 1, Y, Y^2, X, XY, XY^2 \}$$
   with $s \in S$, so $s=(1,0)$, hence
   $$(1,0)\cdot(a',a'')=(0,0)$$
   $$\Longrightarrow~ (a', 0) = (0, 0)$$
-  \hspace*{4em} which implies $a' = 0$.
+  \hspace*{4em} which implies $a' = 0$, so that $(a', a'')=(0, a')$.
 
   $\Longrightarrow$ the elements that become zero in the localization are of the form $(0, a'')$
 
