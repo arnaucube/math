@@ -8,6 +8,8 @@ iddeal = "ideal"
 iddeals = "ideals"
 allpha = "alpha"
 fieldd = "field"
+kernetl = "kernel"
+extenaion = "extension"
 
 # strings that are not a typo:
 thm = "thm"
