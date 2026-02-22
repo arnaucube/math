@@ -1347,6 +1347,31 @@ Recall: a $K$-algebra $A$ is fingen over $K$ if $A=K[y_1, \ldots, y_n]$ for some
   thus there exists inverse in $A$, so $A$ is a field too.
 \end{proof}
 
+\begin{thm}{4.10.prev}[Zariski's lemma] \label{zariski}
+  $k$ a field, $L$ fingen $k$-algebra and a field. Then $L$ is a finite algebraic extension of $k$.
+
+  If $k$ is algebraically closed, then $L=k$.
+\end{thm}
+
+\vspace{0.4cm}
+From Zariski's lemma we can see that:\\
+let maximal ideal $m \subset k[X_1, \ldots, X_n]$, then $k[X_1, \ldots, X_n]/m$ is a (quotient) field.
+
+It's a fingen $k$-algebra, so by Zariski's lemma, $k[X_1, \ldots, X_n]/m$ is algebraic over $k$.
+
+Since $k[X_1, \ldots, X_n]/m$ is algebraically closed, it must equal $k$; ie.
+$$\frac{k[X_1, \ldots, X_n]}{m}=k$$
+Thus $m=(X_1 - a_1, \ldots, X_n - a_n)$ (shown at \ref{5.2}).
+
+\vspace{0.4cm}
+Then:
+For $k$ algebraically closed, every maximal ideal of $k[X_1, \ldots, X_n]$ has the form 
+$(X_1 - a_1, \ldots, X_n - a_n)$ for some $a_i \in k$.
+
+Equivalently, $V(I) = \emptyset ~~\Longleftrightarrow  1 \in I$.
+
+\vspace{0.4cm}
+
 \begin{thm}{R.4.10}[Weak Nullstellensatz - Zariski's lemma] \label{zariski}
   let $k$ a field, $K$ a $k$-algebra which
   \begin{enumerate}
@@ -1545,18 +1570,21 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
     \item if $J \subsetneq k[X_1, \ldots, X_n]$ then $V(J) \neq \emptyset$:\\
   Let $m \subset k[X_1, \ldots, X_n]$ be a maximal ideal.\\
 
+  Now,
   \begin{itemize}
-    \item Since $m$ maximal, $L= k[X_1, \ldots, X_n]/m$ is a field.
-    \item Since $k[X_1, \ldots, X_n]$ is a fingen $k$-algebra, $L$ is a fingen $k$-algebra.
+    \item[-] since $m$ maximal, $L= k[X_1, \ldots, X_n]/m$ is a field.
+    \item[-] since $k[X_1, \ldots, X_n]$ is a fingen $k$-algebra, $L$ is a fingen $k$-algebra.
   \end{itemize}
   $\Longrightarrow~$ thus $L$ is a finite field extension of $k$.
 
-  (Recall: if $k$ algebraically closed and $L$ a fingen field extension of $k$, then $L=k$.)
+  (Recall: if $k$ algebraically closed and $L$ a fingen field extension of $k$,
+  then $L \cong k$.)
 
   Therefore,
   $$L=\frac{k[X_1, \ldots, X_n]}{m} \cong k$$
 
-  Since $k[X_1, \ldots, X_n]$ is a $k$-algebra, $\exists$ a surjective homomorphism $\psi: k[X_1, \ldots, X_n] \longrightarrow k$.
+  Since $k[X_1, \ldots, X_n]$ is a $k$-algebra, $\exists$ a surjective homomorphism
+  $$\psi: k[X_1, \ldots, X_n] \longrightarrow k$$
 
   Let $a_i = \psi(x_i)$. Then $x_i - a_i \in ker(\psi) = m ~\forall~ i \in [n]$.
 
