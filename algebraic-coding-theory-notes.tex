@@ -1,0 +1,374 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+% \usepackage{yfonts} % WIP
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{tikz} % diagram
+
+\begin{filecontents}[overwrite]{algebraic-coding-theory-notes.bib}
+@misc{hill,
+  author = {Raymond Hill},
+  title = {{A First Course in Coding Theory}},
+  year = {1986}
+}
+@misc{lint,
+  author = {J.H. van Lint},
+  title = {{Introduction to Coding Theory}},
+  year = {1981}
+}
+\end{filecontents}
+\nocite{*}
+
+
+\theoremstyle{definition}
+
+\newtheorem{innerdefn}{Definition}
+\newenvironment{defn}[1]
+{\renewcommand\theinnerdefn{#1}\innerdefn}
+{\endinnerdefn}
+
+\newtheorem{innerthm}{Theorem}
+\newenvironment{thm}[1]
+{\renewcommand\theinnerthm{#1}\innerthm}
+{\endinnerthm}
+
+\newtheorem{innerlemma}{Lemma}
+\newenvironment{lemma}[1]
+{\renewcommand\theinnerlemma{#1}\innerlemma}
+{\endinnerlemma}
+
+\newtheorem{innerprop}{Proposition}
+\newenvironment{prop}[1]
+{\renewcommand\theinnerprop{#1}\innerprop}
+{\endinnerprop}
+
+\newtheorem{innercor}{Corollary}
+\newenvironment{cor}[1]
+{\renewcommand\theinnercor{#1}\innercor}
+{\endinnercor}
+
+\newtheorem{innereg}{Example}
+\newenvironment{eg}[1]
+{\renewcommand\theinnereg{#1}\innereg}
+{\endinnereg}
+
+\newtheorem{innerex}{Exercise}
+\newenvironment{ex}[1]
+{\renewcommand\theinnerex{#1}\innerex}
+{\endinnerex}
+
+% custom shortcuts
+\newcommand{\Vnq}{V(n, q)}
+
+\title{Algebraic Coding Theory}
+\author{arnaucube}
+\date{2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Notes taken while studying Algebraic Coding Theory, mostly from Hill book \cite{hill} and Lint book \cite{lint}.
+
+    Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
+
+    The proofs may slightly differ from the ones from the books, since I try to extend them for a deeper understanding.
+\end{abstract}
+
+\tableofcontents
+
+
+\section{Vector spaces over finite fields, quick recap}
+Let $q$ be a prime power. 
+
+$\Vnq$: set $GF(q)^n$ of all ordered $n$-tuples over $GF(q)$. $\Vnq$ is a
+vector space.
+
+A set of vectors $\{v_1, v_2, \ldots, v_r \}$ is said to be \emph{linear dependent} if $\exists$ scalars $a_1, \ldots, a_r$, not all zero, such that
+$$a_1 v_1 + a_2 v_2 + \ldots + a_r v_r = 0$$
+
+They are \emph{linear independent} if
+$$a_1 v_1 + a_2 v_2 + \ldots + a_r v_r = 0 ~\stackrel{implies}{\Longrightarrow}~ a_1=a_2=\ldots=a_r=0$$
+
+Let $C$ a subspace of $\Vnq$. Then a subset $\{v_1, v_2, \ldots, v_r \} \subseteq C$ is called a \emph{generating set} (or \emph{spanning set}) of $C$ if every vector in $C$ can be expressed as a linear combination of $v_1, \ldots, v_r$.
+
+A generating set of $C$ which is also linearly independent is called a \emph{basis} of $C$.
+
+\begin{thm}{4.3}
+  Suppose $\{v_1, v_2, \ldots, v_k\}$ is a basis of a subspace $C$ of $\Vnq$. Then  
+  \begin{enumerate}[i.]
+  \item every vector of $C$ can be expressed uniquely as a linear combination of the basis vectors.
+  \item $C$ contains exactly $q^k$ vectors.
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+\item suppose vector $x \in C$ such that
+$$x = a_1 v_1 + a_2 v_2 + \cdots + a_k v_k$$
+$$x = b_1 v_1 + b_2 v_2 + \cdots + b_k v_k .$$
+
+then
+$$(a_1-b_1)v_1 + (a_2-b_2)v_2 + \cdots + (a_k-b_k)v_k = 0 .$$
+
+But the set $\{v_1, v_2, \ldots, v_k\}$ is linearly independent, and so
+$$a_i - b_i = 0 \quad \text{for } i = 1,2,\ldots,k,$$
+i.e.,
+$$a_i = b_i \quad \text{for } i = 1,2,\ldots,k.$$
+
+\item By (i), the $q^k$ vectors
+$$\sum_{i=1}^{k} a_i v_i \qquad (a_i \in \mathrm{GF}(q))$$
+are precisely the distinct vectors of $C$.
+\end{enumerate}
+\end{proof}
+
+
+\section{Linear codes}
+The theorems of this section are from \cite{hill} and follow the original enumeration of the book.
+
+Note about notation:\\
+A $q$-ary linear code $[n, k, d]$-code is also a $q$-ary $(n, q^k, d)$-code, but the opposite is not always true.
+
+\subsection{Some definitions}
+Let $q$ be a prime power. View $(F_q)^n$ as the vector space $\Vnq$.
+
+\begin{defn}{}[Linear code over GF(q)]
+  A \emph{linear code over $GF(q)$} is a subspace of $\Vnq$, with $n \geq 0$.
+\end{defn}
+
+Thus $C \subseteq \Vnq$ is a linear code iff
+\begin{enumerate}[i.]
+  \item $u+v \in C ~~ \forall u,v \in C$
+  \item $au \in C ~~ \forall u \in C,~ a \in GF(q)$
+\end{enumerate}
+
+If $C$ is a $k$-dimensional subspace of $\Vnq$, then the linear code $C$ is called an $[n, k]$-code. (sometimes with minimum distance $d$: $[n, k, d]$-code).
+
+\begin{defn}{}[Weight]
+  Weight, $w(x)$, of a vector $x \in \Vnq$ is the number of non-zero entries of $x$.
+\end{defn}
+
+\begin{lemma}{5.1}\label {h.5.1}
+  if $x,y \in \Vnq$, then $d(x,y)=w(x-y)$.
+\end{lemma}
+\begin{proof}
+  the vector $x-y$ has non-zero entries in preceisely those places where $x$ and $y$ differ.
+\end{proof}
+
+\begin{thm}{5.2}
+  let $C$ a linear code, let $w(C)$ be the smallest of weights of the non-zero codewords of $C$. Then $d(C)=w(C)$.
+\end{thm}
+\begin{proof}
+  $\exists~ x,y \in C$ s.th. $d(C)=d(x,y)$.
+
+  By Lemma \ref{h.5.1}, $d(C)=w(x-y) \geq w(C)$, since $x-y$ is a codeword of the linear code $C$ (ie. $x-y \in C$).
+
+  On the other hand, for $x \in C$,\\
+  $w(C)=w(x)=d(x,0) \geq d(C)$, since $0 \in C$.
+
+  Hence, $d(C) \geq w(C)$ and $w(C) \geq d(C) ~~\Longrightarrow~ d(C)=w(C)$.
+\end{proof}
+
+
+\begin{defn}{}[Generator matrix (GM)]
+  a $k \times n$ matrix whose rows form a basis of a linear $[n,k]$-code is called a \emph{generator matrix} (GM) of the code.
+\end{defn}
+
+\subsection{Equivalence}
+
+\begin{thm}{5.4}
+  two known $k \times n$ matrices generate equivalent linear $[n,k]$-codes over $GF(q)$ if one matrix can be obtained from the other by a sequence of operations of the following types:
+  \begin{enumerate}
+    \item[R1.] permutation of the rows
+    \item[R2.] multiplication of a row by a non-zero scalar
+    \item[R3.] addition of a scalar multiple of one row to another
+    \item[C1.] permutation of the columns
+    \item[C2.] multiplication of any column by a non-zero scalar
+  \end{enumerate}
+\end{thm}
+
+\begin{thm}{5.5} \label{h.5.5}
+  let $G$ a GM of an $[n, k]$-code. Then by performing the previous operations, $G$ can be transformed to the standard form $[ I_k | A ]$
+  where $I_k$ is the $k \times k$ identity matrix, and $A$ is a $k \times (n-k)$ matrix.
+\end{thm}
+
+\subsection{Encoding with a linear code}
+Let $C$ a $[n,k]$-code over $GF(q)$ with GM $G$. $C$ contains $q^k$ codewords $\Longrightarrow$ can be used to communicate any one of $q^k$ distinct messages.
+
+Iddentify these messages with the $q^k$ tuples of $V(k,q)$.
+
+Encoding:\\
+msg vector: $u=u_1 u_2 \ldots u_k$; rows of $G$: $r_1 r_2 \ldots r_k$. Encode
+$$uG = \sum^k_{i=1} u_i r_i \in C$$
+ie. $uG$ is a codeword of $C$; a linear combination of the rows of the GM.
+
+Encoding function:
+\begin{align*}
+  V(k,q) &\longrightarrow C \subseteq \Vnq\\
+  u &\longmapsto uG
+\end{align*}
+
+If $G$ is in standard form (\ref{h.5.5}), $G= [I_k | A]$ with $A=[a_{ij}]$, then encoding $u$ is:
+$$x=uG = x_1x_2 \ldots x_k x_{k+1} \ldots x_n$$
+where
+\begin{align*}
+  &x_i=u_i ~~\text{for}~ 1 \leq i \leq k, ~\text{message digits}\\
+  &x_{k+i}=\sum^k_{j=1}~ a_ji u_j ~~\text{for}~ 1 \leq i \leq n-k, ~\text{check digits}\\
+\end{align*}
+
+the check digits add redundancy to gie protection against noise.
+
+\subsection{Decoding with a linear code}
+Codeword $x=x_1 x_2 \ldots x_n$, received vector $y=y_1 y_2 \ldots y_n$, error vector $e = y-x=e_1 e_1 \ldots e_n$.
+
+\subsubsection{Cosets}
+Cosets here are similar to the ones from typical group theory, just from another perspective.
+
+\begin{defn}{}[Coset]
+  Let $C$ a $[n,k]$-code over $GF(q)$ and $a \in \Vnq$.
+  Then the set $a + C = \{a+x | x\in C\}$ is called a \emph{coset} of $C$.
+\end{defn}
+
+\begin{defn}{}[Coset leader]
+  the vector having minimum weight in a coset is called the \emph{coset leader}.
+\end{defn}
+
+\begin{lemma}{6.3} \label{h.6.3}
+  Let $a+C$ a coset of $C$ and $b \in a+C$. Then $b+C=a+C$.
+\end{lemma}
+\begin{proof}
+  since $b \in a+C ~~\Longrightarrow~~ b=a+x$ for some $x \in C$.
+  If $b+y \in b+C$ then
+  $$b+y=(a+x)+y = a+(x+y) \in a+C$$
+
+  For the other direction, if $a+x \in a+C$ then
+  $$a+x=(b-x)+z = b+(z-x) \in b+C$$
+  hence $a+C \subseteq b+C$.
+
+  Therefore $b+C = a+C$.
+\end{proof}
+
+\begin{thm}{6.4}[Lagrange] \label{h.6.4}
+  suppose $C \subseteq \Vnq$ is a $[n,k]$-code over $GF(q)$. Then
+  \begin{enumerate}[i.]
+    \item evvery vector of $\Vnq$ is in some coset of $C$
+    \item every coset contains exactly $q^k$ vectors
+    \item two cosets either are disjoint or coincide (partial overlap is impossible)
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item if $a\in \Vnq$ then $a=a+0 \in a+C$
+    \item the map
+      \begin{align*}
+        C &\longrightarrow a+C ~\forall~ x \in C\\
+        x &\longmapsto a+x
+      \end{align*}
+      is a one-to-one map, hence $|a+C| = |C| = q^k$.
+    \item by contradiction, suppose cosets $a+C,~ b+C$ overlap. Then for some vector $v$,
+      $$v \in (a+C) \cap (b+C)$$
+      thus for some $x,y \in C$, $v=a+x=b+y$.
+
+      Hence $b=a+(x-y) \in a+C$, thus by Lemma \ref{h.6.3} we have $b+C=a+C$.
+  \end{enumerate}
+\end{proof}
+
+\begin{cor}{}
+  \ref{h.6.4} shows that $\Vnq$ is partitioned into disjoint cosets of $C$:
+  $$\Vnq = (0+C) \cup (a_1+C) \cup \ldots \cup (a_s +C)$$
+  where $s=q^{n-k} -1$, and by Lemma \ref{h.6.3} we may take $0, a_1, \ldots, a_s$ to be coset leaders.
+\end{cor}
+
+\begin{eg}{6.5} \label{h.6.5}
+  Let $C$ be the binary $[4,2]$-code with generator matrix
+$$
+G = \begin{pmatrix}
+1 & 0 & 1 & 1 \\
+0 & 1 & 0 & 1
+\end{pmatrix}
+$$
+
+ie.
+$C = \{0000,\, 1011,\, 0101,\, 1110\}$.
+
+Then the cosets of $C$ are
+\begin{align*}
+  0000 + C &= C \text{ itself}\\
+  1000 + C &= \{1000,\, 0011,\, 1101,\, 0110\}\\
+  0100 + C &= \{0100,\, 1111,\, 0001,\, 1010\} = 0001+C\\
+  0010 + C &= \{0010,\, 1001,\, 0111,\, 1100\}
+\end{align*}
+
+by Lemma \ref{h.6.3}: $0001 \in 0100 + C$, thus $0001+C=0100+C$.
+\end{eg}
+
+\subsection{Probability of error correction (in binary linear codes)}
+To evaluate how good a code is, must calculate the \emph{probability} that a received vector will be decoded as the codeword which was sent.
+
+Let $p$ be the symbol error probability.
+
+Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n-i}$.
+
+\begin{thm}{6.7}
+  Let $C$ a binary $[n,k]$-code, and for $i=0,1,\ldots,n$ let $\alpha_i$ denote the number of coset leaders of weight $i$.
+
+  Then the probability $P_{corr}(C)$ that a received vector decoded by means of a standard array is the codeword which was sent is
+  $$P_{corr}(C) = \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}$$
+\end{thm}
+
+\begin{eg}{6.8}
+  $[n,k]$-code from \ref{h.6.5}, coset leaders are $0000, 1000, 0100, 0010$. Hence $\alpha_0=1,~ \alpha_1=3,~ \alpha_2=\alpha_3=\alpha_4=0$, so
+  $$P_{corr}(C) = (1-p)^4 + 3 p(1-p)^3 = (1-p)^3 (1+2p)$$
+\end{eg}
+
+\begin{lemma}{6.9}[Remark 6.9]
+  if $d(C)=2t+1$ or $d(C)=2t+2$, then $C$ can correct any $t$ errors.
+
+  Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i=\left( \stackrel{n}{i} \right)$ for $0 \leq i \leq t$.
+\end{lemma}
+
+\begin{defn}{}[Rate]
+  $[n, k]$-code $C$ uses $n$ symbols to send $k$ message symbols; it has \emph{rate} $R(C)=k/n$.
+
+  A good code will have a high rate.
+\end{defn}
+
+\begin{defn}{}[Capacity]
+  the \emph{capacity} $\mathscr{C}(p)$ of a binary symmetric channel with symbol error probability $p$ is
+  $$\mathscr{C}(p) = 1+ p \cdot \log_2{(p)} + (1-p) \cdot \log_2{(1-p)}$$
+\end{defn}
+
+
+\begin{thm}{6.12}[Shanon's theorem]
+  channel binary symmetric with symbol error probability $p$.
+
+  Let $R < \mathscr{C}(p)$.
+
+  Then for any $\epsilon >0$, $\exists$ for sufficient large $n$, an $[n,k]$-code $C$ of rate $k/n \geq R$ such that $P_{err}(C) < \epsilon$.
+\end{thm}
+
+\begin{defn}{}[$P_{symb}$]
+  $P_{symb}$ denotes the average probability that a message symbol is in error after decoding.
+\end{defn}
+
+\begin{thm}{6.14}
+  let $C$ a binary [n,k]-code and let $A_i$ denote the number of codewords of $C$ of weight $i$.
+
+  Then, if $C$ is used for error detection, the probability of an incorrect message being undetected is
+  $$P_{undetec}(C) = \sum_{i=1}^n A_i \cdot p^i (1-p)^{n-i}$$
+\end{thm}
+
+\begin{eg}{6.15}
+  for the code of \ref{h.6.5},
+  $$P_{undetec}(C) = \underbrace{1 \cdot p^2 (1-p)^2}_{0101} + \underbrace{2 \cdot p^3(1-p)^{4-3=1} }_{1011,~1110}= p^2 -p^4$$
+\end{eg}
+
+\bibliographystyle{unsrt}
+\bibliography{algebraic-coding-theory-notes.bib}
+
+\end{document}
