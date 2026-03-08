@@ -4,6 +4,7 @@
 % \usepackage{yfonts} % WIP
 \usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{mathrsfs}
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{amssymb}
@@ -99,11 +100,42 @@ Let $C$ a subspace of $\Vnq$. Then a subset $\{v_1, v_2, \ldots, v_r \} \subsete
 
 A generating set of $C$ which is also linearly independent is called a \emph{basis} of $C$.
 
+\begin{thm}{4.3}
+  Suppose $\{v_1, v_2, \ldots, v_k\}$ is a basis of a subspace $C$ of $\Vnq$. Then  
+  \begin{enumerate}[i.]
+  \item every vector of $C$ can be expressed uniquely as a linear combination of the basis vectors.
+  \item $C$ contains exactly $q^k$ vectors.
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+\item suppose vector $x \in C$ such that
+$$x = a_1 v_1 + a_2 v_2 + \cdots + a_k v_k$$
+$$x = b_1 v_1 + b_2 v_2 + \cdots + b_k v_k .$$
+
+then
+$$(a_1-b_1)v_1 + (a_2-b_2)v_2 + \cdots + (a_k-b_k)v_k = 0 .$$
+
+But the set $\{v_1, v_2, \ldots, v_k\}$ is linearly independent, and so
+$$a_i - b_i = 0 \quad \text{for } i = 1,2,\ldots,k,$$
+i.e.,
+$$a_i = b_i \quad \text{for } i = 1,2,\ldots,k.$$
+
+\item By (i), the $q^k$ vectors
+$$\sum_{i=1}^{k} a_i v_i \qquad (a_i \in \mathrm{GF}(q))$$
+are precisely the distinct vectors of $C$.
+\end{enumerate}
+\end{proof}
+
+
 \section{Linear codes}
 The theorems of this section are from \cite{hill} and follow the original enumeration of the book.
 
+Note about notation:\\
+A $q$-ary linear code $[n, k, d]$-code is also a $q$-ary $(n, q^k, d)$-code, but the opposite is not always true.
+
 \subsection{Some definitions}
-Let $q$ be a prime power. View $(Fq)^n$ as the vector space $\Vnq$.
+Let $q$ be a prime power. View $(F_q)^n$ as the vector space $\Vnq$.
 
 \begin{defn}{}[Linear code over GF(q)]
   A \emph{linear code over $GF(q)$} is a subspace of $\Vnq$, with $n \geq 0$.
@@ -307,13 +339,34 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 \end{defn}
 
 \begin{defn}{}[Capacity]
-  the \emph{capacity} $\mathfrak{C}(p)$ of a binary symmetric channel with symbol error probability $p$ is
-  $$\mathfrak{C}(p) = 1+ p \cdot \log_2{(p)} + (1-p) \cdot \log_2{(1-p)}$$
+  the \emph{capacity} $\mathscr{C}(p)$ of a binary symmetric channel with symbol error probability $p$ is
+  $$\mathscr{C}(p) = 1+ p \cdot \log_2{(p)} + (1-p) \cdot \log_2{(1-p)}$$
 \end{defn}
 
+
 \begin{thm}{6.12}[Shanon's theorem]
+  channel binary symmetric with symbol error probabiliy $p$.
+
+  Let $R < \mathscr{C}(p)$.
+
+  Then for any $\epsilon >0$, $\exists$ for sufficient large $n$, an $[n,k]$-code $C$ of rate $k/n \geq R$ such that $P_{err}(C) < \epsilon$.
 \end{thm}
 
+\begin{defn}{}[$P_{symb}$]
+  $P_{symb}$ denotes the average probability that a message symbol is in error after decoding.
+\end{defn}
+
+\begin{thm}{6.14}
+  let $C$ a binary [n,k]-code and let $A_i$ denote the number of codewords of $C$ of weight $i$.
+
+  Then, if $C$ is used for error detection, the probability of an incorrect message being undetected is
+  $$P_{undetec}(C) = \sum_{i=1}^n A_i \cdot p^i (1-p)^{n-i}$$
+\end{thm}
+
+\begin{eg}{6.15}
+  for the code of \ref{h.6.5},
+  $$P_{undetec}(C) = \underbrace{1}_{0101} \cdot p^2 (1-p)^2 + \underbrace{2}_{1011, 1110} \cdot p^3(1-p)^{4-3=1}= p^2 -p^4$$
+\end{eg}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
