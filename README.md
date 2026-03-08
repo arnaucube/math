@@ -8,6 +8,7 @@ Notes, code and documents done while reading books and papers.
 - [Notes on Weil pairing](weil-pairing.pdf)
 - [Notes on Galois Theory](galois-theory-notes.pdf)
 - [Notes on Commutative Algebra](commutative-algebra-notes.pdf)
+- [Notes on Algebraic Coding Theory](algebraic-coding-theory-notes.pdf)
 
 
 In-between math & crypto:
