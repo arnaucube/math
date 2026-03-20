@@ -1701,7 +1701,6 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
 
   Therefore,
   $$Spec~ k[X_1, \ldots, X_n] = \{ \text{irreducible varieties}~ X \subset k^n \}$$
-\end{corollary}
 \end{cor}
 
 \begin{prop}{5.8} \label{5.8}
@@ -1716,7 +1715,7 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
   By definition, $Spec~ A = \{ P ~|~ P \subset A ~\text{is prime ideal} \}$.
 
   By Corollary \ref{cor.5.8}:
-    $$\{ \text{prime ideals}~P~\text{of}~k[X_1, \ldots, X_n] \} &\longleftrightarrow \{ \text{irreducible varieties}~ X \subset k^n \}$$
+    $$\{ \text{prime ideals}~P~\text{of}~k[X_1, \ldots, X_n] \} \longleftrightarrow \{ \text{irreducible varieties}~ X \subset k^n \}$$
 
   About varieties:
   \begin{itemize}
@@ -1750,7 +1749,7 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
   $\Longrightarrow~ \text{thus}~ J \subseteq \mathfrak{P}$.
 
 
-  Now, $J \susbset \mathfrak{P} = I(X)$;\\
+  Now, $J \subset \mathfrak{P} = I(X)$;\\
   by \ref{5.5}, the set of points where $\mathfrak{P}$ vanishes must be inside the set of points where $J$ vanishes, so
   $$V(J) \supseteq V(\mathfrak{P}) = V(I(X)) = X$$
   $\Longrightarrow~~ X \subseteq V(J)$, ie. the irreducible variety $X$ must be a subvariety of $V(J)$.
@@ -1760,6 +1759,83 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
   where $X = V(\mathfrak{P})$.
 \end{proof}
 
+\subsection{Zariski, Weak Nullstellensatz, Nullstllensatz}
+This subsection proves again Zariski's lemma, Weak Nullstellensatz and Nullstellensatz, in a more interconnected way than the proofs described previously.
+
+\begin{lemma}{}[Zariski's lemma]
+  $k$ a field, $K$ a fingen $k$-algebra and a field.
+
+  Then $K$ is a finite algebraic extension of $k$.
+
+  If $k$ algebraically closed, then $K=k$.
+\end{lemma}
+\begin{proof}
+  $K$ a fingen $k$-algebra and a field $\Longleftrightarrow$ $K=k[X_1, \ldots, X_n]$ a field.\\
+  Want to show that $K$ is algebraic over $k$.
+
+  Since $K$ is a fingen $k$-algebra, by Noether normalization \ref{noether-normalization},\\
+  $\exists~ \{y_1, ldots, y_r\} \subset K$ such that
+  \begin{itemize}
+    \item the set $\{y_1, \ldots, y_r\}$ is algebraically independent over $k$
+    \item $K$ is integral over the polynomial ring $R=k[y_1, \ldots, y_r] \sbuset K$.
+  \end{itemize}
+
+  By \ref{R.4.9}:\\
+  if $A \subset B$ integral extension of integral domain,\\
+  then $A$ is a field $\Longleftrightarrow~ B$ is a field.
+
+  which applied to our case:
+  $$B:=K ~\text{(a field)},~~ A:= R=k[y_1, \ldots, y_r]$$
+  since $K$ is integral over $R$ and $K$ a field $\Longrightarrow$ by \ref{R.4.9} $R$ must be a field.
+
+  \vspace{0.3cm}
+  Since $y_i \in K$ are algebraically independent\\
+  $\Longrightarrow~ R=k[y_1, \ldots, y_r]$ is a polynomial ring in $r$ indeterminates.
+
+  Then, if $r \geq 1$, we have at least one variable ($k[y_1]$);\\
+  in $k[y_1]$, the element $y_1$ is not invertible, since $1/y_1$ is a rational function, not a polynomial.\\
+  (alternatively: the only invertible elements in a polynomial ring over a field are the non-zero constants of the field $k$).
+
+  Therefore, $R=k[y_1, \ldots, y_r]$ can be a field iff $r=0$, and we know that is a field, therefore $r=0$ and $R=k$.
+
+  By Noether normalization, at the previus step we knew that $K$ is integral over $R$ ($=k$).
+
+  \vspace{0.3cm}
+  By \ref{integral-implies-finite}, a fingen algebra that is integral over its base field is a finite vector space over that field.
+
+  Thus $[K:k]<\infty$, and $K$ is algebraic over $k$.
+\end{proof}
+
+\vspace{0.5cm}
+This brings us to the \emph{Weak Nullstellensatz}:
+
+\begin{thm}{}[Weak Nullstellensatz]
+  $k$ a field, $K$ a $k$-algebra with
+  \begin{itemize}
+    \item $K$ fingen as a $k$-algebra
+    \item $K$ a field
+  \end{itemize}
+  Then $K$ is algebraic over $k$, so that $k \subset K$ is a finite field extension; that is $[K:k] < \infty$.
+\end{thm}
+\begin{proof}
+  proven at previous proof.
+\end{proof}
+
+
+\vspace{0.8cm}
+Now, let $m\subset k[X_1, \ldots, X_n]$ a maximal ideal. Let $K=k[X_1, \ldots, X_n]$.
+
+Then $\frac{k[X_1, \ldots, X_n]}{m} = \frac{K}{m}$ is a field (by basic ideal quotient theory).
+
+If it's a fingen $k$-algebra $\Longrightarrow$ by Zariski's lemma, $\frac{K}{m}$ is algebraic over $k$.
+
+And since $k$ is algebraically closed $\Longrightarrow~ \frac{K}{m}=k$.
+
+By definition of $K$ being a $k$-algebra,
+$$\exists~ \psi: k \longrightarrow \frac{K}{m} ~~~\Longrightarrow~ k \stackrel{iso}{\cong} \frac{K}{m}$$
+
+Thus, $\forall x_i \in k,~ \psi(x_i)=a_i \in k$.
+And by definition of a quotient ring, 
 
 
 \section{Rings of fractions $S^{-1}A$ and localization}
@@ -1771,7 +1847,7 @@ Note: for $k$ a field, $k[X_1, \ldots, X_n]$, $m$ maximal ideal; the residue fie
   ~\forall s, t \in S$).
 
   Introduce th following relation $\sim$ on $A \times S$:
-  $$(a, s) \sim (b, t) \Longleftrightarrow \exist y \in S ~\text{such that}~ u(at - bs) = 0$$
+  $$(a, s) \sim (b, t) \Longleftrightarrow \exists y \in S ~\text{such that}~ u(at - bs) = 0$$
 
   (write $a/s$ for the equivalence class of $(a, s)$.
 
@@ -1944,11 +2020,10 @@ Define the set $A_P=S^{-1}A$.
 
     \item[$\Longrightarrow$] (if $a/s$ unit $~\Longrightarrow~ a \not\in P$)\\
 
-      Suppose $a/s$ a unit; then $\exist~ \frac{b}{t} \in A_P$ such that
+      Suppose $a/s$ a unit; then $\exists~ \frac{b}{t} \in A_P$ such that
       $\frac{a}{s} \cdot \frac{b}{t} = 1$.
 
-      By definition of equality in localization, $\frac{ab}{st}=1$ means $\exist
-      u \in S$ such that
+      By definition of equality in localization, $\frac{ab}{st}=1$ means $\exists u \in S$ such that
       \begin{equation}
         u(ab \cdot 1 - st \cdot 1) = 0~~ \Longrightarrow~ uab=ust
         \tag{eq.6.4}
@@ -1959,7 +2034,7 @@ Define the set $A_P=S^{-1}A$.
       the products of elements outside $P$ must also be outside of $P$.
       $$u,s,t \not\in P ~\Longrightarrow~ ust \not\in P$$
 
-      At \eq{eq.6.4}, we know that $uab=ust \not\in P$, thus $uab \not\in P$.
+      At \ref{eq.6.4}, we know that $uab=ust \not\in P$, thus $uab \not\in P$.
 
       If $uab \not\in P$, then $a \not\in P$.
 
