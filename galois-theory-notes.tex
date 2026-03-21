@@ -567,7 +567,7 @@
 \end{proof}
 
 
-\begin{thm}{i.3}(\emph{Third Isomorphism Theorem}) \label{2ndisothm}\\
+\begin{thm}{i.3}(\emph{Third Isomorphism Theorem}) \label{3rdisothm}\\
   Let $H \subseteq K$ and $K \triangleleft G,~ H \triangleleft G$.\\
   Then
   $\frac{K}{H} \triangleleft \frac{G}{H}$
@@ -813,7 +813,7 @@
 
   Let $f_i$ be the minimal polynimal of $\alpha_i$ over $K$.
 
-  Then, $M \supseteq L$ is splitting field of $\Prod_{i=1}^r f_i$, since $M$ is normal enclosure of $L:K$.
+  Then, $M \supseteq L$ is splitting field of $\prod_{i=1}^r f_i$, since $M$ is normal enclosure of $L:K$.
 
   For every zero $\beta_{ij}$ of $f_i$ in $M$,\\
   $\exists$ an isomorphism $\sigma: K(\alpha_i) \longrightarrow K(\beta_{ij})$ by Corollary \ref{5.13}.
@@ -821,7 +821,7 @@
   By Proposition \ref{11.4}, since $K(\alpha_i),~K(\beta_{ij}) \subset M$,
   $\sigma$ extends to a $K$-automorphism
   $$\tau: M \longrightarrow M$$
-  since $M$ is splitting field (ie. contains the zeros of $\Prod f_i$).
+  since $M$ is splitting field (ie. contains the zeros of $\prod f_i$).
 
   Since $\alpha$ is a member of radical sequence for a subfield of $M$, so it is $\beta_{ij}$.
 
@@ -885,11 +885,11 @@ Two cases arise:
   In fact, $K$ and $L$ have the same prime subfield.
 \end{proof}
 
-\vspace{0.8cm}
+\vspace{1.0cm}
 
 Finite fields have order $p^n$ with $p$ prime and $n > 0$. In the following theorems we prove it, first proving the case $n=1$ with a specific case proof which works for integers modulo $p$, and then proving the general case for $n > 0$.
 
-\begin{thm}{}
+\begin{thm}{$(\mathbb{Z}_p)$}
   The ring $\mathbb{Z}_n$ is a field iff $n=p$, $p$ prime.
 \end{thm}
 \begin{proof}
@@ -907,7 +907,7 @@ Finite fields have order $p^n$ with $p$ prime and $n > 0$. In the following theo
 \vspace{0.5cm}
 More generally, using Galois theory, we can show that every finite field is isomorphic to $F_{p^n}$:
 
-\begin{thm}{}
+\begin{thm}{$(F_p^n)$}
   Every finite field has $p^n$ elements and hence is isomorphic to $F_{p^n}$,
   for $p$ prime and $n>0$. Denoted as $F_{p^n} = GF(q^n)$.
 \end{thm}
@@ -945,11 +945,15 @@ More generally, using Galois theory, we can show that every finite field is isom
 
   \vspace{0.4cm}
   We can construct $F_{p^n}$ as:\\
-  let $q(x) \in F_p[x]=P[x]$ of degree $n$, set $L=F_p[x] / (q)$. Then $|L|=p^n$.
+  let $h(x) \in F_p[x]=P$ of degree $n$. Then $|F_p[x] / (h)| = p^n$.
 \end{proof}
 
 
+
+
+
 \newpage
+
 \section{Tools}
 This section contains tools that I found useful to solve Galois Theory related problems, and that don't appear in Stewart's book.
 
@@ -1198,7 +1202,6 @@ For $n \geq 3, ~~\mathbb{D}_n \subseteq \mathbb{S}_n$ (subgroup of the Symmetry 
     Same with minimus.\\
     $\Longrightarrow$ Hence, since $Df \nless 0$ and $Df \ngtr 0$, and $Df$ exists, then $Df=0$.
   \end{enumerate}
-  \\
     Thus, $f$ must have extrema (either max or min or both), and at that extrema $Df$ must be zero.
 \end{proof}
 
