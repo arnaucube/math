@@ -368,6 +368,10 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$P_{undetec}(C) = \underbrace{1 \cdot p^2 (1-p)^2}_{0101} + \underbrace{2 \cdot p^3(1-p)^{4-3=1} }_{1011,~1110}= p^2 -p^4$$
 \end{eg}
 
+
+
+\vspace{0.5cm}
+
 \subsection{Exercises}
 \begin{ex}{5.1}
   is the binary (11, 24, 5)-code linear?
@@ -412,7 +416,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$G=\left[ I_{n-1} | 1 \right]$$
 
   which generates vectors of the form
-  $$(a_1, \ldots, a_{n-1}, a_1+\ldots+a_{n-1})$
+  $$(a_1, \ldots, a_{n-1}, a_1+\ldots+a_{n-1})$$
 \end{proof}
 
 \begin{ex}{5.5}
@@ -451,7 +455,70 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 
       Since $C=C_e \cup C_e$, half codewords are even weighted and half odd.
   \end{itemize}
+\end{proof}
 
+\begin{ex}{6.1}
+  construct standard arrays for codes having each of the GMs:
+
+  $$G_1 = \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+    \end{pmatrix} ~~~
+    G_2 = \begin{pmatrix}
+      1 & 0 & 1\\
+      0 & 1 & 1
+        \end{pmatrix}
+    $$
+\end{ex}
+\begin{proof}
+  recall: for a binary code with GM $G$, the code $C$ consists of all binary linear combinations of the rows of $G$.
+
+  For $G_1$:\\
+  rows: $r_1=(1,0),~r_2=(0,1))$. A codeword is any linear combination:
+  $$u G_1= a \cdot r_1 + b \cdot r_2,~~ \text{with}~ a,b \in \{0,1\}$$
+
+  4 combinations:\\
+  \begin{align*}
+    0 \cdot r_1 + 0 \cdot r_2 &= (0,0)\\
+    1 \cdot r_1 + 0 \cdot r_2 &= (1,0)\\
+    0 \cdot r_1 + 1 \cdot r_2 &= (0,1)\\
+    1 \cdot r_1 + 1 \cdot r_2 &= (1,0)+(0,1) = (1,1)
+  \end{align*}
+  $$\Longrightarrow~ C_1 = \{00, 10, 01, 11\}$$
+  $$\text{standard array:}~ 00~01~10~11$$
+
+
+  \vspace{0.5cm}
+  For $G_2$:\\
+  rows: $r_1=(1, 0, 1),~ r_2=(0, 1, 1)$. Codeword: $a \cdot r_1 + b \cdot r_2$ with $a, b \in \{0,1\}$.
+
+  4 combinations:\\
+  \begin{align*}
+    0 \cdot r_1 + 0 \cdot r_2 &= (0,0,0)\\
+    1 \cdot r_1 + 0 \cdot r_2 &= (1,0,1)\\
+    0 \cdot r_1 + 1 \cdot r_2 &= (0,1,1)\\
+    1 \cdot r_1 + 1 \cdot r_2 &= (1,0,1)+(0,1,1) = (1,1,0)
+  \end{align*}
+
+  $$\Longrightarrow~ C_2 = \{000, 101, 011, 110\}$$
+  $\Longrightarrow~$ so the 1st row of the standard array is: $000~101~011~110$.
+
+  Now, pick a non used vector: $001$, add it to the code $C_2$:
+  \begin{align*}
+    001 + C_2_i&\\
+    001 + 000 &= 001\\
+    001 + 101 &= 100\\
+    001 + 011 &= 010\\
+    001 + 110 &= 111
+  \end{align*}
+  $\Longrightarrow$ 2nd row of the standard array: $001~100~010~111$
+
+  Thus the standard array is
+  \begin{align*}
+    000~101~011~110\\
+    001~100~010~111
+  \end{align*}
+  ie. $2^3=8$ vectors, a $V(3,2)$ vector space.
 \end{proof}
 
 \bibliographystyle{unsrt}
