@@ -326,7 +326,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$P_{corr}(C) = (1-p)^4 + 3 p(1-p)^3 = (1-p)^3 (1+2p)$$
 \end{eg}
 
-\begin{lemma}{6.9}[Remark 6.9]
+\begin{lemma}{6.9}[Remark 6.9]\label{remark.6.9}
   if $d(C)=2t+1$ or $d(C)=2t+2$, then $C$ can correct any $t$ errors.
 
   Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i=\left( \stackrel{n}{i} \right)$ for $0 \leq i \leq t$.
@@ -367,6 +367,207 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   for the code of \ref{h.6.5},
   $$P_{undetec}(C) = \underbrace{1 \cdot p^2 (1-p)^2}_{0101} + \underbrace{2 \cdot p^3(1-p)^{4-3=1} }_{1011,~1110}= p^2 -p^4$$
 \end{eg}
+
+
+
+\vspace{0.5cm}
+
+\subsection{Exercises}
+\begin{ex}{5.1}
+  is the binary (11, 24, 5)-code linear?
+\end{ex}
+\begin{proof}
+  recall: a q-ary linear $[n,k,d]$-code is also a q-ary $(n, q^k, d)$-code, but
+  the opposite is not always true.
+
+  $\Longrightarrow~ (11, 24, 5)$-code to be linear it would mean that $24=q^k$.
+
+  Since it is binary, $q=2$. But $24 \neq 2^k$, so it can not be linear.
+\end{proof}
+
+\begin{ex}{5.2}
+  $E_n$ is the code of all even-weight vectors of $V(n,2)$, which is linear.
+  What are the parameters $[n, k, d]$ of $E_n$? Write a GM for $E_n$ in standard
+  form.
+\end{ex}
+\begin{proof}
+  $$E_n = \{ x \in V(n, 2) | w(x) ~\text{is even} \}$$
+
+  $\longrightarrow$ is the binary even-weight ode (the single parity-check code);\\
+  it's linear since
+  \begin{itemize}
+    \item the zero vector has even weight
+    \item over $GF(2)$, the sum of two even-weight vectors has even weight
+  \end{itemize}
+
+  Recall: $F_q^n \Longleftrightarrow \Vnq$, so $V(n, 2) \cong F_2^n$
+
+  $$\Longrightarrow~ E_n = \{ (x_1, \ldots, x_n) \in F_2^n | x_1 + \ldots + x_n = 0 \}$$
+
+  minimum distance is $2$, since
+  \begin{itemize}
+    \item no word of weight 1 is in $E_n$
+    \item words of weight 2 are in $E_n$
+  \end{itemize}
+
+  Therefore, parameters are $[n, n-1, 2]$
+
+  GM:
+  $$G=\left[ I_{n-1} | 1 \right]$$
+
+  which generates vectors of the form
+  $$(a_1, \ldots, a_{n-1}, a_1+\ldots+a_{n-1})$$
+\end{proof}
+
+\begin{ex}{5.5}
+  Prove that in a \emph{binary linear code}, either all the codewords have even weight or exactly half have even weight and half odd weight.
+\end{ex}
+\begin{proof}
+  let $C_e,~ C_o$ be subsets of $C$ with even and odd weights respectively.
+
+  So that $C = C_e \cup C_o$ (disjoint union).
+
+  For binary vectors $x,y$:
+  $$w(x+y) = w(x) + w(y) \pmod 2$$
+
+  ie. over $F_2$, the parity of the weight is additive:
+  \begin{align*}
+    even + even &= even\\
+    even + odd &= odd\\
+    odd + odd &= even
+  \end{align*}
+
+  Now we have two possible cases:
+  \begin{itemize}
+    \item $C$ has no odd weighted codewords:\\
+      $C_0 = \emptyset,~ \forall x \in C$ $x$ is even weighted
+    \item $C$ has at least one odd-weighted codeword:\\
+      let $u \in C_o$, consider the map
+      \begin{align*}
+        \phi: C_e &\longrightarrow C_o\\
+        c &\longmapsto c+u
+      \end{align*}
+      with $c \in C_e,~ u \in C_o,~ \phi(c) \in C_o$.
+
+      $\phi$ is bijective, since $\phi(\phi(c))=(c+u)+u=c$,
+
+      so $\phi$ is it's own inverse; hence $|C_e| = |C_o|$.
+
+      Since $C=C_e \cup C_e$, half codewords are even weighted and half odd.
+  \end{itemize}
+\end{proof}
+
+\begin{ex}{6.1}
+  construct standard arrays for codes having each of the GMs:
+
+  $$G_1 = \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+    \end{pmatrix} ~~~
+    G_2 = \begin{pmatrix}
+      1 & 0 & 1\\
+      0 & 1 & 1
+        \end{pmatrix}
+    $$
+\end{ex}
+\begin{proof}
+  recall: for a binary code with GM $G$, the code $C$ consists of all binary linear combinations of the rows of $G$.
+
+  For $G_1$:\\
+  rows: $r_1=(1,0),~r_2=(0,1))$. A codeword is any linear combination:
+  $$u G_1= a \cdot r_1 + b \cdot r_2,~~ \text{with}~ a,b \in \{0,1\}$$
+
+  4 combinations:\\
+  \begin{align*}
+    0 \cdot r_1 + 0 \cdot r_2 &= (0,0)\\
+    1 \cdot r_1 + 0 \cdot r_2 &= (1,0)\\
+    0 \cdot r_1 + 1 \cdot r_2 &= (0,1)\\
+    1 \cdot r_1 + 1 \cdot r_2 &= (1,0)+(0,1) = (1,1)
+  \end{align*}
+  $$\Longrightarrow~ C_1 = \{00, 10, 01, 11\}$$
+  $$\text{standard array:}~ 00~01~10~11$$
+
+
+  \vspace{0.5cm}
+  For $G_2$:\\
+  rows: $r_1=(1, 0, 1),~ r_2=(0, 1, 1)$. Codeword: $a \cdot r_1 + b \cdot r_2$ with $a, b \in \{0,1\}$.
+
+  4 combinations:\\
+  \begin{align*}
+    0 \cdot r_1 + 0 \cdot r_2 &= (0,0,0)\\
+    1 \cdot r_1 + 0 \cdot r_2 &= (1,0,1)\\
+    0 \cdot r_1 + 1 \cdot r_2 &= (0,1,1)\\
+    1 \cdot r_1 + 1 \cdot r_2 &= (1,0,1)+(0,1,1) = (1,1,0)
+  \end{align*}
+
+  $$\Longrightarrow~ C_2 = \{000, 101, 011, 110\}$$
+  $\Longrightarrow~$ so the 1st row of the standard array is: $000~101~011~110$.
+
+  Now, pick a non used vector: $001$, add it to the code $C_2$:
+  \begin{align*}
+    001 + C_2_i&\\
+    001 + 000 &= 001\\
+    001 + 101 &= 100\\
+    001 + 011 &= 010\\
+    001 + 110 &= 111
+  \end{align*}
+  $\Longrightarrow$ 2nd row of the standard array: $001~100~010~111$
+
+  Thus the standard array is
+  \begin{align*}
+    000~101~011~110\\
+    001~100~010~111
+  \end{align*}
+  ie. $2^3=8$ vectors, a $V(3,2)$ vector space.
+\end{proof}
+
+\begin{ex}{6.4}
+  $C$ a binary $[n,k]$-code with minimum distance $2t+1$ (or $2t+2$). Given that $p$ is very small, show that an approximate value of $P_{err}(C)$ is $\left( \binom{n}{t+1} - \alpha_{t+1} \right) p^{t+1}$, where $\alpha_{t+1}$ is the number of coset leaders of $C$ of weight $t+1$.
+\end{ex}
+\begin{proof}
+  From \ref{remark.6.9}, if $d(C)=2t+1$ (or $2t+2$) $Longrightarrow~ C$ can correct any $t$ errors.
+
+  Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i = \binom{n}{i}$ for $0 \leq i \leq t$.
+
+  \begin{equation}
+    P_{corr}(C) = \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}
+    \label{6.4.eq.1}
+  \end{equation}
+
+  where $\alpha_i$ is the number of coset leaders of weight $i$
+
+  From the $\binom{n}{i}$ vectors of weight $i$, exactly $\alpha_i$ are coset leaders, so the non coset leaders are $\binom{n}{i} - \alpha_i$. This is when a decoding error happens.
+
+  $$\Longrightarrow~ P_{err}(C) = \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}$$
+
+
+  \vspace{0.5cm}
+  Alternatively from \ref{6.4.eq.1}:\\
+  $$P_{err}(C) = 1 - P_{corr}(C) = 1 - \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}$$
+
+  Notice that
+  $$\sum_{i=0}^n \binom{n}{i} p^i (1-p)^{n-i} = (p + (1-p))^n = 1^n = 1$$
+
+  thus
+  \begin{align*}
+    P_{err}(C) &= \sum_{i=0}^n \binom{n}{i} p^i (1-p)^{n-i} - \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}\\
+               &= \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}
+  \end{align*}
+
+  Now, from \ref{remark.6.9}, $\forall i \leq t,~ \alpha_i = \binom{n}{i}$, thus $\binom{n}{i} - \alpha_i = 0$ for the first $t$ terms in the sum.
+
+  Thus
+  \begin{align*}
+    P_{err}(C) &= \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}\\
+               &= \left( \binom{n}{t+1} - \alpha_{t+1} \right) p^{t+1} (1-p)^{n-t+1} + \ldots
+  \end{align*}
+  where the $\ldots$ represent the terms with $p^{t+2}$ and higher.
+
+  Then, since $p$ is very small (by the exercise definition), $(1-p)^{n-t+1} \equiv 1$, and the other higher powers of $p$ are negligible.
+
+  Hence,
+  $$P_{err}(C) = \left( \binom{n}{t+1} - \alpha_{t+1} \right) \cdot p^{t+1}$$
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
