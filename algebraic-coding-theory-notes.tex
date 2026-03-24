@@ -326,7 +326,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$P_{corr}(C) = (1-p)^4 + 3 p(1-p)^3 = (1-p)^3 (1+2p)$$
 \end{eg}
 
-\begin{lemma}{6.9}[Remark 6.9]
+\begin{lemma}{6.9}[Remark 6.9]\label{remark.6.9}
   if $d(C)=2t+1$ or $d(C)=2t+2$, then $C$ can correct any $t$ errors.
 
   Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i=\left( \stackrel{n}{i} \right)$ for $0 \leq i \leq t$.
@@ -519,6 +519,54 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
     001~100~010~111
   \end{align*}
   ie. $2^3=8$ vectors, a $V(3,2)$ vector space.
+\end{proof}
+
+\begin{ex}{6.4}
+  $C$ a binary $[n,k]$-code with minimum distance $2t+1$ (or $2t+2$). Given that $p$ is very small, show that an approximate value of $P_{err}(C)$ is $\left( \binom{n}{t+1} - \alpha_{t+1} \right) p^{t+1}$, where $\alpha_{t+1}$ is the number of coset leaders of $C$ of weight $t+1$.
+\end{ex}
+\begin{proof}
+  From \ref{remark.6.9}, if $d(C)=2t+1$ (or $2t+2$) $Longrightarrow~ C$ can correct any $t$ errors.
+
+  Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i = \binom{n}{i}$ for $0 \leq i \leq t$.
+
+  \begin{equation}
+    P_{corr}(C) = \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}
+    \label{6.4.eq.1}
+  \end{equation}
+
+  where $\alpha_i$ is the number of coset leaders of weight $i$
+
+  From the $\binom{n}{i}$ vectors of weight $i$, exactly $\alpha_i$ are coset leaders, so the non coset leaders are $\binom{n}{i} - \alpha_i$. This is when a decoding error happens.
+
+  $$\Longrightarrow~ P_{err}(C) = \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}$$
+
+
+  \vspace{0.5cm}
+  Alternatively from \ref{6.4.eq.1}:\\
+  $$P_{err}(C) = 1 - P_{corr}(C) = 1 - \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}$$
+
+  Notice that
+  $$\sum_{i=0}^n \binom{n}{i} p^i (1-p)^{n-i} = (p + (1-p))^n = 1^n = 1$$
+
+  thus
+  \begin{align*}
+    P_{err}(C) &= \sum_{i=0}^n \binom{n}{i} p^i (1-p)^{n-i} - \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}\\
+               &= \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}
+  \end{align*}
+
+  Now, from \ref{remark.6.9}, $\forall i \leq t,~ \alpha_i = \binom{n}{i}$, thus $\binom{n}{i} - \alpha_i = 0$ for the first $t$ terms in the sum.
+
+  Thus
+  \begin{align*}
+    P_{err}(C) &= \sum_{i=0}^n \left( \binom{n}{i} - \alpha_i \right) p^i (1-p)^{n-i}\\
+               &= \left( \binom{n}{t+1} - \alpha_{t+1} \right) p^{t+1} (1-p)^{n-t+1} + \ldots
+  \end{align*}
+  where the $\ldots$ represent the terms with $p^{t+2}$ and higher.
+
+  Then, since $p$ is very small (by the exercise definition), $(1-p)^{n-t+1} \equiv 1$, and the other higher powers of $p$ are negligible.
+
+  Hence,
+  $$P_{err}(C) = \left( \binom{n}{t+1} - \alpha_{t+1} \right) \cdot p^{t+1}$$
 \end{proof}
 
 \bibliographystyle{unsrt}
