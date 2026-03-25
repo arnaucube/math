@@ -224,6 +224,52 @@ The main idea, is that $p(X)$ defines the constraints of our circuit, so that fo
 
 \vspace{0.5cm}
 
+\section{QAP Relation}
+
+Want to ensure that
+$$
+(\sum_{i=1}^n \alpha_i(X) w_i) \cdot (\sum_{i=1}^n \beta_i(X) w_i) - (\sum_{i=1}^n \gamma_i(X) w_i) = 0
+$$
+
+for a given witness $(w_1, \ldots, w_n) \in \mathbb{F}^n$, which we divide between public inputs and private inputs:
+\begin{align*}
+    \text{public inputs:}~~ \phi &= (w_1, \ldots, w_l) \in \mathbb{F}^l, \\
+    \text{private inputs:}~~ w &= (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l},
+\end{align*}
+
+We denote the relation
+
+$$
+R =
+\left\{
+\begin{aligned}
+(\phi, w) \ \big| \;&
+\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l,\\
+& w = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l},\\
+& (\sum_{i=1}^n \alpha_i(X) w_i) \cdot (\sum_{i=1}^n \beta_i(X) w_i)
+\equiv
+\sum_{i=1}^{n} \gamma_i(X) w_i 
+~\bmod Z(X)
+\end{aligned}
+\right.
+$$
+
+Set
+$$a(X) = \sum_{i=1}^n \alpha_i(X) w_i,~~~~ b(X) = \sum_{i=1}^n \beta_i(X) w_i),~~~~ c(X) = \sum_{i=1}^{n} \gamma_i(X) w_i$$
+
+so that
+$$a(X) \cdot b(X) \equiv c(X) \bmod Z(X)$$
+
+which means that we can prove that
+$$\exists~ h(X) \in \mathbb{F}[X]^{<d}~~ \text{s.th.}~
+a(X) \cdot b(X) - c(X) = h(X) \cdot X(X)$$
+
+
+\vspace{1cm}
+
+\section{Powers of tau (trusted setup)}
+\subsection{Main idea}
+% TODO. mention "SRS" concept
 
 \subsection{Participant contribution}
 In the context of SRS (Structured Reference String), the powers of tau consist of an array containing the scalar multiplication of the generator point by each power of tau, eg. $\tau^0 \cdot G,~\tau^1 \cdot G,~\tau^2 \cdot G,~\tau^3 \cdot G \ldots$
