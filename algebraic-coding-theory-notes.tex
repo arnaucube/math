@@ -569,6 +569,82 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$P_{err}(C) = \left( \binom{n}{t+1} - \alpha_{t+1} \right) \cdot p^{t+1}$$
 \end{proof}
 
+
+\vspace{1.0cm}
+
+\section{Dual code, PCM and Syndrome}
+
+\begin{defn}{}[Ortogonal]
+  Inner product:
+  $$u \cdot v = u_1 v_1 + \ldots + u_n \cdot v_n = \sum_{i=1}^n u_i v_i$$
+  If $u \cdot v = 0$, then $u$ and $v$ are called \emph{orthogonal}.
+\end{defn}
+
+\begin{lemma}{7.1}
+  for any $u,v,w \in \Vnq$ and $\lambda, \mu \in GF(q)$,
+  \begin{enumerate}[i.]
+    \item $u \cdot v = v \cdot u$
+    \item $(\lambda u + \mu v) \cdot w = \lambda(u \cdot w) + \mu (v \cdot w)$
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  (at exercise \ref{ex.7.1}).
+\end{proof}
+
+\begin{defn}{}[Dual code]
+  given a linear $[n, k]$-code $C$, the \emph{dual code} of $C$, denoted $C^{\perp}$, is defined to be the set of those vectors of $\Vnq$ which are orthogonal to every codeword of $C$. ie.
+  $$C^{\perp} = \{ v \in \Vnq ~|~ v \cdot u = 0 \forall u \in C \}$$
+\end{defn}
+
+\begin{lemma}{7.2}
+  $C$ a $[n,k]$-code with GM $G$. Then $v \in \Vnq$ belongs to $C^\perp$ iff $v$ is orthogonal to every row of $G$, ie.
+  $$v \in C^\perp \Longleftrightarrow v \cdot G^T = 0$$
+\end{lemma}
+\begin{proof}
+  let rows of $G$ be $r_1, \ldots, r_k$, suppose $v \cdot r_i = 0 ~\forall i$ (ie. $v$ orthogonal to every row of $G$).
+  
+  If $u \in C$ (ie. a codeword of $C$), then $u = \sum_{i=1}^k \lambdda_i r_i$ for some scalars $\lambda_i$, so that
+  $$v \cdot u = v \cdot \sum_{i=1}^k \lambda_i r_i = \sum_{i=1}^k \lambda_i \cdot \underbrace{(v \cdot r_i)}_{0} = \sum \lambda_i \cdot 0 = 0$$
+
+  $\Longrightarrow~$ hence $v$ is orthogonal to every codeword of $C$, and so is in $C^\perp$.
+\end{proof}
+
+
+\begin{thm}{7.3}
+  $C$ a $[n,k]$-code over $GF(q)$. Then the dual code $C^\perp$ of $C$ is a linear $[n, n-k]$-code.
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item first show that $C^\perp$ is a linear code:\\
+
+      let $v_1,v_2 \in C^\perp$ and $\lambda, \mu \in GF(q)$. Then $\forall u \in C$,
+      \begin{align*}
+        (\lambda v_1 + \mu v_2) \cdot u &= \lambda (v_1 \cdot u) + \mu (v_2 \cdot u)\\
+                                        &\text{notice that $v_1,v_2 \in C^\perp$, so}\\
+                                        &\text{that $v_1,v_2$ are orthogonal with $u$}\\
+                                        &\text{hence $(v_1 \cdot u)$ and $(v_2 \cdot u)$ are $0$}\\
+                                        &= \lambda \cdot 0 + \mu \cdot 0 = 0
+      \end{align*}
+
+      Hence $\lambda \cdot v_1 + \mu \cdot v_2 \in C^\perp$, and so $C^\perp$ is linear, since it is closed under linear combinations.
+      
+    \item Next, show that $C^\perp$ has dimension $n-k$:\\
+
+      Let $G=[g_{ij}]$ be a GM of $C$.
+
+      Then by Lemma 7.2, the elements of $C^\perp$ are the vectors $v = (v_1, v_2, \dots, v_n)$, since $v \in C^\perp \Longleftrightarrow v \cdot G^T=0$, satisfying
+      $$\sum_{j=1}^{m} g_{ij} v_j = 0 ~\forall~ i = [k]$$
+
+      % WIP
+
+  \end{enumerate}
+\end{proof}
+
+
+\begin{ex}{7.1} \label{ex.7.1}
+  (wip)
+\end{ex}
+
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
 
