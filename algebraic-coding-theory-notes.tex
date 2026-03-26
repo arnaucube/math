@@ -62,6 +62,16 @@
 {\renewcommand\theinnerex{#1}\innerex}
 {\endinnerex}
 
+\newtheorem{innerrem}{Remark}
+\newenvironment{remark}[1]
+{\renewcommand\theinnerrem{#1}\innerrem}
+{\endinnerrem}
+
+\newtheorem{innerintu}{Intuition}
+\newenvironment{intuition}[1]
+{\renewcommand\theinnerintu{#1}\innerintu}
+{\endinnerintu}
+
 % custom shortcuts
 \newcommand{\Vnq}{V(n, q)}
 
@@ -326,11 +336,11 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   $$P_{corr}(C) = (1-p)^4 + 3 p(1-p)^3 = (1-p)^3 (1+2p)$$
 \end{eg}
 
-\begin{lemma}{6.9}[Remark 6.9]\label{remark.6.9}
+\begin{remark}{6.9}\label{remark.6.9}
   if $d(C)=2t+1$ or $d(C)=2t+2$, then $C$ can correct any $t$ errors.
 
   Hence every vector of weight $\leq t$ is a coset leader and so $\alpha_i=\left( \stackrel{n}{i} \right)$ for $0 \leq i \leq t$.
-\end{lemma}
+\end{remark}
 
 \begin{defn}{}[Rate]
   $[n, k]$-code $C$ uses $n$ symbols to send $k$ message symbols; it has \emph{rate} $R(C)=k/n$.
@@ -567,6 +577,280 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 
   Hence,
   $$P_{err}(C) = \left( \binom{n}{t+1} - \alpha_{t+1} \right) \cdot p^{t+1}$$
+\end{proof}
+
+
+\vspace{1.0cm}
+
+\section{Dual code, PCM and Syndrome}
+
+\subsection{Dual code}
+
+\begin{defn}{}[Orthogonal]
+  Inner product:
+  $$u \cdot v = u_1 v_1 + \ldots + u_n \cdot v_n = \sum_{i=1}^n u_i v_i$$
+  If $u \cdot v = 0$, then $u$ and $v$ are called \emph{orthogonal}.
+\end{defn}
+
+\begin{lemma}{7.1} \label{7.1}
+  for any $u,v,w \in \Vnq$ and $\lambda, \mu \in GF(q)$,
+  \begin{enumerate}[i.]
+    \item $u \cdot v = v \cdot u$
+    \item $(\lambda u + \mu v) \cdot w = \lambda(u \cdot w) + \mu (v \cdot w)$
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  (at exercise \ref{ex.7.1}).
+\end{proof}
+
+\begin{defn}{}[Dual code]
+  given a linear $[n, k]$-code $C$, the \emph{dual code} of $C$, denoted $C^{\perp}$, is defined to be the set of those vectors of $\Vnq$ which are orthogonal to every codeword of $C$. ie.
+  $$C^{\perp} = \{ v \in \Vnq ~|~ v \cdot u = 0 ~\forall~ u \in C \}$$
+\end{defn}
+
+\begin{lemma}{7.2} \label{7.2}
+  $C$ a $[n,k]$-code with GM $G$. Then $v \in \Vnq$ belongs to $C^\perp$ iff $v$ is orthogonal to every row of $G$, ie.
+  $$v \in C^\perp \Longleftrightarrow v \cdot G^T = 0$$
+\end{lemma}
+\begin{proof}
+  let rows of $G$ be $r_1, \ldots, r_k$, suppose $v \cdot r_i = 0 ~\forall i$ (ie. $v$ orthogonal to every row of $G$).
+  
+  If $u \in C$ (ie. a codeword of $C$), then $u = \sum_{i=1}^k \lambdda_i r_i$ for some scalars $\lambda_i$, so that
+  $$v \cdot u = v \cdot \sum_{i=1}^k \lambda_i r_i = \sum_{i=1}^k \lambda_i \cdot \underbrace{(v \cdot r_i)}_{0} = \sum \lambda_i \cdot 0 = 0$$
+
+  $\Longrightarrow~$ hence $v$ is orthogonal to every codeword of $C$, and so is in $C^\perp$.
+\end{proof}
+
+
+\begin{thm}{7.3}
+  $C$ a $[n,k]$-code over $GF(q)$. Then the dual code $C^\perp$ of $C$ is a linear $[n, n-k]$-code.
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item first show that $C^\perp$ is a linear code:\\
+
+      let $v_1,v_2 \in C^\perp$ and $\lambda, \mu \in GF(q)$. Then $\forall u \in C$,
+      \begin{align*}
+        (\lambda v_1 + \mu v_2) \cdot u &= \lambda (v_1 \cdot u) + \mu (v_2 \cdot u)\\
+                                        &\text{notice that $v_1,v_2 \in C^\perp$, so}\\
+                                        &\text{that $v_1,v_2$ are orthogonal with $u$}\\
+                                        &\text{hence $(v_1 \cdot u)$ and $(v_2 \cdot u)$ are $0$}\\
+                                        &= \lambda \cdot 0 + \mu \cdot 0 = 0
+      \end{align*}
+
+      Hence $\lambda \cdot v_1 + \mu \cdot v_2 \in C^\perp$, and so $C^\perp$ is linear, since it is closed under linear combinations.
+      
+    \item Next, show that $C^\perp$ has dimension $n-k$:\\
+
+      Let $G=[g_{ij}]$ be a GM of $C$.
+
+      Then by Lemma 7.2, the elements of $C^\perp$ are the vectors $v = (v_1, v_2, \dots, v_n)$, since $v \in C^\perp \Longleftrightarrow v \cdot G^T=0$, satisfying
+      $$\sum_{j=1}^{m} g_{ij} v_j = 0, ~\forall~ i = [k]$$
+
+      $\longrightarrow$ this is a system of $k$ independent homogeneous equations in $n$ unknowns, with solution space $C^\perp$. From linear algebra we know that it has dimension $n-k$. To see it:
+
+      if codes $C_1$ and $C_2$ are equivalent, then $C_1^\perp,~ C_2^\perp$ are also equivalent. Hence is enough to show that $\dim(C^\perp) = n-k$, where $C$ is a standard form GM:
+
+$$C = \begin{pmatrix}
+  1 & \ldots & 0 & a_{1,1} & \ldots & a_{1, n-k} \\
+  \vdots & & \vdots & \vdots & & \vdots \\
+  0 & \ldots & 1 & a_{k,1} & \ldots & a_{k, n-k} \\
+\end{pmatrix}$$
+
+Then
+$$C^\perp = \{ (v_1, \ldots, v_n) \in \Vnq ~\big|~ v_i + \sum_{j=1}^{n-k} a_{i,j} v_{k+j} = 0,~ i=1,2,\ldots,k \}$$
+
+For each of the $q^{n-k}$ choices of $(v_{k+1}, \ldots, v_n),~~ \exists!~ (v_1, v_2, \ldots, v_n) \in C^\perp$.
+
+Hence $|C^\perp| = q^{n-k}$, therefore $dim(C^\perp) = n-k$.
+  \end{enumerate}
+\end{proof}
+
+\begin{thm}{7.5} \label{7.5}
+  for any $[n,k]$-code $C$, $(C^\perp)^\perp = C$.
+\end{thm}
+\begin{proof}
+  clearly $C \subseteq (C^\perp)^\perp$, since every vector in $C$ is orthogonal to every vector in $C^\perp$.
+
+  But $dim((C^\perp)^\perp) = n - (n - k ) = k = dim(C)$, therefore $C=(C^\perp)^\perp$.
+\end{proof}
+
+
+\subsection{PCM (parity-check matrix)}
+
+\begin{defn}{}[PCM]
+  A \emph{parity-check matrix} (PCM) $H$ for a $[n,k]$-code $C$ is a generator matrix of $C^\perp$.
+
+  $\Longrightarrow~H$ is a $(n-k) \times n$ matrix satisfying $GH^T=0$.
+\end{defn}
+
+From \ref{7.2} and \ref{7.5},\\
+if $H$ a PCM of $C$, then
+$$C = \{ x \in \Vnq ~|~ xH^T=0 \}$$
+
+$\Longrightarrow$ Any linear code is completely specified by a PCM.
+
+\vspace{0.5cm}
+
+\begin{intuition}{}
+  \begin{enumerate}[i.]
+    \item{PCM:} $G$ specifies how to build a codeword, the PCM $H$ specifies the rules a vector must follow to be considered a valid codeword.
+    \item{dual-code:} orthogonal "shadow", see $C$ as a plane through 3D origin; $C^\perp$ is the (normal vector) line emerging from the plane.
+
+    Rows of the PCM are the basis for the dual-code $C^\perp$ $\Longrightarrow$ ie. the rules that define $C$ are themselves a code.
+  \end{enumerate}
+\end{intuition}
+
+\vspace{0.5cm}
+\begin{thm}{7.6} \label{7.6}
+  if $G= [I_k | A]$ is the standard form generator matrix of an $[n,k]$-code $C$, then a PCM for $C$ is $H=[-A^T ~|~ I_{n-k}]$.
+
+  eg.
+$$G = \begin{bmatrix}
+  1 & \ldots & 0 & a_{1,1} & \ldots & a_{1, n-k} \\
+  \vdots & & \vdots & \vdots & & \vdots \\
+  0 & \ldots & 1 & a_{k,1} & \ldots & a_{k, n-k} \\
+\end{bmatrix}$$
+
+$$H = \begin{bmatrix}
+  -a_{1,1} & \ldots & -a_{1, n-k} & 1 & \ldots & 0 \\
+  \vdots & & \vdots & \vdots & & \vdots \\
+  -a_{k,1} & \ldots & -a_{k, n-k} & 0 & \ldots & 1 \\
+\end{bmatrix}$$
+which, in binary, the minus signs are unnecessary.
+\end{thm}
+
+\begin{defn}{}[Standard form]
+  a PCM that is $H = [B ~|~ I_{n-k}]$
+\end{defn}
+
+\subsection{Syndrome}
+\begin{defn}{}[Syndrome]
+  let $H$ a PCM of a $[n,k]$-code $C$.
+
+  Then $\forall~ y \in \Vnq$, the $1 \times (n-k)$ row vector
+  $$S(y) = y H^T$$
+  is called the \emph{syndrome} of $y$.
+\end{defn}
+
+\begin{remark}{}
+  \begin{enumerate}[i.]
+    \item for $h_1, h_2, \ldots, h_{n-k}$ being rows of $H$, then
+      $$S(y) = (y \cdot h_1, y \cdot h_2, \ldots, y \cdot h_{n-k})$$
+    \item $S(y)=0 \Longleftrightarrow y \in C$
+  \end{enumerate}
+\end{remark}
+
+\begin{intuition}{}
+  Syndrome is the "sympthom" of the error. It ignores the valid part of the message and isolates the noise.
+
+  $$S(y) = y H^T = (c+e)H^T = \underbrace{cH^T}_{0} + eH^T = 0+eH^T = e H^T$$
+
+  Syndrome allows the receiver to identify what went wrong without knowing what was originally sent.
+\end{intuition}
+
+\begin{lemma}{7.8}
+  two vectors $u,v$ are the same ocset of $C$ iff they have the same syndrome.
+\end{lemma}
+\begin{proof}
+  if $u,v$ in the same coset of $C$
+  \begin{align*}
+    &\Longrightarrow u+C = v+C\\
+    &\Longrightarrow u-v \in C\\
+    &\Longrightarrow (u-v)H^T =0\\
+    &\Longrightarrow uH^T =v H^T\\
+    &\Longrightarrow S(u) = S(v)
+  \end{align*}
+\end{proof}
+
+\begin{cor}{7.9}
+  There is a one-to-one ccorrespondence between cosets and syndromes.
+
+  $\longrightarrow$ for small $n$, it's fast to locate the received vector $y$ in the array, but for large $n$: use syndrome to find which coset (ie. which row of the array) contains $y$.
+\end{cor}
+
+\begin{eg}{7.9}
+  (from example \ref{h.6.5})
+  $$G= \begin{bmatrix}
+    1 & 0 & 1 & 1\\
+    0 & 1 & 0 & 1
+  \end{bmatrix}$$
+  by \ref{7.6},
+  $$H= \begin{bmatrix}
+    1 & 0 & 1 & 0\\
+    1 & 1 & 0 & 1
+  \end{bmatrix}$$
+
+  Hence the syndromes of the coset leaders are
+  \begin{align*}
+    S(0000) &= 00\\
+    S(1000) &= 11\\
+    S(0100) &= 01\\
+    S(0010) &= 10\\
+  \end{align*}
+
+  The standard array becomes:
+
+  \begin{matrix}
+    coset leaders & & & & syndromes\\
+    0000 & 1011 & 0101 & 1110 & 00\\
+    1000 & 0011 & 1101 & 0110 & 11\\
+    0100 & 1111 & 0001 & 1010 & 01\\
+    0010 & 1001 & 0111 & 1100 & 10
+  \end{matrix}
+
+  so, decoding algorithm: when a vector $y$ is received, calculate $S(y)=yH^T$, locate $S(y)$ in the \emph{syndromes} column of the array.
+
+  Locate $y$ in the corresponding row and decode as the codeword at the top of the column containing $y$.
+
+
+  $\longrightarrow$ in practice: \emph{syndrome lookup table}:
+  \begin{matrix}
+    \text{syndrome}~ z & \text{coset leader}~ f(z)\\
+    00 & 0000\\
+    11 & 1000\\
+    01 & 0100\\
+    10 & 0010
+  \end{matrix}
+
+  decoding procedure:
+  \begin{enumerate}
+    \item receive $y$, calculate $S(y)=y H^T$
+    \item let $z=S(y)$, locate $z$ in the first column of the looku table
+    \item decode $y$ as $y-f(z)$
+  \end{enumerate}
+\end{eg}
+
+\subsection{Incomplete decoding}
+For $d(C)= 2t +1$ (or $2t+2$), guarantee the correction of $\leq t$ errors in any codewordd and also detect some cases of more than $t$ errors.
+
+$\longrightarrow$ Arrange the cosets in order of increasing weight of the coset leaders.
+
+Divide the array into a top part and a bottom part; top: cosets whose leaders have weights $\leq t$.
+
+\begin{itemize}
+  \item[-] If $y$ in top part: decode as usual (assuming $\leq t$ errors).
+  \item[-] If $y$ in bottom part: conclude that $>t$ errors have occurred, ask for retransmission.
+\end{itemize}
+
+\subsection{Exercises}
+\begin{ex}{7.1} \label{ex.7.1}
+  prove Lemma \ref{7.1}
+\end{ex}
+\begin{proof}
+  For any $u,v,w \in \Vnq$ and $\lambda, \mu \in GF(q)$,
+  \begin{enumerate}[i.]
+    \item $u \cdot v = v \cdot u$\\
+      $$u \cdot v = \sum_{i=1}^n u_i \cdot v_i = \sum_{i=1}^n v_i \cdot u_i = v \cdot u$$
+    \item $(\lambda u + \mu v) \cdot w = \lambda(u \cdot w) + \mu (v \cdot w)$\\
+    \begin{align*}
+      (\lambda u + \mu v) w &= \sum(\lambda u_i + \mu v_i) w_i\\
+                            &= \sum (\lambda u_i w_i + \mu v_i w_i)\\
+                            &= \sum (\lambda u_i w_i) + \sum (\mu v_i w_i)\\
+                            &= \lambda \sum(u_i w_i) + \mu \sum (v_i w_i)\\
+                            &= \lambda \cdot (u \cdot w) + \mu \cdot (v \cdot w)
+    \end{align*}
+  \end{enumerate}
 \end{proof}
 
 \bibliographystyle{unsrt}

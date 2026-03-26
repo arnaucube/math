@@ -1,6 +1,6 @@
 # math/cryptography
 
-Notes, code and documents done while reading books and papers.
+Usually while studying papers and books I take handwritten notes, this section contains some of them re-written to LaTeX. The notes are not complete, don’t include all the steps neither the explanations neither most of the proofs. I use these notes to revisit the concepts after some time of reading the paper.
 
 ## mathematics
 
@@ -28,6 +28,8 @@ In-between math & crypto:
 - [Notes on Spartan](notes_spartan.pdf)
 - [Notes on Nova](notes_nova.pdf)
 - [Notes on HyperNova](notes_hypernova.pdf)
+
+![](https://arnaucube.com/blog/img/notebooks.jpg)
 
 ## code
 Also some Sage implementations can be found in the `*.sage` files of this repo.
