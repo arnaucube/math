@@ -395,7 +395,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   Since it is binary, $q=2$. But $24 \neq 2^k$, so it can not be linear.
 \end{proof}
 
-\begin{ex}{5.2}
+\begin{ex}{5.2} \label{ex.5.2}
   $E_n$ is the code of all even-weight vectors of $V(n,2)$, which is linear.
   What are the parameters $[n, k, d]$ of $E_n$? Write a GM for $E_n$ in standard
   form.
@@ -515,7 +515,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 
   Now, pick a non used vector: $001$, add it to the code $C_2$:
   \begin{align*}
-    001 + C_2_i&\\
+    001 + C_{2_i}&\\
     001 + 000 &= 001\\
     001 + 101 &= 100\\
     001 + 011 &= 010\\
@@ -615,7 +615,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 \begin{proof}
   let rows of $G$ be $r_1, \ldots, r_k$, suppose $v \cdot r_i = 0 ~\forall i$ (ie. $v$ orthogonal to every row of $G$).
   
-  If $u \in C$ (ie. a codeword of $C$), then $u = \sum_{i=1}^k \lambdda_i r_i$ for some scalars $\lambda_i$, so that
+  If $u \in C$ (ie. a codeword of $C$), then $u = \sum_{i=1}^k \lambda_i r_i$ for some scalars $\lambda_i$, so that
   $$v \cdot u = v \cdot \sum_{i=1}^k \lambda_i r_i = \sum_{i=1}^k \lambda_i \cdot \underbrace{(v \cdot r_i)}_{0} = \sum \lambda_i \cdot 0 = 0$$
 
   $\Longrightarrow~$ hence $v$ is orthogonal to every codeword of $C$, and so is in $C^\perp$.
@@ -834,6 +834,7 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
 \end{itemize}
 
 \subsection{Exercises}
+
 \begin{ex}{7.1} \label{ex.7.1}
   prove Lemma \ref{7.1}
 \end{ex}
@@ -852,6 +853,191 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
     \end{align*}
   \end{enumerate}
 \end{proof}
+
+\begin{ex}{7.2}
+  prove that if $E_n$ is the binary even weight code of length $n$, then
+  $E_n^\perp$ is the repetition code of length $n$.
+\end{ex}
+\begin{proof}
+  from exercise \ref{ex.5.2}:
+  $$E_n = \{ x \in V(n,2) ~|~ w(x) ~\text{is even} \} = \{ (x_1, \ldots, x_n) \in F_2^n ~|~ x_1 + \ldots + x_n = 0 \}$$
+
+  GM of $E_n$:
+  $$G = \left[ I_{n-1} \,\middle|\, 
+  \begin{matrix}
+    1 \\ \vdots \\ 1
+  \end{matrix}
+  \right]$$
+
+  thus, by \ref{7.6}, PCM is $H=\begin{bmatrix}1&1&\cdots&1\end{bmatrix}$.
+
+  If $H$ is a PCM for $C$, then the rows of $H$ generate $C^\perp$.
+
+  Therefore
+  $$E_n^\perp = <\underbrace{[1~1~\cdots~1]}_{generator}>$$
+
+  then it's codewords are:
+  \begin{align*}
+    0 \cdot (1, \ldots, 1) &= (0, \ldots, 0)\\
+    1 \cdot (1, \ldots, 1) &= (1, \ldots, 1)
+  \end{align*}
+
+  $$\Longrightarrow~ E_n^\perp = \{00\ldots 00,~ 11 \ldots 1 \}$$
+  ie. the repetition code of length $n$.
+\end{proof}
+
+\begin{ex}{7.4}
+  for a binary linear code with PCM $H$, show that the transpose of the syndrome of a received vector is equal to the sums of those columns of $H$ corresponding to where the errors occurred.
+\end{ex}
+\begin{proof}
+  Let $e$ the error, $y$ the vector received, and $x$ the original codeword. Then $y=x+e$.
+
+  Then
+  $$S(y) = y H^T = (x+e)H^T = \underbrace{xH^T}_{\substack{0, \text{since $H$}\\ \text{is PCM of $C$}\\ \text{and $x\in C$}}} + eH^T = e H^T$$
+
+  So,
+  $$S(y)^T = e^T H = \sum_{j=1}^n e_j \cdot H_j$$
+  where $H_j$ is the $j$-th column of $H$.
+\end{proof}
+
+
+\begin{ex}{7.6}
+
+  Let $C$ be the ternary linear code with GM
+  $$G = \begin{bmatrix}
+    1 & 1 & 1 & 0 \\
+    2 & 0 & 1 & 1
+  \end{bmatrix}$$
+
+  \begin{enumerate}
+    \item[(a)] Find a generator matrix in standard form.
+    \item[(b)] Find a parity check matrix (PCM) for $C$ in standard form.
+    \item[(c)] Use syndrome decoding to decode the received vectors:
+      $2122, 1201, 2222$
+  \end{enumerate}
+\end{ex}
+\begin{proof}
+  \begin{enumerate}[(a)]
+    \item
+      $$
+      \begin{bmatrix}
+        1 & 1 & 1 & 0 \\
+        2 & 0 & 1 & 1
+      \end{bmatrix}
+      \rightarrow
+      \begin{bmatrix}
+        1 & 1 & 1 & 0 \\
+        0 & 1 & 2 & 1
+      \end{bmatrix}
+      \rightarrow
+      \begin{bmatrix}
+        1 & 0 & 2 & 2 \\
+        0 & 1 & 2 & 1
+      \end{bmatrix}
+      $$
+      thus $
+      G=\begin{bmatrix}
+        1 & 0 & 2 & 2 \\
+        0 & 1 & 2 & 1
+      \end{bmatrix}
+      $ is PCM in standard form.
+
+    \item
+      since $
+      G=\begin{bmatrix}
+        1 & 0 & 2 & 2 \\
+        0 & 1 & 2 & 1
+      \end{bmatrix}
+      $
+      then
+      $$
+      H =
+      \begin{bmatrix}
+        -2 & -2 & 1 & 0 \\
+        -2 & -1 & 0 & 1
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+        1 & 1 & 1 & 0 \\
+        1 & 2 & 0 & 1
+      \end{bmatrix}
+      $$
+
+    \item
+      $$
+      S(y) = y H^T=S(y) = (y \cdot h_1,\; y \cdot h_2).
+      $$
+      w/ $h_i$ the rows of $H$.
+
+      compute the lookup table (syndrome table):
+      $$
+      \begin{array}{c|c}
+        e & S(e) \\
+        \hline
+        0000 & 00 \\
+        1000 & 11 \\
+        2000 & 22 \\
+        0100 & 12 \\
+        0200 & 21 \\
+        0010 & 10 \\
+        0020 & 20 \\
+        0001 & 01 \\
+        0002 & 02
+      \end{array}
+      $$
+      left: weight-$1$ errors, since we're over $F_3$; right: coset leaders for the 9 cosets.
+
+      \begin{enumerate}[i.]
+        \item $y = 2121$:\\
+          $$
+          S(y) =
+          \begin{bmatrix}
+            2 & 1 & 2 & 1
+          \end{bmatrix}
+          \begin{bmatrix}
+            1 & 1 \\
+            1 & 2 \\
+            1 & 0 \\
+            0 & 1
+          \end{bmatrix}
+          =
+          [5,5] \equiv [2,2].
+          $$
+
+          $S(y)=[2,2]$, corresponds (in the table) to $e = 2000$.
+
+          $$\Longrightarrow~ c = y - e = 2121 - 2000 = 0121$$
+
+        \item $y = 1201$\\
+          $$
+          S(y) =
+          \begin{bmatrix}
+            1 & 2 & 0 & 1
+          \end{bmatrix}
+          H^T
+          = [3, 6] = [0,0].
+          $$
+
+          corresponds to $e = 0000$
+          $$\Longrightarrow~ c = y-e = 1201$$
+
+        \item $y = 2222$\\
+          $$
+          S(y) =
+          \begin{bmatrix}
+            2 & 2 & 2 & 2
+          \end{bmatrix}
+          H^T
+          = [6,8] = [0,2].
+          $$
+
+          corresponds to $e = 0002$
+
+          $$\Longrightarrow~ c = y - e = 2222 - 0002 = 2220$$
+      \end{enumerate}
+  \end{enumerate}
+\end{proof}
+
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
