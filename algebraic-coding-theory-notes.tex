@@ -137,6 +137,7 @@ are precisely the distinct vectors of $C$.
 \end{enumerate}
 \end{proof}
 
+\vspace{1.0cm}
 
 \section{Linear codes}
 The theorems of this section are from \cite{hill} and follow the original enumeration of the book.
@@ -791,6 +792,7 @@ which, in binary, the minus signs are unnecessary.
 
   The standard array becomes:
 
+  $$
   \begin{matrix}
     coset leaders & & & & syndromes\\
     0000 & 1011 & 0101 & 1110 & 00\\
@@ -798,6 +800,7 @@ which, in binary, the minus signs are unnecessary.
     0100 & 1111 & 0001 & 1010 & 01\\
     0010 & 1001 & 0111 & 1100 & 10
   \end{matrix}
+  $$
 
   so, decoding algorithm: when a vector $y$ is received, calculate $S(y)=yH^T$, locate $S(y)$ in the \emph{syndromes} column of the array.
 
@@ -805,6 +808,7 @@ which, in binary, the minus signs are unnecessary.
 
 
   $\longrightarrow$ in practice: \emph{syndrome lookup table}:
+  $$
   \begin{matrix}
     \text{syndrome}~ z & \text{coset leader}~ f(z)\\
     00 & 0000\\
@@ -812,6 +816,7 @@ which, in binary, the minus signs are unnecessary.
     01 & 0100\\
     10 & 0010
   \end{matrix}
+  $$
 
   decoding procedure:
   \begin{enumerate}
@@ -1038,6 +1043,134 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
   \end{enumerate}
 \end{proof}
 
+
+\vspace{1.0cm}
+
+\section{Hamming Codes}
+
+\begin{defn}{}[Binary Hamming Code]
+  let $r$ a positive integer, $H$ a $r \times (2^r -1)$ matrix whose columns are the distinct non-zero vectors of $V(r, 2)$.
+
+  The code having $H$ as its PCM is called a \emph{binary Hamming code}, denoted $Ham(r,2)$.
+\end{defn}
+
+
+\begin{remark}{}
+  $Ham(r, 2)$ has length $n=2^r-1$ and dimension $k = n-r$.
+
+  Redundancy of the code: $r=n-k$, the number of check symbols in each codeword.
+\end{remark}
+
+
+\begin{ex}{8.1}  
+  \begin{enumerate}[i.]
+    \item $r = 2$: $H = \begin{bmatrix}1 & 1 & 0\\ 1 & 0 & 1 \end{bmatrix}$
+
+      by Theorem \ref{7.6}, $G = [1\ 1\ \underbrace{1}_{I}]$
+
+      so $Ham(2, 2)$ is just the binary triple repetition code.  
+
+    \item $r = 3$: a PCM for $Ham(3, 2)$ is  
+      $$H =
+      \begin{bmatrix}
+        0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+        1 & 0 & 1 & 0 & 1 & 0 & 1
+      \end{bmatrix}$$
+
+      (have taken columns in the natural order of increasing binary numbers from 1 to 7)
+
+      $H$ in standard form: rearrange columns:
+      $$H =
+      \begin{bmatrix}
+        0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+        1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+        1 & 1 & 0 & 1 & 0 & 0 & 1
+      \end{bmatrix}$$
+
+      by Theorem \ref{7.6}, a generator matrix for $Ham(3, 2)$ is  
+      $$
+      G =
+      \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+        0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+        0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 1 & 1
+      \end{bmatrix}
+      $$
+  \end{enumerate}
+\end{ex}
+
+
+\begin{thm}{8.2}
+  the binary Hamming code $Ham(r,2)$, for $r \geq 2$,
+  \begin{enumerate}
+    \item is a $[2^r -1, 2^r-1-r]$-codde
+    \item has minimum distance $3$ (hence is single-error-correcting)
+    \item is a \emph{perfect code}
+  \end{enumerate}
+\end{thm}
+
+\vspace{0.5cm}
+
+\begin{lemma}{}[Decoding with a binary Hamming code]
+$Ham(r,2)$ is a perfect single-error-correcting code $\Longrightarrow$ the coset leader are precisely the $2^r ~~(=n+1)$ vectors of $V(n, 2)$ of weight $\leq 1$.
+
+Let $j$-th column of H be the binary representation of $j$. Decoding algorithm:
+\begin{enumerate}
+  \item receive vector $y$, calculate its syndrome: $S(y)=yH^T$
+  \item if $S(y)=0$, assume $y=c$ (original sent codeword)
+  \item if $S(y) \neq 0$, assuming a single error, $S(y)$ gives the binary representation of the error position, and the error can be corrected.
+\end{enumerate}
+\end{lemma}
+
+
+\begin{eg}{}
+$H =
+\begin{bmatrix}
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+1 & 0 & 1 & 0 & 1 & 0 & 1
+\end{bmatrix}$,
+if $y = 1101011$ then 
+
+$$S(y) = y \cdot H^T = 110$$
+
+$\Longrightarrow~6$-th position, and so we decode $y$ as $1101001$
+\end{eg}
+
+\subsection{Extended binary Hamming codes}
+$\hat{Ham}(r,2)$, obtained from $Ham(r,2)$ by adding an overall parity-check.
+
+Not ideal for complete decoding, but good for incomplete decoding (correct any single error and detect any double error).
+
+\vspace{1.0cm}
+
+Let $H$ be a PCM for $Ham(r,2)$. A PCM $\hat{H}$ for $\hat{Ham}(r,2)$:
+$$\hat{H}=
+\begin{bmatrix}
+   &   & & 0 \\
+   & H & & \vdots\\
+   &   & & 0 \\
+  1 & \cdots & 1 & 1
+\end{bmatrix}
+$$
+
+If $H$ is taken with columns in increasing order of binary numbers, we have a neat incomplete decoding algorithm:
+\begin{eg}{8.3}
+  $r=3,~ \hat{Ham}(3,2)$. Received $y$, $S(y)=y \hat{H}^T = (s_1, s_2, s_3, s_4)$
+  \begin{enumerate}[i.]
+    \item if $s_4=0$ and $(s_1,s_2,s_3)=0$: assume no errors
+    \item if $s_4=0$ and $(s_1,s_2,s_3) \neq 0$: assume $\geq 2$ errors and ask retransmission
+    \item if $s_4=1$ and $(s_1,s_2,s_3)=0$: assume $1$ error in the last position
+    \item if $s_4=1$ and $(s_1,s_2,s_3) \neq 0$: assume $1$ error in the $j$-th position, where $j$ is the number binary-represented by $(s_1,s_2,s_3)$
+  \end{enumerate}
+\end{eg}
+
+\vspace{1.0cm}
+
+\begin{thm}{8.4}
+\end{thm}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
