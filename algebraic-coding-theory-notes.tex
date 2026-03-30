@@ -171,7 +171,7 @@ If $C$ is a $k$-dimensional subspace of $\Vnq$, then the linear code $C$ is call
   the vector $x-y$ has non-zero entries in preceisely those places where $x$ and $y$ differ.
 \end{proof}
 
-\begin{thm}{5.2}
+\begin{thm}{5.2} \label{5.2}
   let $C$ a linear code, let $w(C)$ be the smallest of weights of the non-zero codewords of $C$. Then $d(C)=w(C)$.
 \end{thm}
 \begin{proof}
@@ -1170,7 +1170,27 @@ If $H$ is taken with columns in increasing order of binary numbers, we have a ne
 \vspace{1.0cm}
 
 \begin{thm}{8.4}
+  suppose $C$ a linear $[n,k]$-code over $GF(q)$ with PCM $H$. Minimum distance of $C$ is $d$ iff any $d-1$ columns of $H$ are linearly independent but some $d$ columns are linearly dependent.
 \end{thm}
+\begin{proof}
+  by \ref{5.2}, min. distance of $C$ (ie. $d(C)$) = smallest of the weights of the non-zero codewords.
+
+  Let $x=x_1 x_2 \ldots x_n \in \Vnq$, then
+  \begin{align*}
+    x \in C &\Longleftrightarrow xH^T=0\\
+            &\Longleftrightarrow x_1 H_1 + x_2 H_2 + \ldots + x_n H_n = 0
+  \end{align*}
+  where $H_i$ denote the columns of $H$.
+
+  $\Longrightarrow$ each codeeword $x$ of weight $d$ corresponds with a set of $d$ linearly dependent columns of $H$.
+
+  On the other hand, if $\exists$ a set of $d-1$ lin.dependent columns of $H$, say $H_{i_1}, H_{i_2}, \ldots, H_{i_{d-1}}$, then $\exists~ x_{i_1}, \ldots, x_{i_{d-1}}$ scalars, not all zero, such that
+  $$x_{i_1} H_{i_1} + x_{i_2} H_{i_2} + \ldots + x_{i_{d-1}} H_{i_{d-1}}= 0$$
+
+  But then, the vector
+  $$x = (0 \ldots 0 x_{i_1} 0 \ldots x_{i_2} 0 \ldots 0 x_{i_{d-1}} 0 \ldots 0)$$
+  having $x_{i_j}$ in the $j$-th position for $j \in [d-1]$, would satisfy $x H^T=0$, and so would be a non-zero codeword of weight $<d$.
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
