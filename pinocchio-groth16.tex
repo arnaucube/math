@@ -65,6 +65,10 @@
 % what we want to prove, how it connects with R1CS & QAP
 
 
+\section{Notation}
+
+Let $g \in \mathbb{G}$ be the generator of the group $\mathbb{G}$, ie. $\mathbb{G}=<g>$, then denote with $[a]$ by $g^a \in \mathbb{G}$.
+
 \section{R1CS}
 % TODO Add R_{R1CS} relation definition.
 
@@ -197,9 +201,9 @@ In our case, \emph{Lagrange interpolation} is used to go from the \emph{R1CS} po
 
 $$
 \begin{aligned}
-    a(X) = (\alpha_1(X)w_1 + \alpha_2(X)w_2 + ... + \alpha_n(X)w_n) = \sum_{i=1}^n \alpha_i(X) w_i\\
-    b(X) = (\beta_1(X)w_1 + \beta_2(X)w_2 + ... + \beta_n(X)w_n) = \sum_{i=1}^n \beta_i(X) w_i\\
-    c(X) = (\gamma_1(X)w_1 + \gamma_2(X)w_2 + ... + \gamma_n(X)w_n) = \sum_{i=1}^n \gamma_i(X) w_i
+    a(X) = (a_1(X)w_1 + a_2(X)w_2 + ... + a_n(X)w_n) = \sum_{i=1}^n a_i(X) w_i\\
+    b(X) = (b_1(X)w_1 + b_2(X)w_2 + ... + b_n(X)w_n) = \sum_{i=1}^n b_i(X) w_i\\
+    c(X) = (c_1(X)w_1 + c_2(X)w_2 + ... + c_n(X)w_n) = \sum_{i=1}^n c_i(X) w_i
 \end{aligned}
 $$
 
@@ -211,15 +215,14 @@ $$p(X) = a(X) \cdot b(X) - c(X) = 0$$
 that is,
 $$
 \begin{aligned}
-p(X) = (\alpha_1(X)w_1 + \alpha_2(X)w_2 + ... + \alpha_n(X)w_n)
-\\ \cdot (\beta_1(X)w_1 + \beta_2(X)w_2 + ... + \beta_n(X)w_n)
-\\ - (\gamma_1(X)w_1 + \gamma_2(X)w_2 + ... + \gamma_n(X)w_n)
-\\
-= (\sum_{i=1}^n \alpha_i(X) w_i) \cdot (\sum_{i=1}^n \beta_i(X) w_i) - (\sum_{i=1}^n \gamma_i(X) w_i)
+    p(X) = &(a_1(X)w_1 + a_2(X)w_2 + ... + a_n(X)w_n)\\
+	 &\cdot (b_1(X)w_1 + b_2(X)w_2 + ... + b_n(X)w_n)\\
+	 &- (c_1(X)w_1 + c_2(X)w_2 + ... + c_n(X)w_n)\\
+    = &(\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i) - (\sum_{i=1}^n c_i(X) w_i) = 0
 \end{aligned}
 $$
 
-The main idea, is that $p(X)$ defines the constraints of our circuit, so that for a valid witness evaluated at $p(X)$, it will be equal to zero.
+The main idea, is that $p(X)$ defines the constraints of our circuit, so that when evaluating $p(X)$ at the challenge, it will be equal to zero.
 
 
 \vspace{0.5cm}
@@ -228,7 +231,7 @@ The main idea, is that $p(X)$ defines the constraints of our circuit, so that fo
 
 Want to ensure that
 $$
-(\sum_{i=1}^n \alpha_i(X) w_i) \cdot (\sum_{i=1}^n \beta_i(X) w_i) - (\sum_{i=1}^n \gamma_i(X) w_i) = 0
+(\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i) - (\sum_{i=1}^n c_i(X) w_i) = 0
 $$
 
 for a given witness $(w_1, \ldots, w_n) \in \mathbb{F}^n$, which we divide between public inputs and private inputs:
@@ -240,33 +243,35 @@ for a given witness $(w_1, \ldots, w_n) \in \mathbb{F}^n$, which we divide betwe
 We denote the relation
 
 $$
-R =
+R_{QAP} =
 \left\{
 \begin{aligned}
 (\phi, w) \ \big| \;&
 \phi = (w_1, \ldots, w_l) \in \mathbb{F}^l,\\
 & w = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l},\\
-& (\sum_{i=1}^n \alpha_i(X) w_i) \cdot (\sum_{i=1}^n \beta_i(X) w_i)
+& (\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i)
 \equiv
-\sum_{i=1}^{n} \gamma_i(X) w_i 
+\sum_{i=1}^{n} c_i(X) w_i 
 ~\bmod Z(X)
 \end{aligned}
 \right.
 $$
 
+where $Z(X)$ is the "zero polynomial" or "vanishing polynomial".
+
 Set
-$$a(X) = \sum_{i=1}^n \alpha_i(X) w_i,~~~~ b(X) = \sum_{i=1}^n \beta_i(X) w_i),~~~~ c(X) = \sum_{i=1}^{n} \gamma_i(X) w_i$$
+$$a(X) = \sum_{i=1}^n a_i(X) w_i,~~~~ b(X) = \sum_{i=1}^n b_i(X) w_i),~~~~ c(X) = \sum_{i=1}^{n} c_i(X) w_i$$
 
 so that
 $$a(X) \cdot b(X) \equiv c(X) \bmod Z(X)$$
 
 which means that we can prove that
 $$\exists~ h(X) \in \mathbb{F}[X]^{<d}~~ \text{s.th.}~
-a(X) \cdot b(X) - c(X) = h(X) \cdot X(X)$$
+a(X) \cdot b(X) - c(X) = h(X) \cdot Z(X)$$
 
 
 \section{Simplified protocol}
-Protocol to prove $a(X)b(X)-c(X)=0$.
+Protocol to prove $a(X)b(X)-c(X)=0$ in order to provide intuition on what we're trying to do.
 
 \paragraph{Setup.}
 The protocol requires a secret random value, which it is encrypted over the elliptic curve group. That is, for given $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$ generators of curves $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively, set $[\tau]_1 = g_1^\tau$ and $[\tau]_2 =g_2^\tau$.
@@ -423,9 +428,6 @@ Now, we're interested into how we can check these relations in the context of th
     With this check, we're ensuring that each power of tau of the SRS is consistent with the previous one.
 \end{enumerate}
 
-
-% TODO
-% - uniformize x & X at polynomials notation (currently using p(x) and p(X), uniformize it)
 
 
 \bibliographystyle{unsrt}
