@@ -48,7 +48,7 @@
 \maketitle
 
 \begin{abstract}
-    Notes taken while studying the schemes Pinocchio (\cite{2013/279}) and Groth16 (\cite{2016/260}).
+    Notes taken while studying the schemes Pinocchio (\cite{cryptoeprint:2013/279}) and Groth16 (\cite{cryptoeprint:2016/260}).
 
     Usually while reading books and papers I take handwritten notes in a notebook, this document contains some of them re-written to $LaTeX$.
 
@@ -263,6 +263,74 @@ $$a(X) \cdot b(X) \equiv c(X) \bmod Z(X)$$
 which means that we can prove that
 $$\exists~ h(X) \in \mathbb{F}[X]^{<d}~~ \text{s.th.}~
 a(X) \cdot b(X) - c(X) = h(X) \cdot X(X)$$
+
+
+\section{Simplified protocol}
+Protocol to prove $a(X)b(X)-c(X)=0$.
+
+\paragraph{Setup.}
+The protocol requires a secret random value, which it is encrypted over the elliptic curve group. That is, for given $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$ generators of curves $\mathbb{G}_1$ and $\mathbb{G}_2$ respectively, set $[\tau]_1 = g_1^\tau$ and $[\tau]_2 =g_2^\tau$.
+
+$$\{ [\tau^i]_1 \}_0^n = ( [\tau^0]_1, [\tau^1]_1, [\tau^2]_1, \ldots, [\tau^{n-1}]_1)$$
+$$\{ [\tau^i]_2 \}_0^n = ( [\tau^0]_2, [\tau^1]_2, [\tau^2]_2, \ldots, [\tau^{n-1}]_2)$$
+
+\paragraph{Prover.}
+\begin{enumerate}[i.]
+    \item commit to $a(X), b(X), c(X) \in \mathbb{F}[X]$
+
+	$$cm(a) = [a(\tau)]_1 = \sum_{i=0}^{\delta a} a_i \cdot [\tau^i]_1 \in \mathbb{G}_1$$
+
+	notice that it is equal to $\sum a_i \cdot g_1^{\tau^i}$ without knowing $\tau$.
+	
+	Same is done for $b(X)$ and $c(X)$:
+	$$cm(b) = [b(\tau)]_2 = \sum_{i=0}^{\delta b} b_i \cdot [\tau^i]_2 \in \mathbb{G}_2$$
+	$$cm(c) = [c(\tau)]_1 = \sum_{i=0}^{\delta c} c_i \cdot [\tau^i]_1 \in \mathbb{G}_1$$
+
+
+	For a challenge $z \in^R \mathbb{F}$, set by the verifier, open the commitments:
+
+	$$q_a(X) = \frac{a(X) - a(z)}{X-z}$$
+
+	Since $a(X)-\underbrace{a(z)}_{=y}$ should be zero at $X-z$, so $a(X) - a(z)$ has a root at $z$, hence it is divisible by $(X-z)$, therefore,
+	$$\exists ~q_a(X) ~~\text{such that}~ a(X)-a(z) = (X-z) \cdot q_a(X)$$
+	therefore
+	$$q_a(X) = \frac{a(X)-a(z)}{X-z}$$
+
+	Same is done for $b(X)$ and $c(X)$,
+	$$q_b(X) = \frac{b(X)-b(z)}{X-z}$$
+	$$q_c(X) = \frac{c(X)-c(z)}{X-z}$$
+
+	And then, evaluate them at the encrypted $\tau$:
+	$$[q_a(\tau)]_1 = \sum_{i=0}^{\delta q_a} q_{a_i} \cdot [\tau^i]_1 \in \mathbb{G}_1$$
+	similarly for $[q_b(\tau)]_2 \in \mathbb{G}_2$ and $[q_c(\tau)]_1 \in \mathbb{G}_1$.
+
+    \item for the relation that we want to prove, $a(X) \cdot b(X) - c(X)=0$,
+	$$\exists~ q(X) \in \mathbb{F}[X] ~~\text{s.th.}~~ a(X)b(X)-c(X)=q(X) \cdot z(X)$$
+	So the prover computes
+	$$q(X) = \frac{a(X) \cdot b(X) - c(X)}{z(X)}$$
+	and it's encrypted evaluation
+	$$[q(\tau)]_1 = \sum_{i=0}^{\delta q} q_i \cdot [\tau^i]_1 \in \mathbb{G}_1$$
+\end{enumerate}
+
+\paragraph{Verifier.}
+\begin{enumerate}[i.]
+    \item verify the commitments:\\
+	The prover has sent the commitments $[a(\tau)]_1,~ [b(\tau)]_2,~ [c(\tau)]_1$, and their respective evaluations at the challenge $z \in \mathbb{F}$: $a(z), b(z), c(z) \in \mathbb{F}$; together with their respective opening proofs: $[q_a(\tau)]_1, [q_b(\tau)]_2, [q_c(\tau)]_1$
+
+	For each commitment, the verifier checks:
+	$$e([q_a(\tau)]_1, [\tau]_2 - [z]_2) \stackrel{?}{=} e([a(\tau)]_1 - [a(z)]_1, [1]_2)$$
+	which is a way of checking the existence of $q_a(X)$ such that $q_a(X) \cdot (X-z) = a(X) - a(z)$.
+
+	If the checks passes, it means that $q_a \in \mathbb{F}[X]$ exists, and thus $a(X) - a(z)$ is divisible ("vanishes") at $(X-z)$, hence $a(X) - a(z)$ has a root at $z$.
+
+	Same is done for $b(X)$ and $c(X)$ commitments:
+	$$e([\tau]_1 - [z]_2, [q_b(\tau)]_1) \stackrel{?}{=} e([1]_1, [b(\tau)]_1 - [b(z)]_1)$$
+	$$e([q_c(\tau)]_1, [\tau]_2 - [z]_2) \stackrel{?}{=} e([c(\tau)]_1 - [c(z)]_1, [1]_2)$$
+
+    \item check the $a(X) \cdot b(X) - c(X) = 0$ relation:
+	$$e([a(\tau)]_1, [b(\tau)]_2) \stackrel{?}{=} e([q(\tau)]_1, [z(\tau)]_2) \cdot e([c(s)]_1, [1]_2)$$
+	which ensures that $\exists~ q(X) \in \mathbb{F}[X] ~\text{s.th.}~ a(X) b(X) - c(X) = q(X) z(X)$.
+\end{enumerate}
 
 
 \vspace{1cm}
