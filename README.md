@@ -19,6 +19,7 @@ In-between math & crypto:
 
 ## cryptography
 
+- [Notes on Pinocchio and Groth16](pinocchio-gtoth16.pdf)
 - [Notes on Caulk & Caulk+ papers](notes_caulk.pdf)
 - [Notes on the BLS signatures](notes_bls-sig.pdf)
 - [Notes on IPA from Halo paper](notes_halo.pdf)
