@@ -1105,7 +1105,7 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
 \begin{thm}{8.2}
   the binary Hamming code $Ham(r,2)$, for $r \geq 2$,
   \begin{enumerate}
-    \item is a $[2^r -1, 2^r-1-r]$-codde
+    \item is a $[2^r -1, 2^r-1-r]$-code
     \item has minimum distance $3$ (hence is single-error-correcting)
     \item is a \emph{perfect code}
   \end{enumerate}
@@ -1169,7 +1169,7 @@ If $H$ is taken with columns in increasing order of binary numbers, we have a ne
 
 \vspace{1.0cm}
 
-\begin{thm}{8.4}
+\begin{thm}{8.4} \label{8.4}
   suppose $C$ a linear $[n,k]$-code over $GF(q)$ with PCM $H$. Minimum distance of $C$ is $d$ iff any $d-1$ columns of $H$ are linearly independent but some $d$ columns are linearly dependent.
 \end{thm}
 \begin{proof}
@@ -1191,6 +1191,72 @@ If $H$ is taken with columns in increasing order of binary numbers, we have a ne
   $$x = (0 \ldots 0 x_{i_1} 0 \ldots x_{i_2} 0 \ldots 0 x_{i_{d-1}} 0 \ldots 0)$$
   having $x_{i_j}$ in the $j$-th position for $j \in [d-1]$, would satisfy $x H^T=0$, and so would be a non-zero codeword of weight $<d$.
 \end{proof}
+
+\subsection{q-ary Hamming codes}
+For $C$ a inear code with $d(C)=3$ (min.dist), any $2$ columns of a PCM $H$ must be linearly independent
+
+$\Longrightarrow$ columns of $H$ must be non-zero, and no column can be a scalar multiple of another
+
+Any $0 \neq v \in V(r,q)$ vector has $q-1$ non-zero scalar multiples, forming the set
+$$\{ \lambda v ~|~ \lambda \in GF(q), \lambda \neq 0 \}$$
+
+$\longrightarrow$ the $q^r -1$ non-zero vectors of $V(r,q)$ may be partitioned into $\frac{q^r-1}{q-1}$ such sets, called \emph{classes}.
+
+$\longrightarrow$ two vectors are scalar multiples of each other if they are in the same class
+
+By choosing one vector from each class, obtain a set of $\frac{q^r-1}{q-1}$ vectors, where not two are linearly dependent.\\
+\hspace*{2em} By Theorem \ref{8.4}, taking these as columns of $h$ gives a PCM for a
+$$\left[\frac{q^r-1}{q-1}, \frac{q^r-1}{(q-1)-r}, 3 \right] \text{-code}$$
+
+\hspace*{2em} $\Longrightarrow$ called \emph{q-ary Hamming code}, $Ham(r, q)$.
+
+$\longrightarrow$ PCM is unique up to permutation of columns\\
+\hspace*{2em}$\Longrightarrow$ Hamming codes are linear codes
+
+
+\vspace{0.5cm}
+
+\begin{thm}{8.6}
+  $Ham(r, q)$ is a perfect single-error-correcting code.
+\end{thm}
+\begin{proof}
+  $Ham(r, q)$ is constructed to be a $(n, M, 3)$-code, with $n=\frac{q^r-1}{q-1}$ and $M=q^{n-r}$.
+
+  With $t=1$, the LHS of the sphere-packing bound becomes
+  $$q^{n-r} \cdot (1 + n(q-1)) = q^{n-r} \cdot (1 + q^r -1) = q^n$$
+  which is the RHS, so $Ham(r, q)$ is a perfect code.
+\end{proof}
+
+\paragraph{Decoding q-ary Hamming code}
+Since Ham is perfect single-error correcting code, the coset leaders, other than $0$, are the vectors of weight $1$.
+
+Syndrome of such coset leader:
+$$S(0 \ldots 0 ~b~ 0 \ldots 0) = (0 \ldots 0 ~b~ 0 \ldots 0) \cdot H^T = b \cdot H_j^T$$
+where $H_j$ is the $j$-th column of $H$, and $b$ is at the $j$-th position of $y$.
+
+Decode:
+\begin{itemize}
+  \item[-] given received $y$, calculate $S(y)=y H^T$
+  \item[-] if $S(y)=0$, assume no errors
+  \item[-] if $S(y)\neq 0$, then $S(y) = b \cdot H_j^T$ for some $b$ and $j$\\
+    correct by: subtract $b$ from the $j$-th entry of $y$.
+\end{itemize}
+
+Example:\\
+$$q=5,~ H= \begin{bmatrix}0 & 1 & 1 & 1 & 1 & 1\\ 1 & 0 & 1 & 2 & 3 & 4 \end{bmatrix},~ y=203031$$
+
+Then,
+\begin{align*}
+  S(y) = y \cdot H^T &= 2 \cdot H_1^T + 3 \cdot H_3^T + 3 \cdot H_5^T + 1 \cdot H_6^T\\
+                     &= 2 \cdot [0~1] + 3 \cdot [1~1] + 3 \cdot [1~3] + 1 \cdot [1~4]\\
+                     &= [0~2] + [3~3] + [3~9] + [1~4]\\
+                     &= [7~8] = [2~3] = \underbrace{2}_{b} \cdot \underbrace{[1~4]}_{H_6^T} \pmod{5}
+\end{align*}
+
+$\Longrightarrow$ error is in position $6$-th, with magnitude $b=2$\\
+\hspace*{2em} $\Longrightarrow$ subtract $b$ from the $j$-th entry of $y$: $1-2 \pmod{5} = -1 \pmod{5} = 4$,\\
+\hspace*{2em} therefore $y'=203034$.
+
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
