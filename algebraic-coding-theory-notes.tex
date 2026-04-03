@@ -137,6 +137,7 @@ are precisely the distinct vectors of $C$.
 \end{enumerate}
 \end{proof}
 
+\vspace{1.0cm}
 
 \section{Linear codes}
 The theorems of this section are from \cite{hill} and follow the original enumeration of the book.
@@ -170,7 +171,7 @@ If $C$ is a $k$-dimensional subspace of $\Vnq$, then the linear code $C$ is call
   the vector $x-y$ has non-zero entries in preceisely those places where $x$ and $y$ differ.
 \end{proof}
 
-\begin{thm}{5.2}
+\begin{thm}{5.2} \label{5.2}
   let $C$ a linear code, let $w(C)$ be the smallest of weights of the non-zero codewords of $C$. Then $d(C)=w(C)$.
 \end{thm}
 \begin{proof}
@@ -791,6 +792,7 @@ which, in binary, the minus signs are unnecessary.
 
   The standard array becomes:
 
+  $$
   \begin{matrix}
     coset leaders & & & & syndromes\\
     0000 & 1011 & 0101 & 1110 & 00\\
@@ -798,6 +800,7 @@ which, in binary, the minus signs are unnecessary.
     0100 & 1111 & 0001 & 1010 & 01\\
     0010 & 1001 & 0111 & 1100 & 10
   \end{matrix}
+  $$
 
   so, decoding algorithm: when a vector $y$ is received, calculate $S(y)=yH^T$, locate $S(y)$ in the \emph{syndromes} column of the array.
 
@@ -805,6 +808,7 @@ which, in binary, the minus signs are unnecessary.
 
 
   $\longrightarrow$ in practice: \emph{syndrome lookup table}:
+  $$
   \begin{matrix}
     \text{syndrome}~ z & \text{coset leader}~ f(z)\\
     00 & 0000\\
@@ -812,6 +816,7 @@ which, in binary, the minus signs are unnecessary.
     01 & 0100\\
     10 & 0010
   \end{matrix}
+  $$
 
   decoding procedure:
   \begin{enumerate}
@@ -1037,6 +1042,220 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
       \end{enumerate}
   \end{enumerate}
 \end{proof}
+
+
+\vspace{1.0cm}
+
+\section{Hamming Codes}
+
+\begin{defn}{}[Binary Hamming Code]
+  let $r$ a positive integer, $H$ a $r \times (2^r -1)$ matrix whose columns are the distinct non-zero vectors of $V(r, 2)$.
+
+  The code having $H$ as its PCM is called a \emph{binary Hamming code}, denoted $Ham(r,2)$.
+\end{defn}
+
+
+\begin{remark}{}
+  $Ham(r, 2)$ has length $n=2^r-1$ and dimension $k = n-r$.
+
+  Redundancy of the code: $r=n-k$, the number of check symbols in each codeword.
+\end{remark}
+
+
+\begin{ex}{8.1}  
+  \begin{enumerate}[i.]
+    \item $r = 2$: $H = \begin{bmatrix}1 & 1 & 0\\ 1 & 0 & 1 \end{bmatrix}$
+
+      by Theorem \ref{7.6}, $G = [1\ 1\ \underbrace{1}_{I}]$
+
+      so $Ham(2, 2)$ is just the binary triple repetition code.  
+
+    \item $r = 3$: a PCM for $Ham(3, 2)$ is  
+      $$H =
+      \begin{bmatrix}
+        0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+        0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+        1 & 0 & 1 & 0 & 1 & 0 & 1
+      \end{bmatrix}$$
+
+      (have taken columns in the natural order of increasing binary numbers from 1 to 7)
+
+      $H$ in standard form: rearrange columns:
+      $$H =
+      \begin{bmatrix}
+        0 & 1 & 1 & 1 & 1 & 0 & 0 \\
+        1 & 0 & 1 & 1 & 0 & 1 & 0 \\
+        1 & 1 & 0 & 1 & 0 & 0 & 1
+      \end{bmatrix}$$
+
+      by Theorem \ref{7.6}, a generator matrix for $Ham(3, 2)$ is  
+      $$
+      G =
+      \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+        0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+        0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 1 & 1
+      \end{bmatrix}
+      $$
+  \end{enumerate}
+\end{ex}
+
+
+\begin{thm}{8.2}
+  the binary Hamming code $Ham(r,2)$, for $r \geq 2$,
+  \begin{enumerate}
+    \item is a $[2^r -1, 2^r-1-r]$-code
+    \item has minimum distance $3$ (hence is single-error-correcting)
+    \item is a \emph{perfect code}
+  \end{enumerate}
+\end{thm}
+
+\vspace{0.5cm}
+
+\begin{lemma}{}[Decoding with a binary Hamming code]
+$Ham(r,2)$ is a perfect single-error-correcting code $\Longrightarrow$ the coset leader are precisely the $2^r ~~(=n+1)$ vectors of $V(n, 2)$ of weight $\leq 1$.
+
+Let $j$-th column of H be the binary representation of $j$. Decoding algorithm:
+\begin{enumerate}
+  \item receive vector $y$, calculate its syndrome: $S(y)=yH^T$
+  \item if $S(y)=0$, assume $y=c$ (original sent codeword)
+  \item if $S(y) \neq 0$, assuming a single error, $S(y)$ gives the binary representation of the error position, and the error can be corrected.
+\end{enumerate}
+\end{lemma}
+
+
+\begin{eg}{}
+$H =
+\begin{bmatrix}
+0 & 0 & 0 & 1 & 1 & 1 & 1 \\
+0 & 1 & 1 & 0 & 0 & 1 & 1 \\
+1 & 0 & 1 & 0 & 1 & 0 & 1
+\end{bmatrix}$,
+if $y = 1101011$ then 
+
+$$S(y) = y \cdot H^T = 110$$
+
+$\Longrightarrow~6$-th position, and so we decode $y$ as $1101001$
+\end{eg}
+
+\subsection{Extended binary Hamming codes}
+$\hat{Ham}(r,2)$, obtained from $Ham(r,2)$ by adding an overall parity-check.
+
+Not ideal for complete decoding, but good for incomplete decoding (correct any single error and detect any double error).
+
+\vspace{1.0cm}
+
+Let $H$ be a PCM for $Ham(r,2)$. A PCM $\hat{H}$ for $\hat{Ham}(r,2)$:
+$$\hat{H}=
+\begin{bmatrix}
+   &   & & 0 \\
+   & H & & \vdots\\
+   &   & & 0 \\
+  1 & \cdots & 1 & 1
+\end{bmatrix}
+$$
+
+If $H$ is taken with columns in increasing order of binary numbers, we have a neat incomplete decoding algorithm:
+\begin{eg}{8.3}
+  $r=3,~ \hat{Ham}(3,2)$. Received $y$, $S(y)=y \hat{H}^T = (s_1, s_2, s_3, s_4)$
+  \begin{enumerate}[i.]
+    \item if $s_4=0$ and $(s_1,s_2,s_3)=0$: assume no errors
+    \item if $s_4=0$ and $(s_1,s_2,s_3) \neq 0$: assume $\geq 2$ errors and ask retransmission
+    \item if $s_4=1$ and $(s_1,s_2,s_3)=0$: assume $1$ error in the last position
+    \item if $s_4=1$ and $(s_1,s_2,s_3) \neq 0$: assume $1$ error in the $j$-th position, where $j$ is the number binary-represented by $(s_1,s_2,s_3)$
+  \end{enumerate}
+\end{eg}
+
+\vspace{1.0cm}
+
+\begin{thm}{8.4} \label{8.4}
+  suppose $C$ a linear $[n,k]$-code over $GF(q)$ with PCM $H$. Minimum distance of $C$ is $d$ iff any $d-1$ columns of $H$ are linearly independent but some $d$ columns are linearly dependent.
+\end{thm}
+\begin{proof}
+  by \ref{5.2}, min. distance of $C$ (ie. $d(C)$) = smallest of the weights of the non-zero codewords.
+
+  Let $x=x_1 x_2 \ldots x_n \in \Vnq$, then
+  \begin{align*}
+    x \in C &\Longleftrightarrow xH^T=0\\
+            &\Longleftrightarrow x_1 H_1 + x_2 H_2 + \ldots + x_n H_n = 0
+  \end{align*}
+  where $H_i$ denote the columns of $H$.
+
+  $\Longrightarrow$ each codeeword $x$ of weight $d$ corresponds with a set of $d$ linearly dependent columns of $H$.
+
+  On the other hand, if $\exists$ a set of $d-1$ lin.dependent columns of $H$, say $H_{i_1}, H_{i_2}, \ldots, H_{i_{d-1}}$, then $\exists~ x_{i_1}, \ldots, x_{i_{d-1}}$ scalars, not all zero, such that
+  $$x_{i_1} H_{i_1} + x_{i_2} H_{i_2} + \ldots + x_{i_{d-1}} H_{i_{d-1}}= 0$$
+
+  But then, the vector
+  $$x = (0 \ldots 0 x_{i_1} 0 \ldots x_{i_2} 0 \ldots 0 x_{i_{d-1}} 0 \ldots 0)$$
+  having $x_{i_j}$ in the $j$-th position for $j \in [d-1]$, would satisfy $x H^T=0$, and so would be a non-zero codeword of weight $<d$.
+\end{proof}
+
+\subsection{q-ary Hamming codes}
+For $C$ a inear code with $d(C)=3$ (min.dist), any $2$ columns of a PCM $H$ must be linearly independent
+
+$\Longrightarrow$ columns of $H$ must be non-zero, and no column can be a scalar multiple of another
+
+Any $0 \neq v \in V(r,q)$ vector has $q-1$ non-zero scalar multiples, forming the set
+$$\{ \lambda v ~|~ \lambda \in GF(q), \lambda \neq 0 \}$$
+
+$\longrightarrow$ the $q^r -1$ non-zero vectors of $V(r,q)$ may be partitioned into $\frac{q^r-1}{q-1}$ such sets, called \emph{classes}.
+
+$\longrightarrow$ two vectors are scalar multiples of each other if they are in the same class
+
+By choosing one vector from each class, obtain a set of $\frac{q^r-1}{q-1}$ vectors, where not two are linearly dependent.\\
+\hspace*{2em} By Theorem \ref{8.4}, taking these as columns of $h$ gives a PCM for a
+$$\left[\frac{q^r-1}{q-1}, \frac{q^r-1}{(q-1)-r}, 3 \right] \text{-code}$$
+
+\hspace*{2em} $\Longrightarrow$ called \emph{q-ary Hamming code}, $Ham(r, q)$.
+
+$\longrightarrow$ PCM is unique up to permutation of columns\\
+\hspace*{2em}$\Longrightarrow$ Hamming codes are linear codes
+
+
+\vspace{0.5cm}
+
+\begin{thm}{8.6}
+  $Ham(r, q)$ is a perfect single-error-correcting code.
+\end{thm}
+\begin{proof}
+  $Ham(r, q)$ is constructed to be a $(n, M, 3)$-code, with $n=\frac{q^r-1}{q-1}$ and $M=q^{n-r}$.
+
+  With $t=1$, the LHS of the sphere-packing bound becomes
+  $$q^{n-r} \cdot (1 + n(q-1)) = q^{n-r} \cdot (1 + q^r -1) = q^n$$
+  which is the RHS, so $Ham(r, q)$ is a perfect code.
+\end{proof}
+
+\paragraph{Decoding q-ary Hamming code}
+Since Ham is perfect single-error correcting code, the coset leaders, other than $0$, are the vectors of weight $1$.
+
+Syndrome of such coset leader:
+$$S(0 \ldots 0 ~b~ 0 \ldots 0) = (0 \ldots 0 ~b~ 0 \ldots 0) \cdot H^T = b \cdot H_j^T$$
+where $H_j$ is the $j$-th column of $H$, and $b$ is at the $j$-th position of $y$.
+
+Decode:
+\begin{itemize}
+  \item[-] given received $y$, calculate $S(y)=y H^T$
+  \item[-] if $S(y)=0$, assume no errors
+  \item[-] if $S(y)\neq 0$, then $S(y) = b \cdot H_j^T$ for some $b$ and $j$\\
+    correct by: subtract $b$ from the $j$-th entry of $y$.
+\end{itemize}
+
+Example:\\
+$$q=5,~ H= \begin{bmatrix}0 & 1 & 1 & 1 & 1 & 1\\ 1 & 0 & 1 & 2 & 3 & 4 \end{bmatrix},~ y=203031$$
+
+Then,
+\begin{align*}
+  S(y) = y \cdot H^T &= 2 \cdot H_1^T + 3 \cdot H_3^T + 3 \cdot H_5^T + 1 \cdot H_6^T\\
+                     &= 2 \cdot [0~1] + 3 \cdot [1~1] + 3 \cdot [1~3] + 1 \cdot [1~4]\\
+                     &= [0~2] + [3~3] + [3~9] + [1~4]\\
+                     &= [7~8] = [2~3] = \underbrace{2}_{b} \cdot \underbrace{[1~4]}_{H_6^T} \pmod{5}
+\end{align*}
+
+$\Longrightarrow$ error is in position $6$-th, with magnitude $b=2$\\
+\hspace*{2em} $\Longrightarrow$ subtract $b$ from the $j$-th entry of $y$: $1-2 \pmod{5} = -1 \pmod{5} = 4$,\\
+\hspace*{2em} therefore $y'=203034$.
 
 
 \bibliographystyle{unsrt}
