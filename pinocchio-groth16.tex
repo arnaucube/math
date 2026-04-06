@@ -227,7 +227,7 @@ The main idea, is that $p(X)$ defines the constraints of our circuit, so that wh
 
 \vspace{0.5cm}
 
-\section{QAP Relation}
+\section{QAP Relation} \label{qap-relation}
 
 Want to ensure that
 $$
@@ -236,8 +236,8 @@ $$
 
 for a given witness $(w_1, \ldots, w_n) \in \mathbb{F}^n$, which we divide between public inputs and private inputs:
 \begin{align*}
-    \text{public inputs:}~~ \phi &= (w_1, \ldots, w_l) \in \mathbb{F}^l, \\
-    \text{private inputs:}~~ w &= (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l},
+    \text{public inputs:}~~ io &= \phi = (w_1, \ldots, w_l) \in \mathbb{F}^l, \\
+    \text{private inputs:}~~ s &= (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1},
 \end{align*}
 
 We denote the relation
@@ -246,18 +246,18 @@ $$
 R_{QAP} =
 \left\{
 \begin{aligned}
-(\phi, w) \ \big| \;&
-\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l,\\
-& w = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l},\\
-& (\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i)
-\equiv
-\sum_{i=1}^{n} c_i(X) w_i 
+    &w=(1, \phi, s) \in \mathbb{F}^n ~\text{such that:}\\
+    &\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l,~
+    s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1},\\
+& (\sum_{i=0}^n a_i(X) \cdot w_i) \cdot (\sum_{i=0}^n b_i(X) \cdot w_i)
+= \sum_{i=0}^{n} c_i(X) \cdot w_i 
 ~\bmod Z(X)
 \end{aligned}
 \right.
 $$
 
-where $Z(X)$ is the "zero polynomial" or "vanishing polynomial".
+where $Z(X)$ is the "zero polynomial" or "vanishing polynomial", such that
+$$Z(X)= \prod_{i=0}^d (X-x_i) \in \mathbb{F}[X]^{<d}$$
 
 Set
 $$a(X) = \sum_{i=1}^n a_i(X) w_i,~~~~ b(X) = \sum_{i=1}^n b_i(X) w_i),~~~~ c(X) = \sum_{i=1}^{n} c_i(X) w_i$$
@@ -338,6 +338,85 @@ $$\{ [\tau^i]_2 \}_0^n = ( [\tau^0]_2, [\tau^1]_2, [\tau^2]_2, \ldots, [\tau^{n-
 \end{enumerate}
 
 \section{Pinocchio}
+
+\subsection{Conceptual version}
+\emph{(this is what the paper names "Protocol 1")}
+
+Recall, from \ref{qap-relation}, 
+public inputs: $\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l$, and private inputs: $s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1}$.
+
+\vspace{0.5cm}
+Let $[m]= \{ l+1, \ldots, n \}$.
+
+\paragraph{SRS}
+Let $\tau, \alpha, \beta_a, \beta_b, \beta_c, \gamma \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol.
+
+The \emph{proving key} will be
+% TODO align vertically:
+\begin{align*}
+    &\{ [a_i(\tau)] \}_{i \in [m]},~ \{ [b_i(\tau)] \}_{i \in [n]},~ \{ [c_i(\tau)] \}_{i \in [n]}\\
+    &\{ [\alpha \cdot a_i(\tau)] \}_{i \in [m]},~ \{ [\alpha \cdot b_i(\tau)] \}_{i \in [n]},~ \{ [\alpha \cdot c_i(\tau)] \}_{i \in [n]}\\
+    &\{ [\beta_a \cdot a_i(\tau)] \}_{i \in [m]},~ \{ [\beta_b \cdot b_i(\tau)] \}_{i \in [n]},~ \{ [\beta_c \cdot c_i(\tau)] \}_{i \in [n]}\\
+    &\{ [\tau^i] \}_{i \in [d]},~ \{ [\alpha \cdot \tau^i] \}_{i \in [d]}\\
+\end{align*}
+
+The \emph{verifying key} will be
+\begin{align*}
+    (&[1], [\alpha], [\gamma], [\beta_a \cdot \gamma], [\beta_b \cdot \gamma], [\beta_c \cdot \gamma], [Z(\tau)],\\
+     &\{[a_i(\tau)]\}_{i \in l}, [a_0(\tau)], [b_0(\tau)], [c_0(\tau)])
+\end{align*}
+
+\paragraph{Prover}
+Solve for $h(X)$ such that $p(X)=h(X) \cdot t(X)$, then
+
+Let
+$$a_m(X) = \sum_{i \in [m]} w_i \cdot a_i(X)$$
+
+Denote $a(X), b(X), c(X)$ as
+\begin{align*}
+    a(X) = \sum_{i \in [n]} &w_i \cdot a_i(X), ~~ b(X) = \sum_{i \in [n]} w_i \cdot b_i(X)\\
+				&c(X) = \sum_{i \in [n]} w_i \cdot c_i(X)
+\end{align*}
+
+Then the proof $\pi$ is
+\begin{align*}
+    \pi = (&[a_m(\tau)],~ [b(\tau)],~ [c(\tau)],~ [h(\tau)],~\\
+	   &[\alpha \cdot a_m(\tau)],~ [\alpha \cdot b(\tau)],~ [\alpha \cdot c(\tau)],~[\alpha \cdot h(\tau)],\\
+	   &\hspace*{2em}\text{\emph{(ie. same as first line but $\alpha$-shifted)}}\\
+	   &[ \beta_a \cdot a(\tau) + \beta_b \cdot b(\tau) + \beta_c \cdot c(\tau)]
+    )
+\end{align*}
+
+Since $a(X), b(X), c(X)$ are linear equations, we can compute them in the exponent of $g$, eg.
+$$g^{a(\tau)} = \prod_{i \in n} (g^{a_i(\tau)})^{w_i}$$
+which in our notation is
+$$[a(\tau)] = \sum_{i \in n} [a_i(\tau) \cdot w_i]$$
+
+\paragraph{Verifier}
+
+First check that $\alpha, \beta$ related terms are correct:
+
+\begin{align*}
+    e([a_m(\tau)], [\alpha]) &= e([\alpha \cdot a_m(\tau)], [1])\\
+    e([b(\tau)], [\alpha]) &= e([\alpha \cdot b(\tau)], [1])\\
+    e([c(\tau)], [\alpha]) &= e([\alpha \cdot c(\tau)], [1])\\
+    e([h(\tau)], [\alpha]) &= e([\alpha \cdot h(\tau)], [1])
+\end{align*}
+\begin{align*}
+    e([ \beta_a \cdot a(\tau) + \beta_b \cdot b(\tau) &+ \beta_c \cdot c(\tau)], [1]) =\\
+			      &e([a_m(\tau)], [\beta_a]) \cdot e([b(\tau)], [\beta_b]) \cdot e([c(\tau)], [\beta_c])
+\end{align*}
+
+This is, 8 pairings for $\alpha$ terms, and 3 pairings for the $\beta$ terms.
+
+Then, computes the term representing the public inputs:
+$$g^{a_{io}} = \prod_{i \in l} (g^{a_i(\tau)})^{w_i}$$
+ie.
+$$[a_{io}] = \sum_{i \in l} [a_i(\tau) \cdot w_i]$$
+
+in order to do the final check, verifying the divisibility, and therefore the QAP relation:
+$$e([a_0(\tau) + a_{io} + a(\tau)], [b_0(\tau) + b(\tau)]) = e([c_0(\tau) + c(\tau)], [1]) \cdot e([h(\tau)], [Z(\tau)])$$
+
 \section{Groth16}
 
 \vspace{1cm}
