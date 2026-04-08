@@ -8,7 +8,9 @@
 \usepackage{enumerate}
 \usepackage{hyperref}
 \usepackage{amssymb}
+
 \usepackage{tikz} % diagram
+\usetikzlibrary{calc}
 
 \begin{filecontents}[overwrite]{algebraic-coding-theory-notes.bib}
 @misc{hill,
@@ -488,7 +490,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   rows: $r_1=(1,0),~r_2=(0,1))$. A codeword is any linear combination:
   $$u G_1= a \cdot r_1 + b \cdot r_2,~~ \text{with}~ a,b \in \{0,1\}$$
 
-  4 combinations:\\
+  4 combinations:
   \begin{align*}
     0 \cdot r_1 + 0 \cdot r_2 &= (0,0)\\
     1 \cdot r_1 + 0 \cdot r_2 &= (1,0)\\
@@ -503,7 +505,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
   For $G_2$:\\
   rows: $r_1=(1, 0, 1),~ r_2=(0, 1, 1)$. Codeword: $a \cdot r_1 + b \cdot r_2$ with $a, b \in \{0,1\}$.
 
-  4 combinations:\\
+  4 combinations:
   \begin{align*}
     0 \cdot r_1 + 0 \cdot r_2 &= (0,0,0)\\
     1 \cdot r_1 + 0 \cdot r_2 &= (1,0,1)\\
@@ -553,7 +555,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 
 
   \vspace{0.5cm}
-  Alternatively from \ref{6.4.eq.1}:\\
+  Alternatively from \ref{6.4.eq.1}:
   $$P_{err}(C) = 1 - P_{corr}(C) = 1 - \sum_{i=0}^n \alpha_i \cdot p^i(1-p)^{n-i}$$
 
   Notice that
@@ -628,7 +630,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 \end{thm}
 \begin{proof}
   \begin{enumerate}[i.]
-    \item first show that $C^\perp$ is a linear code:\\
+    \item first show that $C^\perp$ is a linear code:
 
       let $v_1,v_2 \in C^\perp$ and $\lambda, \mu \in GF(q)$. Then $\forall u \in C$,
       \begin{align*}
@@ -641,7 +643,7 @@ Probability that the error vector is agiven vector of weight $i$ is $p^i (1-p){n
 
       Hence $\lambda \cdot v_1 + \mu \cdot v_2 \in C^\perp$, and so $C^\perp$ is linear, since it is closed under linear combinations.
       
-    \item Next, show that $C^\perp$ has dimension $n-k$:\\
+    \item Next, show that $C^\perp$ has dimension $n-k$:
 
       Let $G=[g_{ij}]$ be a GM of $C$.
 
@@ -846,9 +848,9 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
 \begin{proof}
   For any $u,v,w \in \Vnq$ and $\lambda, \mu \in GF(q)$,
   \begin{enumerate}[i.]
-    \item $u \cdot v = v \cdot u$\\
+    \item $u \cdot v = v \cdot u$
       $$u \cdot v = \sum_{i=1}^n u_i \cdot v_i = \sum_{i=1}^n v_i \cdot u_i = v \cdot u$$
-    \item $(\lambda u + \mu v) \cdot w = \lambda(u \cdot w) + \mu (v \cdot w)$\\
+    \item $(\lambda u + \mu v) \cdot w = \lambda(u \cdot w) + \mu (v \cdot w)$
     \begin{align*}
       (\lambda u + \mu v) w &= \sum(\lambda u_i + \mu v_i) w_i\\
                             &= \sum (\lambda u_i w_i + \mu v_i w_i)\\
@@ -993,7 +995,7 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
       left: weight-$1$ errors, since we're over $F_3$; right: coset leaders for the 9 cosets.
 
       \begin{enumerate}[i.]
-        \item $y = 2121$:\\
+        \item $y = 2121$:
           $$
           S(y) =
           \begin{bmatrix}
@@ -1013,7 +1015,7 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
 
           $$\Longrightarrow~ c = y - e = 2121 - 2000 = 0121$$
 
-        \item $y = 1201$\\
+        \item $y = 1201$
           $$
           S(y) =
           \begin{bmatrix}
@@ -1026,7 +1028,7 @@ Divide the array into a top part and a bottom part; top: cosets whose leaders ha
           corresponds to $e = 0000$
           $$\Longrightarrow~ c = y-e = 1201$$
 
-        \item $y = 2222$\\
+        \item $y = 2222$
           $$
           S(y) =
           \begin{bmatrix}
@@ -1242,7 +1244,7 @@ Decode:
     correct by: subtract $b$ from the $j$-th entry of $y$.
 \end{itemize}
 
-Example:\\
+Example:
 $$q=5,~ H= \begin{bmatrix}0 & 1 & 1 & 1 & 1 & 1\\ 1 & 0 & 1 & 2 & 3 & 4 \end{bmatrix},~ y=203031$$
 
 Then,
@@ -1256,6 +1258,168 @@ Then,
 $\Longrightarrow$ error is in position $6$-th, with magnitude $b=2$\\
 \hspace*{2em} $\Longrightarrow$ subtract $b$ from the $j$-th entry of $y$: $1-2 \pmod{5} = -1 \pmod{5} = 4$,\\
 \hspace*{2em} therefore $y'=203034$.
+
+\section{MLCT - Main Linear Coding Theory problem}
+A good $(n,M,d)$-code has
+\begin{itemize}
+  \item small $n$, for fast transmission of messages
+  \item large $M$, to enable transmission of a wide variety of messages
+  \item large $d$, to correct many errors
+\end{itemize}
+
+Denote by $A_q(n, d)$ the largest $M$ such that $\exists$ a $q$-ary $(n, M, d)$-code.
+
+\begin{thm}{2.7}
+  Suppose $d$ is odd. Then a binary $(n, M, d)$-code exists iff a binary $(n + 1, M, d + 1)$-code exists.
+\end{thm}
+\begin{proof}
+  % TODO
+\end{proof}
+
+\begin{cor}{2.8}
+  If $d$ is odd, then $A_2(n+1, d+1)=A_2(n, d)$.
+
+  Equivalently, if $d$ is even, then $A_2(n, d) = A_2(n-1,d-1)$.
+\end{cor}
+
+% TODO Lemma 2.10
+
+
+\begin{defn}{}[Sphere]
+  $\forall~ u \in F_q^n$ (vector) and any integer $r \geq 0$, the \emph{sphere} of radius $r$ and centre $u$, denoted $S(u, r)$, is the set
+  $$\{ v \in F_q^n ~|~ d(u, v) \leq r \}$$
+\end{defn}
+
+\begin{thm}{1.9 \& 2.12}
+  a code $C$ can 
+  \begin{enumerate}[i.]
+    \item detect up to $s$ errors in any codeword if $d(C) \geq s+1$
+
+    \item correct up to $t$ errors in any codeword if $d(C) \geq 2t + 1$
+
+      This is, the spheres of radius $t$ centered on the codewords of $C$ are disjoint (ie. have no overlap).
+
+      So, if $\leq t$ errors occur, then the received vector $y$ may be different from the sent codeword $x$, hence being different from the centre of the sphere $S(x, t)$, but can not 'escape' from the sphere, so is 'drawn back' to $x$ by nearest neigbour decoding.
+  \end{enumerate}
+
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+  \def\r{1.5}
+  \def\eps{0.2}
+
+  % left: overlapping spheres
+  \begin{scope}[shift={(-5,0)}]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2,0);
+
+    \draw (A) circle (\r);
+    \draw (B) circle (\r);
+
+    \fill (A) circle (2pt);
+    \fill (B) circle (2pt);
+
+    \node[below] at (A) {$x$};
+    \node[below] at (B) {$x'$};
+
+    \draw (A) -- ($(A)+(0,\r)$);
+    \node at ($(A)+(0.2,0.7*\r)$) {$t$};
+
+    \draw (B) -- ($(B)+(-0.5*\r,0.866*\r)$);
+    \node at ($(B)+(-0.3*\r,0.5*\r)$) {$t$};
+
+    % point y
+    \fill (1,0.3) circle (2pt);
+    \node[right] at (1,0.3) {$y$};
+  \end{scope}
+
+
+  % right: disjoint spheres
+  \begin{scope}[shift={(3,0)}]
+    \coordinate (C) at (0,0);
+    \coordinate (D) at ({2*\r+\eps},0);
+    \coordinate (E) at ({(\r+\eps/2)}, {sqrt(3)*(\r+\eps/2)});
+
+    \draw (C) circle (\r);
+    \draw (D) circle (\r);
+    \draw (E) circle (\r);
+
+    \fill (C) circle (2pt);
+    \fill (D) circle (2pt);
+    \fill (E) circle (2pt);
+
+    \node[below] at (C) {$x$};
+    \node[below] at (D) {$x'$};
+    \node[above] at (E) {$x''$};
+
+    \draw (C) -- ($(C)+(0,\r)$);
+    \node at ($(C)+(0.2,0.7*\r)$) {$t$};
+
+    \draw (D) -- ($(D)+(-\r,0)$);
+    \node at ($(D)+(-0.6*\r,0.3)$) {$t$};
+
+    \draw (E) -- ($(E)+(0,-\r)$);
+    \node at ($(E)+(0.2,-0.7*\r)$) {$t$};
+
+    % point y
+    \fill (0.5,0.3) circle (2pt);
+    \node[right] at (0.5,0.3) {$y$};
+  \end{scope}
+
+\end{tikzpicture}
+\end{center}
+
+\end{thm}
+
+
+\begin{defn}{}[Perfect codes]
+  A code which achieves the sphere-packing bound is called a \emph{perfect code}.
+  Thus, for a perfect $t$-error-correcting code, the $M$ spheres of radius $t$
+  centred on codewords ‘fill’ the whole space $F_q^n$ without overlapping.
+
+  In other words, every vector in $F_q^n$ is at distance $\leq t$ from exactly one codeword.
+\end{defn}
+
+\vspace{1.0cm}
+
+\begin{thm}{}[MLCT problem (Version 1)]
+  For given length $n$, find the maximum dimension $k$ such that $\exists$ an $[n, k, d]$-code over $GF(q)$. (Then, for this $k, B_q(n, d) = q^k)$.
+\end{thm}
+
+\begin{remark}{}
+  \emph{redundancy} $r$ of an $[n, k, d]$-code is just $r=n-k$ (the number of check symbols in a codeword).
+\end{remark}
+
+\begin{thm}{}[MLCT problem (Version 2)]
+  For given redundancy $r$, find the maximum length $n$ such that $\exists$ an $[n, n-r, d]$-code over $GF(q)$.
+\end{thm}
+
+
+\begin{defn}{}[$(n,s)$-set]
+  a $(n, s)$-set in $V(r,q)$ is a set of $n$ vectors in $V(r, q)$ with the property that any $s$ of them are linearly independent.
+
+  Denote $max_s(r,q)$ the largest value of $n$ for which $\exists$ a $(n,s)$-set in $V(r,q)$.
+\end{defn}
+
+\begin{defn}{}[Packing problem]
+  The \emph{packing problem} for $V(r,q)$ is that of determining the values of $max_s(r, q)$ and the optimal $(n,s)$-sets.
+\end{defn}
+
+\begin{thm}{14.1}
+There exists an $[n,n-r,d]$-code over $GF(q)$ iff $\exists$ an $(n, d-1)$-set in $V(r, q)$.
+\end{thm}
+\begin{proof}
+  let $C$ a $[n, n-r, d]$-code over $GF(q)$ with PCM $H$. Then by Theorem \ref{8.4}, the columns of $H$ form a $(n, d-1)$-set in $V(r, q)$.
+
+  On the other hand, let $K$ a $(n, d-1)$-set in $V(r, q)$. If we form a $r \times n$ matrix $H$ with the vectors of $K$ as its columns, by Theorem \ref{8.4}, $H$ is the PCM of a $[n, n-r]$-code whose minimum distance is at least $d$.
+\end{proof}
+
+\begin{cor}{14.2}
+  for given values $q, d, r$, the largest value of $n$ for which there exists a $[n, n-r, d]$-code over $GF(q)$ is $max_{d-1}(r, q)$.
+\end{cor}
+
+$\Longrightarrow$ the MLCT problem (V2) is the same as the packing problem of finding $max_{d-1}(r, q)$.
+
 
 
 \bibliographystyle{unsrt}
