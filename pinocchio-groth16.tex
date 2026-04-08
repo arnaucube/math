@@ -1,3 +1,7 @@
+% TODO
+% - notation: Z(X) -> t(X), q(X) -> h(X)
+
+
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsfonts}
@@ -172,6 +176,7 @@ Since we have now the constraints in a polynomial format, we can do work with it
 
 
 \section{QAP (Quadratic Arithmetic Programs)} \label{qap}
+\subsection{QAP}
 
 Once we have the constraints of a circuit represented in \emph{R1CS}, we can do one more iteration and represent it in \emph{Quadratic Arithmetic Programs (QAP)}.
 %% TODO %%
@@ -227,7 +232,7 @@ The main idea, is that $p(X)$ defines the constraints of our circuit, so that wh
 
 \vspace{0.5cm}
 
-\section{QAP Relation} \label{qap-relation}
+\subsection{QAP Relation} \label{qap-relation}
 
 Want to ensure that
 $$
@@ -270,7 +275,86 @@ $$\exists~ h(X) \in \mathbb{F}[X]^{<d}~~ \text{s.th.}~
 a(X) \cdot b(X) - c(X) = h(X) \cdot Z(X)$$
 
 
-\section{Simplified protocol}
+\vspace{1.0cm}
+\section{Preliminar protocols}
+\subsection{Sigma protocol}
+
+Let $q$ be a prime, $q$ a prime divisor in $p-1$, and $g$ and element of order $q$ in $\mathbb{Z}_p^a$. Then we have $G = \langle g \rangle$.
+\\
+We assume that computationally for a given $A$ it's hard to find $a \in \mathbb{F}$ such that $A = g^a$.
+\\
+Alice wants to prove that knows the \emph{witness} $w \in \mathbb{F}$, such that the \emph{statement} $X = g^w$, without revealing $w$.
+
+\begin{enumerate}[1.]
+	\item Alice generates a random $a \in^R \mathbb{F}$, and computes $A=g^a$. And sends $A$ to Bob.
+	\item Bob generates a challenge $c \in^R \mathbb{F}$, and sends it to Alice.
+	\item Alice computes $z=a + c \cdot w$, and sends it to Bob.
+	\item Bob verifies it by checking that $g^z == X^c \cdot A$.
+\end{enumerate}
+
+We can unfold Bob's verification and see that:
+$$g^z == X^c \cdot A$$
+$$g^{a+cw} == g^{wc} g^a$$
+$$g^{a+cw} == g^{wc+a}$$
+
+Properties:
+\begin{enumerate}[i.]
+	\item \emph{correctness/completness}: if Alice know the witness for the statement, then they can create a valid proof.
+	\item \emph{soundness}: if someone does not have knowledge of the witness, can not form a valid proof (verifier will always reject).
+	\item \emph{zero knowledge}: nobody gains knowledge of anything new with the proof. prior knowledge + proof = prior knowledge
+\end{enumerate}
+
+\paragraph{Non interactive protocol:}
+With the \emph{Fiat-Shamir Heuristic}, we model a hash function as a random oracle, thus we can replace Bob's role by a hash function in order to obtain the challenge $c \in \mathbb{F}$.
+\\
+So, we replace the step 2 from the described protocol by $c = H(X || A)$ (where $H$ is a known hash function).
+
+\paragraph{What could go wrong (Simulator).}
+If the verifier (Bob) sends $c \in \mathbb{F}$, prior to the prover committed to $A$, the prover could create a proof about a public key which they don't know $w$.
+\begin{enumerate}[1.]
+	\item Bob sends $c \xleftarrow{r} \mathbb{F}$ to Alice
+	\item Alice generates $z \xleftarrow{r} \mathbb{F}$
+	\item Alice then computes $A = g^z X^{-c}$, and sends $z, A$ to Bob
+	\item Bob would check that $g^z == X^c A$ and it would pass the verification, as $g^z== X^c \cdot A \Rightarrow g^z==X^c \cdot g^z X^{-c} \Rightarrow g^z == g^z$.
+\end{enumerate}
+
+As we've seen, it's really important the order of the steps, so Alice must commit to $A$ before knowing $c$.\\
+This 'fake' proof generation is often called the \emph{simulator} and used for further constructions.
+
+\vspace{1.0cm}
+\subsection{Proof of Exponent}
+This is a protocol used for when the prover want to convince the verifier about $p(X)|t(X)$. Assume that we have $g^{\tau^i}$.
+
+The prover can compute
+\begin{align*}
+    g^{p(\tau)} &= \sum (g^{\tau^i})^{p_i}\\
+    g^{h(\tau)} &= \sum (g^{\tau^i})^{h_i}\\
+    g^{t(\tau)} &= \sum (g^{\tau^i})^{t_i}
+\end{align*}
+
+where $p_i, h_i, t_i$ are the coefficients of $p(X), h(X), t(X)$ respectively.
+
+So that the verifier can check
+$$g^{p(\tau)}=(g^{h(\tau)})^{t(\tau)}$$
+through a pairing check as
+$$e([p(\tau)], [1])=e([h(\tau)], [t(\tau)])$$
+
+Notice that this is not enough, since the prover could use a $h(X)$ such that $h(\tau)=r$, and then produce a valid proof where $g^{r \cdot t(\tau)} = (g^r)^{t(\tau)}$.
+
+The solution is to add the $\alpha$-shifted evaluation:
+
+The verifier would then check
+$$g^{p(\alpha \cdot \tau)} = (g^{p(\tau)})^\alpha$$
+$$g^{h(\alpha \cdot \tau)} = (g^{h(\tau)})^\alpha$$
+$$g^{t(\alpha \cdot \tau)} = (g^{t(\tau)})^\alpha$$
+through the pairing checks as
+$$e([p(\alpha \cdot \tau)], [1])=e([p(\tau)], [\alpha])$$
+$$e([h(\alpha \cdot \tau)], [1])=e([h(\tau)], [\alpha])$$
+$$e([t(\alpha \cdot \tau)], [1])=e([t(\tau)], [\alpha])$$
+
+
+\vspace{1.0cm}
+\subsection{Simplified QAP check protocol}
 Protocol to prove $a(X)b(X)-c(X)=0$ in order to provide intuition on what we're trying to do.
 
 \paragraph{Setup.}
@@ -396,12 +480,18 @@ $$[a(\tau)] = \sum_{i \in n} [a_i(\tau) \cdot w_i]$$
 
 First check that $\alpha, \beta$ related terms are correct:
 
+$\alpha$-terms:
 \begin{align*}
     e([a_m(\tau)], [\alpha]) &= e([\alpha \cdot a_m(\tau)], [1])\\
     e([b(\tau)], [\alpha]) &= e([\alpha \cdot b(\tau)], [1])\\
     e([c(\tau)], [\alpha]) &= e([\alpha \cdot c(\tau)], [1])\\
     e([h(\tau)], [\alpha]) &= e([\alpha \cdot h(\tau)], [1])
 \end{align*}
+
+which we can group as:
+$$\prod_{p \in \{a_m, b, c, h\}} e([p(\tau)], [\alpha]) = \prod_{p \in \{a_m, b, c, h\}} e([\alpha \cdot p(\tau)], [1])$$
+
+$\beta$-terms:
 \begin{align*}
     e([ \beta_a \cdot a(\tau) + \beta_b \cdot b(\tau) &+ \beta_c \cdot c(\tau)], [1]) =\\
 			      &e([a_m(\tau)], [\beta_a]) \cdot e([b(\tau)], [\beta_b]) \cdot e([c(\tau)], [\beta_c])
@@ -409,6 +499,7 @@ First check that $\alpha, \beta$ related terms are correct:
 
 This is, 8 pairings for $\alpha$ terms, and 3 pairings for the $\beta$ terms.
 
+% TODO think if put this check first, since it's the natural one, the other ones are extra to ensure alpha,beta are used correctly
 Then, computes the term representing the public inputs:
 $$g^{a_{io}} = \prod_{i \in l} (g^{a_i(\tau)})^{w_i}$$
 ie.
