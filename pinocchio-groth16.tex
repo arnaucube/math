@@ -1,5 +1,6 @@
 % TODO
 % - notation: Z(X) -> t(X), q(X) -> h(X)
+% - on pairings, add suffix []_1, []_2
 
 
 \documentclass{article}
@@ -352,6 +353,8 @@ $$e([p(\alpha \cdot \tau)], [1])=e([p(\tau)], [\alpha])$$
 $$e([h(\alpha \cdot \tau)], [1])=e([h(\tau)], [\alpha])$$
 $$e([t(\alpha \cdot \tau)], [1])=e([t(\tau)], [\alpha])$$
 
+\vspace{0.5cm}
+% TODO adding zk
 
 \vspace{1.0cm}
 \subsection{Simplified QAP check protocol}
@@ -423,13 +426,15 @@ $$\{ [\tau^i]_2 \}_0^n = ( [\tau^0]_2, [\tau^1]_2, [\tau^2]_2, \ldots, [\tau^{n-
 
 \section{Pinocchio}
 
+The next couple of subsections provide first a description of the conceptual protocol, and then the optimized version of it, which reduces prover costs and key sizes.
+
 \subsection{Conceptual version}
 \emph{(this is what the paper names "Protocol 1")}
 
 Recall, from \ref{qap-relation}, 
 public inputs: $\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l$, and private inputs: $s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1}$.
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 Let $[m]= \{ l+1, \ldots, n \}$.
 
 \paragraph{SRS}
@@ -507,6 +512,97 @@ $$[a_{io}] = \sum_{i \in l} [a_i(\tau) \cdot w_i]$$
 
 in order to do the final check, verifying the divisibility, and therefore the QAP relation:
 $$e([a_0(\tau) + a_{io} + a(\tau)], [b_0(\tau) + b(\tau)]) = e([c_0(\tau) + c(\tau)], [1]) \cdot e([h(\tau)], [Z(\tau)])$$
+
+
+\vspace{1.0cm}
+\subsection{Actual Pinocchio protocol}
+
+Recall, from \ref{qap-relation}, 
+public inputs: $\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l$, and private inputs: $s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1}$.
+
+\vspace{0.3cm}
+Let $[m]= \{ l+1, \ldots, n \}$.
+\vspace{0.3cm}
+
+\paragraph{SRS}
+Let $r_a, r_b, \tau, \alpha_a, \alpha_b, \alpha_c, \beta, \gamma \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol.
+
+Also with $r_c = r_a \cdot r_b,~ g_a= g^{r_a},~ g_b=g^{r_b},~ g_c = g^{r_c}$.
+
+The \emph{proving key} will be
+% TODO align vertically:
+\begin{align*}
+    &\{ g_a^{a_i(\tau)} \}_{i \in [m]},~ \{ [g_b^{b_i(\tau)} \}_{i \in [m]},~ \{ [g_c^{c_i(\tau)} \}_{i \in [m]}\\
+    &\{ g_a^{\alpha_a \cdot a_i(\tau)} \}_{i \in [m]},~ \{ [g_b^{\alpha_b \cdot b_i(\tau)} \}_{i \in [m]},~ \{ [g_c^{\alpha_c \cdot c_i(\tau)} \}_{i \in [m]}\\
+    &\{ g^{\tau^i} \}_{i \in [d]},~
+    \{ g_a^{\beta a_i(\tau)} \cdot g_b^{\beta b_i(\tau)} \cdot g_c^{\beta c_i(\tau)} \}_{i \in [m]}
+\end{align*}
+ie, in our notation,
+\begin{align*}
+    &\{ [r_a \cdot a_i(\tau)] \}_{i \in [m]},~ \{ [r_b \cdot b_i(\tau)] \}_{i \in [m]},~ \{ [r_c \cdot c_i(\tau)] \}_{i \in [m]}\\
+    &\{ [r_a \cdot \alpha_a \cdot a_i(\tau)] \}_{i \in [m]},~ \{ [r_b \cdot \alpha_b \cdot b_i(\tau)] \}_{i \in [m]},~ \{ [r_c \cdot \alpha_c \cdot c_i(\tau)] \}_{i \in [m]}\\
+    &\{[\tau^i]\}_{i \in [d]},~ \{ [r_a \cdot \beta \cdot a_i(\tau) + r_b \cdot \beta \cdot b_i(\tau) + r_c \cdot \beta \cdot c_i(\tau) \}_{i \in [m]}
+\end{align*}
+
+The \emph{verifying key} will be
+\begin{align*}
+    &([1], [\alpha_a], [\alpha_b], [\alpha_c], [\gamma], [\beta \gamma], [r_c \cdot t(\tau)],\\
+     &\{[r_a \cdot a_i(\tau)],~ [r_b \cdot b_i(\tau)],~ [r_c \cdot c_i(\tau)] \}_{i \in \{0\} \cup [l]} )
+\end{align*}
+
+
+\paragraph{Prover}
+Solve for $h(X)$ such that $p(X)=h(X) \cdot t(X)$, then
+
+The proof $\pi$ is
+\begin{align*}
+    \pi = (&[r_a \cdot a_m(\tau)],~ [r_b \cdot b_m(\tau)],~ [r_c \cdot c_m(\tau)],~ [h(\tau)],~\\
+	   &[r_a \cdot \alpha \cdot a_m(\tau)],~ [r_b \cdot \alpha \cdot b(\tau)],~ [r_c \cdot \alpha \cdot c(\tau)],\\
+	   &[r_a \cdot \beta \cdot a_m(\tau) + r_b \cdot \beta \cdot b_m(\tau) + r_c \beta \cdot c_m(\tau)]
+\end{align*}
+
+where
+$$a_m(X) = \sum_{i \in [m]} w_i \cdot a_i(X)$$
+and similarly for $b_m(X),~ c_m(X)$.
+
+Note that the last element of $\pi$ is $g^z ~(ie.~ [z])$ later at the verifier.
+
+\paragraph{Verifier}
+The verifier receives the proof
+$$\pi = (g^{a_m}, g^{b_m}, g^{c_m}, g^h, g^{a_m'}, g^{b_m'}, g^{c_m'}, g^z)$$
+ie.
+$$\pi = ([a_m], [b_m], [c_m], [h], [a_m'], [b_m'], [c_m'], [z])$$
+
+
+First, it does the divisibility check:
+
+compute
+$$g_a^{a_{io}(\tau)} = \prod_{i \in l} (g_a^{a_{io}(\tau)})^{w_i}$$
+ie.
+$$[r_a \cdot a_{io}(\tau)] = [\sum_{i \in l} (r_a \cdot a_{io}(\tau) \cdot w_i)]$$
+similarly for $g_b^{b_{io}(\tau)},~ g_c^{c_{io}(\tau)}$.
+
+And then it checks
+$$e(g_a^{a_0(\tau)} \cdot g_a^{a_{io}(\tau)} \cdot g_a^{a_m},~ g_b^{b_0(\tau)} \cdot g_b^{b_{io}(\tau)} \cdot g_b^{b_m}) =
+e(g_c^{c_0(\tau)} \cdot g_c^{c_{io}(\tau)} \cdot g_c^{c_m}), g^1)$$
+
+ie.
+$$e([r_a \cdot (a_0(\tau) \cdot a_{io}(\tau) \cdot a_m)]_1,~ [r_b \cdot (b_0(\tau)} \cdot b_{io}(\tau) \cdot b_m)]_2) =
+e([r_c \cdot (c_0(\tau)} \cdot c_{io}(\tau) \cdot c_m)]_1, [1]_2)$$
+
+Next, it checks that the linear combinations computed over the QAP are in their appropiate spans:
+$$e([r_a \cdot a_m']_1, [1]_2) = e([r_a \cdot a_m]_1, [\alpha_a]_2)$$
+$$e([r_b \cdot b_m']_1, [1]_2) = e([r_b \cdot b_m]_1, [\alpha_b]_2)$$
+$$e([r_c \cdot c_m']_1, [1]_2) = e([r_c \cdot c_m]_1, [\alpha_c]_2)$$
+
+
+And finally, it checks that the same coefficients were used in each of the linear combinations over the QAP
+
+$$e(g^z, g^{\gamma}) = e(g_a^{a_m} \cdot g_b^{b_m} \cdot g_c^{c_m}, g^{\beta \gamma})$$
+ie.
+$$e([z]_1, [\gamma}]_2 = e([r_a \cdot a_m]_1 \cdot [r_b \cdot b_m]_1 \cdot [r_c \cdot c_m]_1, [\beta \cdot \gamma]_2)$$
+
+recall that $[z]_1$ comes from the proof.
 
 \section{Groth16}
 
