@@ -23,6 +23,17 @@
   title = {{Introduction to Coding Theory}},
   year = {1981}
 }
+
+@misc{vanddetproof,
+ title = {Vandermonde determinant proof},
+ author = {Pedro Tamaroff},
+ howpublished = "\url{https://math.stackexchange.com/questions/525334/vandermonde-determinant-by-induction}",
+}
+
+@misc{vanddetproof2,
+ title = {Abstract Algebra, Theory and Applications. \emph{sec.22.2}},
+ author = {Thomas W. Judson},
+}
 \end{filecontents}
 \nocite{*}
 
@@ -73,6 +84,11 @@
 \newenvironment{intuition}[1]
 {\renewcommand\theinnerintu{#1}\innerintu}
 {\endinnerintu}
+
+\newtheorem{innerconj}{Conjecture}
+\newenvironment{conj}[1]
+{\renewcommand\theinnerconj{#1}\innerconj}
+{\endinnerconj}
 
 % custom shortcuts
 \newcommand{\Vnq}{V(n, q)}
@@ -1398,7 +1414,13 @@ Denote by $A_q(n, d)$ the largest $M$ such that $\exists$ a $q$-ary $(n, M, d)$-
 \begin{defn}{}[$(n,s)$-set]
   a $(n, s)$-set in $V(r,q)$ is a set of $n$ vectors in $V(r, q)$ with the property that any $s$ of them are linearly independent.
 
-  Denote $max_s(r,q)$ the largest value of $n$ for which $\exists$ a $(n,s)$-set in $V(r,q)$.
+  Denote $max_s(r,q)$ the largest value of $n$ for which $\exists$ a $(n,s)$-set
+  in $V(r,q)$.\\
+  ie.
+  \begin{itemize}
+    \item $(n,s)$-set: $n$ vectors with $s$ of them lin. independent
+    \item $max_s(r,q)$: max $n$ for which $\exists~ (n,s)$-set
+  \end{itemize}
 \end{defn}
 
 \begin{defn}{}[Packing problem]
@@ -1481,6 +1503,195 @@ $$V(r,q)= \{ (a_1, a_2, \ldots, a_r) ~|~ a_i \in GF(q) \}$$
   The $PG(2,q)$ is called the \emph{projective plane} over $GF(q)$.
 \end{defn}
 
+\section{MDS Codes}
+
+\begin{thm}{15.1}
+  a $[n, n-r, d]$-code satisfies $d \leq r+1$.
+\end{thm}
+\begin{proof}
+  let $C$ a $[n, n-r, d]$-code, let $G=[ I_{n-r} ~|~ A]$ be a standard form GM of $C$.
+
+  Since $A$ has $r$ columns, the codewords whicch are rows of $G$ have weight $\leq r+1$, ie. $w(C) \leq r+1$.
+
+  The result follows from Theorem \ref{5.2},
+  \begin{align*}
+  &\Longrightarrow~ w(C)=d(C)\\
+  &\Longrightarrow~ d(C) \leq r+1.
+  \end{align*}
+\end{proof}
+
+\begin{defn}{}[MDS]
+  a $[n, n-r, r+1]$-code,\\
+  \hspace*{2em}ie. a linear cocde of redundancy $r$ whose min. distance is $r+1$,\\
+  is called a \emph{maximum distance separable code}, MDS.
+
+  $\longrightarrow$ by Theorem \ref{14.1}, max length of a MDS code over $GF(q)$ is $max_r(r,q)$, the largest size of a $(n,r)$-set in $V(r,q)$.
+\end{defn}
+
+\begin{conj}{15.2}
+  if $2 \leq r \leq q$, then $max_r(r,q)=q+1$
+
+  (except $max_3(3,q)=max_{q-1}(q-1,q)=q+2$ if $q=2^h$)
+\end{conj}
+
+\begin{thm}{15.3}
+  if $r\geq q$, then $max_r(r,q)=r+1$. Any MDS code of redundancy $r\geq q$ is equivalent to a repetition code of length $r+1$.
+\end{thm}
+\begin{proof}
+  repetition code of length $r+1$: a $[r+1, 1, r+1]$-code with GM $[1~1~\cdots~1]$.
+
+  Hence $max_r(r,q) \geq r+1$.
+
+  Also, any $[r+1, 1, r+1]$-code is equivalent to a repetition code.
+
+  Suppose $r \geq q$ and by contradiction that $max_r(r,q) \geq r+2$.
+
+  Then, $\exists$ a $[r+2, 2, r+1]$-code $C$ over $GF(q)$.
+
+  $\longrightarrow~C$ must be equivalent to a code having GM:
+  $$G=
+  \begin{bmatrix}
+    1 & 0 & 1 & 1 & \ldots & 1\\
+    0 & 1 & a_1 & a_2 & \ldots & a_r
+  \end{bmatrix}
+  $$
+
+  in order that any linear combination of the rows of $G$ has weight at least $r+1$ with $0 \neq a_i \in GF(q)$.
+
+  This implies $r \leq q-1$, contradiction.
+\end{proof}
+
+\begin{remark}{}
+  the only binary MDS codes are\\
+  $V(n,2)$, the even weighted codes $E_n$, and repetition codes.
+\end{remark}
+
+\begin{thm}{15.4}
+  let $2 \leq r \leq q$, let $a_1, a_2, \ldots, a_{q-1} \in GF(q)$ nonzero.
+
+  Then,
+  $$
+  H =
+  \begin{bmatrix}
+    1 & 1 & \ldots & 1 & 1 & 0\\
+    a_1 & a_2 & \ldots & a_{q-1} & 1 & 0\\
+    a_1^2 & a_2^2 & \ldots & a_{q-1}^2 & 1 & 0\\
+     & & & & \vdots & \vdots\\
+    \vdots & \vdots & & \vdots & 0 & 0\\
+    a_1^{r-1} & a_2^{r-1} & \ldots & a_{q-1}^{r-1} & 0 & 1
+  \end{bmatrix}
+  $$
+
+  is the PCM of a MDS $[q+1, q+1-r, r+1]$-code.
+
+  Equivalently, the columns of $H$ form a $(q+1)$-arc in $PG(r-1, q)$.
+\end{thm}
+\begin{proof}
+  the determinant of a matrix formed by any $r$ columns of $H$ is equal to the determinant of a Vandermonde matrix, and so is non-zero (see a proof of this at section \ref{sec:vandermondedet}).
+  Thus any $r$ columns of $H$ are linearly independent.
+\end{proof}
+
+\begin{cor}{15.7}
+  The dual code of a MDS code is also MDS.
+\end{cor}
+\begin{cor}{15.8}
+  $\exists$ a MDS $[n,k]$-code over $GF(q)$ iff $\exists$ a MDS $[n, n-k]$-code over $GF(q)$.
+\end{cor}
+
+
+\subsection{Vandermonde determinant} \label{sec:vandermondedet}
+
+This section contains a simple proof of the Vandermonde matrix determinant. The proof was found in \cite{vanddetproof}, here it is written with small modifications and expanded. A different proof can be found in \cite{vanddetproof2}.
+
+\begin{lemma}{}[Vandermonde determinant]
+$$
+\det~V(x_1, ..., x_n) = \det
+\begin{pmatrix}
+    1 & x_1 & x_1^2 & \ldots & x_1^{n-1} \\
+    1 & x_2 & x_2^2 & \ldots & x_2^{n-1} \\
+    1 & x_3 & x_3^2 & \ldots & x_3^{n-1} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n & x_n^2 & \ldots & x_n^{n-1} \\
+\end{pmatrix}
+= \prod_{j < i} (x_i - x_j)
+$$
+\end{lemma}
+
+\begin{proof}
+
+The equation is true for $n = 2$, as we have:
+
+$$
+\det~V(x_1, x_2) = \det
+\begin{pmatrix}
+    1 & x_1\\
+    1 & x_2
+\end{pmatrix}
+= x_2 - x_1
+$$
+
+We now assume that $n \ge 3$. Starting with column $n$ and ending at column $2$, we successively apply the following operation: subtract $x_1$ times column $i-1$ from column $i$. The determinant remains the same and the resulting matrix is:
+
+$$
+= \det
+\begin{pmatrix}
+    1 & x_1-(x_1 \cdot 1) & x_1^2 - (x_1 \cdot x_1) & \ldots & x_1^{n-1} - (x_1 \cdot x_1^{n-2}) \\
+    1 & x_2-(x_1 \cdot 1) & x_2^2 - (x_1 \cdot x_2) & \ldots & x_2^{n-1} - (x_1 \cdot x_2^{n-2}) \\
+    1 & x_3-(x_1 \cdot 1) & x_3^2 - (x_1 \cdot x_3) & \ldots & x_3^{n-1} - (x_1 \cdot x_3^{n-2}) \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n-(x_1 \cdot 1) & x_n^2 - (x_1 \cdot x_n) & \ldots & x_n^{n-1} - (x_1 \cdot x_n^{n-2}) \\
+\end{pmatrix}
+$$
+$$
+= \det
+\begin{pmatrix}
+    1      & 0           & 0              & \ldots & 0 \\
+    1      & (x_2 - x_1) & x_2(x_2 - x_1) & \ldots & x_2^{n-2}(x_2 - x_1) \\
+    1      & (x_3 - x_1) & x_3(x_3 - x_1) & \ldots & x_3^{n-2}(x_3 - x_1) \\
+    \vdots & \vdots      & \vdots         &        & \vdots \\
+    1      & (x_n - x_1) & x_n(x_n - x_1) & \ldots & x_n^{n-2}(x_n - x_1) \\
+\end{pmatrix}
+$$
+
+Applying the Laplace expansion along the first row and factoring out the scalar multiples $(x_i - x_1)$ in each column, we obtain: 
+
+$$
+= \det
+\begin{pmatrix}
+    x_2-x_1 & x_2^2 - x_1 x_2 & x_2^3 - x_1 x_2^2 & \ldots & x_2^{n-1} - x_1 x_2^{n-2} \\
+    x_3-x_1 & x_3^2 - x_1 x_3 & x_3^3 - x_1 x_3^2 & \ldots & x_3^{n-1} - x_1 x_3^{n-2} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    x_n-x_1 & x_n^2 - x_1 x_n & x_n^3 - x_1 x_n^2 & \ldots & x_n^{n-1} - x_1 x_n^{n-2} \\
+\end{pmatrix}
+$$
+
+in each row, factor out $(x_i - x_1)$
+
+$$
+= \det
+\begin{pmatrix}
+    1(x_2-x_1) & x_2(x_2 - x_1) & x_2^2(x_2 - x_1) & \ldots & x_2^{n-2}(x_2 - x_1) \\
+    1(x_3-x_1) & x_3(x_3 - x_1) & x_3^2(x_3 - x_1) & \ldots & x_3^{n-2}(x_3 - x_1) \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1(x_n-x_1) & x_n(x_n - x_1) & x_n^2(x_n - x_1) & \ldots & x_n^{n-2}(x_n - x_1) \\
+\end{pmatrix}
+$$
+$$
+= \prod_{2 \leq i \leq n} (x_i - x_1) ~~\det
+\begin{pmatrix}
+    1 & x_2 & x_2^2 & \ldots & x_2^{n-2} \\
+    1 & x_3 & x_3^2 & \ldots & x_3^{n-2} \\
+    \vdots & \vdots & \vdots &  & \vdots\\
+    1 & x_n & x_n^2 & \ldots & x_n^{n-2} \\
+\end{pmatrix}
+$$
+
+now, by induction
+
+$$
+= \prod_{i=2}^n (x_i - x_1) ~~\cdot \prod_{2 \leq j < i \leq n} (x_i - x_j) ~~= \prod_{1 \leq j < i \leq n} (x_i - x_j)
+$$
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
