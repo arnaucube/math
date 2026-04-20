@@ -1864,7 +1864,7 @@ $$f(x) = x^n -1 ~~~\Longrightarrow~~ F_q[x]/(x^n-1) = R_n$$
 \end{proof}
 
 \begin{cor}{}
-  $\matbb{F}_q[x]/(x^n -1)$ is a PID (Principal Ideal Domain).
+  $\mathbb{F}_q[x]/(x^n -1)$ is a PID (Principal Ideal Domain).
 
   Thus $C$ consists of the multiples of $g(x) \in C$ monic and of lowest degree.
 
@@ -2187,6 +2187,56 @@ Recall:
 \end{thm}
 
 \subsection{Trace representation}
+
+\begin{defn}{1.1.29}
+  $q=p^r$, trace: $Tr: \mathbb{F}_q \longrightarrow \mathbb{F}_p$.
+
+  If $\zeta \in \mathbb{F}_q$, then
+  $$Tr(\zeta) := \zeta + \zeta^p + \zeta^{p^2} + \ldots + \zeta^{p^{r-1}} \in \mathbb{F}_p$$
+\end{defn}
+
+\begin{thm}{1.1.30} \label{1.1.30}
+  properties of the trace function:
+  \begin{enumerate}[i.]
+    \item $\forall \zeta \in \mathbb{F}_q, ~~ Tr(\zeta) \in \mathbb{F}_p$
+    \item there are elements $\theta \in \mathbb{F}_p$ such that $Tr(\zeta) \neq 0$
+    \item $Tr$ is a linear mapping.
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item by definition $(Tr(\zeta))^p = Tr(\zeta)$
+    \item the equation $x + x^p + \ldots + x^{p^{r-1}}=0$ can not have $q$ roots in $\mathbb{F}_q$
+    \item since $(\zeta + \eta)^p = \zeta^p + \eta^p$ and $\forall a \in \mathbb{F}_p$ we have $a^p = a$
+  \end{enumerate}
+\end{proof}
+
+\begin{cor}{}
+  $Tr$ takes every value $p^{-1}q$ times, and the polynomial $x + x^p + \ldots + x^{p^{r-1}}$ is a product of minimal polynomials.
+\end{cor}
+
+\begin{thm}{6.5.1}
+  let $k$ be the multiplicative order of $p mod n$, $q = p^k$, $\beta$ a primitive n-th root of unity in $\mathbb{F}_q$.
+
+  Then the set
+  $$V := \{ c(\zeta) := ( Tr(\zeta),~ Tr(\zeta \beta),~ \ldots,~ Tr(\zeta \beta^{n-1})) ~|~ \zeta \in \mathbb{F}_q \}$$
+  is an $[n, k]$ irreducible code over $\mathbb{F}_p$.
+\end{thm}
+\begin{proof}
+  by Theorem \ref{1.1.30}, $V$ is a linear code, and $c(\zeta \beta^-1)$ is a cyclic shift of $c(\zeta)$; hence $V$ is a cyclic code.
+
+  Since $\beta$ is in no subfield of $\mathbb{F}_q$, we know that $\beta$ is a zero of an irreducible polynomial $h(x) = h_0 + h_1 x + \ldots + h_k x^k$.
+
+  If $c(\zeta) = (c_0, c_1, \ldots, c_{n-1})$, then
+  $$\sum_{i=0}^k c_i h_i = Tr(\zeta h(\beta)) = Tr(0) = 0$$
+  since $\beta$ is a zero of $h(x)$, so that $h(\beta)=0$.
+
+
+  So we observer $c(x) h(x) = 0$, from Theorem \ref{12.14} this means that $h(x)$ is the check polynomial,\\
+  ie. we have a parity check equation for the code $V$.
+
+  Since $h(x)$ irreducible, $x^k \cdot h(x^{-1})$ is the check polynomial for $V$, therefore, $V$ is an irreducible cyclic $[n, k]$-code.
+\end{proof}
 
 \bibliographystyle{unsrt}
 \bibliography{algebraic-coding-theory-notes.bib}
