@@ -567,7 +567,7 @@
 \end{proof}
 
 
-\begin{thm}{i.3}(\emph{Third Isomorphism Theorem}) \label{2ndisothm}\\
+\begin{thm}{i.3}(\emph{Third Isomorphism Theorem}) \label{3rdisothm}\\
   Let $H \subseteq K$ and $K \triangleleft G,~ H \triangleleft G$.\\
   Then
   $\frac{K}{H} \triangleleft \frac{G}{H}$
@@ -813,7 +813,7 @@
 
   Let $f_i$ be the minimal polynimal of $\alpha_i$ over $K$.
 
-  Then, $M \supseteq L$ is splitting field of $\Prod_{i=1}^r f_i$, since $M$ is normal enclosure of $L:K$.
+  Then, $M \supseteq L$ is splitting field of $\prod_{i=1}^r f_i$, since $M$ is normal enclosure of $L:K$.
 
   For every zero $\beta_{ij}$ of $f_i$ in $M$,\\
   $\exists$ an isomorphism $\sigma: K(\alpha_i) \longrightarrow K(\beta_{ij})$ by Corollary \ref{5.13}.
@@ -821,7 +821,7 @@
   By Proposition \ref{11.4}, since $K(\alpha_i),~K(\beta_{ij}) \subset M$,
   $\sigma$ extends to a $K$-automorphism
   $$\tau: M \longrightarrow M$$
-  since $M$ is splitting field (ie. contains the zeros of $\Prod f_i$).
+  since $M$ is splitting field (ie. contains the zeros of $\prod f_i$).
 
   Since $\alpha$ is a member of radical sequence for a subfield of $M$, so it is $\beta_{ij}$.
 
@@ -837,6 +837,120 @@ The next two lemmas show that certain Galois groups are Abelian.
 \end{lemma}
 \begin{proof}
 \end{proof}
+
+\newpage
+
+\subsection{Characterization of finite fields}
+
+\begin{defn}{16.8}
+The prime subfield of a field $K$ is the intersection of all subfields of $K$. 
+\end{defn}
+
+\begin{thm}{16.10}
+  Every prime subfield $P$ is isomorphic either to
+  $$P \cong \mathbb{Z}_p~ (p~ \text{prime})~~~~\text{or}~~~~ P \cong \mathbb{Q}$$
+\end{thm}
+\begin{proof}
+Let $K$ a field, $P$ its prime subfield. Then $P$ contains $0$ and $1$ and, 
+therefore, contains the elements $n^*$ (for $n \in \mathbb{Z}$) defined by
+
+$$n^* =
+\begin{cases}
+\overbrace{1 + 1 + \cdots + 1}^{n \text{ times}} & \text{if } n > 0\\
+0 & \text{if } n = 0\\
+-(-n)^* & \text{if } n < 0
+\end{cases}$$
+
+The map $* : \mathbb{Z} \to P$ is a ring homomorphism.\\
+Two cases arise:
+\begin{enumerate}[i.]
+  \item $P \cong \mathbb{Z}_p$\\
+  $n^* = 0$ for some $n \neq 0$. Since also $(-n)^* = 0$, there exists a smallest 
+  positive integer $p$ such that $p^* = 0$. If $p$ is composite, say $p = rs$ where $r$ and $s$ are 
+  smaller positive integers, then $r^* s^* = p^* = 0$, so either $r^* = 0$ or $s^* = 0$, contrary 
+  to the definition of $p$. Therefore, $p$ is prime. The elements $n^*$ form a ring isomorphic 
+  to $\mathbb{Z}_p$, which is a field by Theorem 16.7. This must be the whole of $P$, since $P$ is the 
+  smallest subfield of $K$.
+
+  \item $P \cong \mathbb{Q}$\\
+  $n^* \neq 0$ if $n \neq 0$. Then $P$ must contain all the elements $m^*/n^*$ where $m, n$ are integers and $n \neq 0$. These form a subfield isomorphic to $\mathbb{Q}$ (by the map which sends $m^*/n^*$ to $m/n$), which is necessarily the whole of $P$.
+\end{enumerate}
+\end{proof}
+
+
+\begin{lemma}{16.11}
+  If $K$ is a subfield of $L$, then $K$ and $L$ have the same characteristic. 
+\end{lemma}
+\begin{proof}
+  In fact, $K$ and $L$ have the same prime subfield.
+\end{proof}
+
+\vspace{1.0cm}
+
+Finite fields have order $p^n$ with $p$ prime and $n > 0$. In the following theorems we prove it, first proving the case $n=1$ with a specific case proof which works for integers modulo $p$, and then proving the general case for $n > 0$.
+
+\begin{thm}{$(\mathbb{Z}_p)$}
+  The ring $\mathbb{Z}_n$ is a field iff $n=p$, $p$ prime.
+\end{thm}
+\begin{proof}
+  One of the axioms of a field is $\exists$ multiplicative inverse.\\
+  If $\mathbb{Z}_n$ with $n$ no prime, then $n= k \cdot l$ for some $1 \leq k,~l \leq n-1$.\\
+  Then in $\mathbb{Z}_n$, $k \cdot l = 0$, but if $k \cdot l=0$ means that either $k=0$ or $l=0$ (otherwise, we could multiply by (eg) $k^{-1}$ and get $k^{-1} \cdot k \cdot l = k^{-1} \cdot 0$, which leads to $1 \cdot l = 0$).\\
+  which is a contradiction here (since $1 \leq k,~l \leq n-1$).\\
+  Thus $\mathbb{Z}_n$ with $n$ not prime can not be a field.\\
+  Conversely, if $n = p$ prime,\\
+  for $0 \neq x \in \mathbb{Z}_p$, $gcd(x, p)=1$, so Extended Euclidean Algorithm gives $u, v \in \mathbb{Z}$ such that $u x + v p = 1$.\\
+  Then, $ux=1 \pmod p$, so $u=x^{-1}$, so inverses exist.\\
+  Thus $\mathbb{Z}_p$ is a field.
+\end{proof}
+
+\vspace{0.5cm}
+More generally, using Galois theory, we can show that every finite field is isomorphic to $F_{p^n}$:
+
+\begin{thm}{$(F_p^n)$}
+  Every finite field has $p^n$ elements and hence is isomorphic to $F_{p^n}$,
+  for $p$ prime and $n>0$. Denoted as $F_{p^n} = GF(q^n)$.
+\end{thm}
+\begin{proof}
+  Let $K$ be a finite field. Since $K$ finite, $char(K) \neq 0$, ie. $char(K)=p >0$.
+
+  In any field, characteristic must be prime, since if $char(K)=n$ ($n$ not prime), then $n=a \cdot b$ for $1 <a, b < char(K)$, and then, in $K~~ n=0 ~\Longrightarrow~ a \cdot b = 0$; either $a$ or $b$ are zero, a contradiction.
+
+  Thus, $char(K)=p$ prime,\\
+  and the prime subfield of $K$ is $P=F_p$.
+
+  $K$ is a vector space over $P$, with finitely many elements\\
+  \hspace*{2em} $\Longrightarrow~ [K:P]=n < \infty$.
+
+  Let $x_1, \ldots, x_n$ be a basis for $K$ over $P$,
+  $$\forall a \in K, ~ a= \lambda_1 x_1 + \ldots + \lambda_n x_n, ~~w/ \lambda_i \in P$$
+
+  each $\lambda_i$ can be chosen in $p$ ways, since $|P|=p$.
+
+  hence, there are $p^n$ possible $\lambda_1 x_1 + \ldots + \lambda_n x_n$ expressions in $K$.
+
+  Therefore, $|K|=q=p^n$.
+
+  \vspace{0.4cm}
+  Now, the set $K \setminus \{0\}$ forms a group under multiplication, of order $q-1$
+
+  $$\Longrightarrow~ \forall~ 0 \neq x \in K,~ x^{q-1}=1$$
+  $$\text{thus}~ x^q=x~ \Longrightarrow~\text{hence}~ x^q-x=0$$
+
+  Notice that $0^q-0=0$, so that we have that every element of $K$ (including zero) is a zero of $f(t)=t^q-t$.
+
+  Thus $f(t)$ splits in $K$ $~\Longrightarrow~$ ie. $K$ is the splitting field of $f(t)=t^q-t$ over $P$.
+
+  By uniqueness of splitting fields, $F$ is unique up to isomorphism, denoted $F_{p^n}$.
+
+  \vspace{0.4cm}
+  We can construct $F_{p^n}$ as:\\
+  let $h(x) \in F_p[x]=P$ of degree $n$. Then $|F_p[x] / (h)| = p^n$.
+\end{proof}
+
+
+
+
 
 \newpage
 
@@ -1088,7 +1202,6 @@ For $n \geq 3, ~~\mathbb{D}_n \subseteq \mathbb{S}_n$ (subgroup of the Symmetry 
     Same with minimus.\\
     $\Longrightarrow$ Hence, since $Df \nless 0$ and $Df \ngtr 0$, and $Df$ exists, then $Df=0$.
   \end{enumerate}
-  \\
     Thus, $f$ must have extrema (either max or min or both), and at that extrema $Df$ must be zero.
 \end{proof}
 
