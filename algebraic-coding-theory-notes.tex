@@ -2116,7 +2116,8 @@ then $C$ is cyclic, and the generator polynomial is the least common multiple (l
 
   Let $\alpha$ a primitive element of the field, then $\alpha^63=1$ ,and $\beta := \alpha^7$ is a primitive 9-th root of unity.
 
-  Then, the minimal polynomial of $\beta$ has the zeros $\beta, \beta^2, \beta^4, \beta^8, \beta^{16}=\beta^7, \beta^{14}=\beta^5$.
+  Then, the minimal polynomial of $\beta$ has the zeros
+  $$\beta, \beta^2, \beta^4, \beta^8, \beta^{16}=\beta^7, \beta^{14}=\beta^5$$
 
   $\Longrightarrow$ min. polynomial: $(x^9 - 1)/(x^3 -1) = x^6 + x^3 + 1$.
 
@@ -2142,8 +2143,9 @@ then $C$ is cyclic, and the generator polynomial is the least common multiple (l
 
   ie. $g(x) \cdot h(x) = x^n -1$ in $\mathbb{F}_q[x]$.
 
-  Since $x^n -1$ has no multiple zeros (ie. has simple zeros), we have $(g(x), h(x))=1$, hence by the Bezout identity:
-  $$\exists~ a(x), b(x) \in \mattbb{F}_q[x] ~\text{s.th.}~ a(x) g(x) + b(x) h(x) = gcd(g, h)=1$$
+  Since $x^n -1$ has no multiple zeros (ie. has simple zeros),\\
+  \hspace*{2em} we have $(g(x), h(x))=1$, hence by the Bezout identity:
+  $$\exists~ a(x), b(x) \in \mathbb{F}_q[x] ~\text{s.th.}~ a(x) g(x) + b(x) h(x) = gcd(g, h)=1$$
 
   Define $c(x) := a(x) g(x) = 1-b(x) h(x)$.
 
@@ -2251,7 +2253,7 @@ Define $\Phi: T \longrightarrow T$ as:
 let $a(x) \in T$, then $A(X) = (\Phi_a)(X)$ is defined by
 $$A(X) := \sum_{j=1}^n a(\beta^j) X^{n-j}$$
 
-If $a=(a_0, a_1, \ldots, a_{n-1})$, the polynomial $A(X)$ obtained from $a_0 + a_1 x + \lldots a_{n-1} x^{n-1}$ is called the \emph{Mattson-Solomon polynomial} of the vector $a$.
+If $a=(a_0, a_1, \ldots, a_{n-1})$, the polynomial $A(X)$ obtained from $a_0 + a_1 x + \ldots a_{n-1} x^{n-1}$ is called the \emph{Mattson-Solomon polynomial} of the vector $a$.
 \end{defn}
 
 \begin{lemma}{6.5.3} \label{6.5.3}
