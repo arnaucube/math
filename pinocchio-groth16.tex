@@ -608,6 +608,34 @@ recall that $[z]_1$ comes from the proof.
 
 \section{Groth16}
 
+\subsection{Conceptual version}
+As before, we want to prove the QAP relation $R_{QAP}$ (\ref{qap-relation}).
+
+We have, public inputs: $\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l$, and private inputs: $s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1}$.
+
+The prover will solve for $h(X)$ such that $p(X)=h(X) \cdot t(X)$, then we have
+$$
+(\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i) = (\sum_{i=1}^n c_i(X) w_i) + h(X) \cdot t(X)
+$$
+
+where $t(X)$ is the zero polynomial.
+
+\paragraph{SRS}
+
+Let $\alpha, \beta, \gamma, \delta, x \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol, we denote them by $\tau=(\alpha, \beta, \gamma, \delta, x)$.
+
+Then
+\begin{align*}
+    \sigma &= \left(
+	\alpha, \beta, \gamma, \deta, \{x^i \}_{i=0}^{n-1},
+	\left\{ \frac{\beta a_i(x) + \alpha b_i(x) + c_i(x)}{\gamma} \right\}_{i=0}^l,\\
+	   &\left\{ \frac{\beta a_i(x) + \alpha b_i(x) + c_i(x)}{\delta} \righ\}_{i=0}^l,
+	   \left\{ \frac{x^i t(x)}{\delta} \right\}_{i=0}^{n-2}
+	\right)
+\end{align*}
+
+\paragraph{Prover}
+
 \vspace{1cm}
 
 \section{Powers of tau (trusted setup)}
