@@ -622,15 +622,15 @@ where $t(X)$ is the zero polynomial.
 
 \paragraph{SRS}
 
-Let $\alpha, \beta, \gamma, \delta, x \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol, we denote them by $\tau=(\alpha, \beta, \gamma, \delta, x)$.
+Let $\alpha, \beta, \gamma, \delta, \tau \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol.
 
 Then
 \begin{align*}
     \sigma &= \Bigg(
-	\alpha, \beta, \gamma, \delta, \{x^i \}_{i=0}^{n-1},
-	\left\{ \frac{\beta a_i(x) + \alpha b_i(x) + c_i(x)}{\gamma} \right\}_{i=0}^l,\\
-	   &\left\{ \frac{\beta a_i(x) + \alpha b_i(x) + c_i(x)}{\delta} \right\}_{i=0}^l,
-	   \left\{ \frac{x^i t(x)}{\delta} \right\}_{i=0}^{n-2}
+	\alpha, \beta, \gamma, \delta, \{\tau^i \}_{i=0}^{n-1},
+	\left\{ \frac{\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)}{\gamma} \right\}_{i=0}^l,\\
+	   &\left\{ \frac{\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)}{\delta} \right\}_{i=0}^l,
+	   \left\{ \frac{\tau^i t(\tau)}{\delta} \right\}_{i=0}^{n-2}
 	\Bigg)
 \end{align*}
 
@@ -639,16 +639,16 @@ Then
 Set random values $r, s \in^R \mathbb{F}$. Then compute
 
 \begin{align*}
-    A &= \alpha + \sum_{i=0}^n w_i a_i(x) + r \delta
-    ~~~~~~~~~~~~~~~~~~ B = \beta + \sum_{i=0}^n w_i b_i(x) + s \delta\\
-    C &= \frac{\sum_{i=l-1}^n w_i (\beta a_i(x) + \alpha b_i(x) + c_i(x)) + h(x) + t(x)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta
+    A &= \alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta
+    ~~~~~~~~~~~~~~~~~~ B = \beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta\\
+    C &= \frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta
 \end{align*}
 
 
 \paragraph{Verifier}
 The verifier wants to check that
 
-$$A \cdot B = \alpha \cdot \beta + \frac{\sum_{i=0}^l w_i (\beta a_i(x) + \alpha b_i(x) + c_i(x))}{\gamma} \cdot \gamma + C \cdot \delta$$
+$$A \cdot B = \alpha \cdot \beta + \frac{\sum_{i=0}^l w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau))}{\gamma} \cdot \gamma + C \cdot \delta$$
 
 Here the
 \begin{itemize}
@@ -663,16 +663,16 @@ Here the
 \vspace{1cm}
 
 \subsection{Actual Groth16 protocol}
-All those operations are not done over the raw polynomials, but over the evaluation of the polynomials at $\tau$. Furthermore, $\tau$ is kept secret, and what we do is the evaluations over the \emph{encrypted space}.
+In practice, $\tau$ is kept secret, and the operations are done over the evaluations over the \emph{encrypted space}. Which is the reason of having computed the powers of tau in the SRS.
 
 \paragraph{Prover}
 Set random values $r, s \in^R \mathbb{F}$. Then compute
 
 \begin{align*}
-    A &= g_1^{\alpha + \sum_{i=0}^n w_i a_i(x) + r \delta} = \left[\alpha + \sum_{i=0}^n w_i a_i(x) + r \delta \right]_1\\
-    B &= g_2^{\beta + \sum_{i=0}^n w_i b_i(x) + s \delta} = \left[ \beta + \sum_{i=0}^n w_i b_i(x) + s \delta \right]_2\\
-    C &= g_1^{\frac{\sum_{i=l-1}^n w_i (\beta a_i(x) + \alpha b_i(x) + c_i(x)) + h(x) + t(x)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta}\\
-      &= \left[ \frac{\sum_{i=l-1}^n w_i (\beta a_i(x) + \alpha b_i(x) + c_i(x)) + h(x) + t(x)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta \right]_1
+    A &= g_1^{\alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta} = \left[\alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta \right]_1\\
+    B &= g_2^{\beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta} = \left[ \beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta \right]_2\\
+    C &= g_1^{\frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta}\\
+      &= \left[ \frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta \right]_1
 \end{align*}
 
 And the proof is $\pi = (A, B, C)$.
@@ -696,9 +696,9 @@ which is checking that $a(\tau) \cdot b(\tau) = c(\tau) + h(\tau) \cdot t(\tau)$
 
 \vspace{1.0cm}
 
-\section{Powers of tau (trusted setup)}
+\section{Powers of tau (SRS - trusted setup)}
 \subsection{Main idea}
-% TODO. mention "SRS" concept
+% TODO. mention "SRS" (Structured Reference String) concept
 
 \subsection{Participant contribution}
 In the context of SRS (Structured Reference String), the powers of tau consist of an array containing the scalar multiplication of the generator point by each power of tau, eg. $\tau^0 \cdot G,~\tau^1 \cdot G,~\tau^2 \cdot G,~\tau^3 \cdot G \ldots$
