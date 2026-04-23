@@ -608,11 +608,97 @@ recall that $[z]_1$ comes from the proof.
 
 \section{Groth16}
 
+\subsection{Conceptual version}
+As before, we want to prove the QAP relation $R_{QAP}$ (\ref{qap-relation}).
+
+We have, public inputs: $\phi = (w_1, \ldots, w_l) \in \mathbb{F}^l$, and private inputs: $s = (w_{l+1}, \ldots, w_n) \in \mathbb{F}^{n-l-1}$.
+
+The prover will solve for $h(X)$ such that $p(X)=h(X) \cdot t(X)$, then we have
+$$
+(\sum_{i=1}^n a_i(X) w_i) \cdot (\sum_{i=1}^n b_i(X) w_i) = (\sum_{i=1}^n c_i(X) w_i) + h(X) \cdot t(X)
+$$
+
+where $t(X)$ is the zero polynomial.
+
+\paragraph{SRS}
+
+Let $\alpha, \beta, \gamma, \delta, \tau \in^R \mathbb{F}$ be the \emph{secret} challenges for the protocol.
+
+Then
+\begin{align*}
+    \sigma &= \Bigg(
+	\alpha, \beta, \gamma, \delta, \{\tau^i \}_{i=0}^{n-1},
+	\left\{ \frac{\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)}{\gamma} \right\}_{i=0}^l,\\
+	   &\left\{ \frac{\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)}{\delta} \right\}_{i=0}^l,
+	   \left\{ \frac{\tau^i t(\tau)}{\delta} \right\}_{i=0}^{n-2}
+	\Bigg)
+\end{align*}
+
+\paragraph{Prover}
+
+Set random values $r, s \in^R \mathbb{F}$. Then compute
+
+\begin{align*}
+    A &= \alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta
+    ~~~~~~~~~~~~~~~~~~ B = \beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta\\
+    C &= \frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta
+\end{align*}
+
+
+\paragraph{Verifier}
+The verifier wants to check that
+
+$$A \cdot B = \alpha \cdot \beta + \frac{\sum_{i=0}^l w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau))}{\gamma} \cdot \gamma + C \cdot \delta$$
+
+Here the
+\begin{itemize}
+    \item[$\gamma,\delta$:] make the two latter products of the verifier to be independent of the first product.
+    \item[$\alpha \cdot \beta$:] guarantee that $A, B$ involve nontrivial $\alpha, \beta$.\\
+	This is to prevent mixing and matching of elements intended for different products.
+    \item[$\alpha, \beta$:] ensure that $A, B, C$ are consistent with each other in the choice of\\
+	$w_1, w_2, \ldots, w_n$.
+    \item[$r, s$:] to randomize the proof to get the zero-knowledge property.
+\end{itemize}
+
 \vspace{1cm}
 
-\section{Powers of tau (trusted setup)}
+\subsection{Actual Groth16 protocol}
+In practice, $\tau$ is kept secret, and the operations are done over the evaluations over the \emph{encrypted space}. Which is the reason of having computed the powers of tau in the SRS.
+
+\paragraph{Prover}
+Set random values $r, s \in^R \mathbb{F}$. Then compute
+
+\begin{align*}
+    A &= g_1^{\alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta} = \left[\alpha + \sum_{i=0}^n w_i a_i(\tau) + r \delta \right]_1\\
+    B &= g_2^{\beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta} = \left[ \beta + \sum_{i=0}^n w_i b_i(\tau) + s \delta \right]_2\\
+    C &= g_1^{\frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta}\\
+      &= \left[ \frac{\sum_{i=l-1}^n w_i (\beta a_i(\tau) + \alpha b_i(\tau) + c_i(\tau)) + h(\tau) + t(\tau)}{\delta} + A \cdot s + B \cdot r - r \cdot s \cdot \delta \right]_1
+\end{align*}
+
+And the proof is $\pi = (A, B, C)$.
+
+\paragraph{Verifier}
+
+Verifier gets the proof $\pi = (A, B, C)$, and checks the following.
+
+First it computes
+$$ L = \sum_{i \in [0,l]} w_i \cdot [\gamma^{-1} \cdot L_i(\tau)]_1$$
+
+and then checks
+
+$$e(A, B) = e(g_1^{\alpha}, g_2^{\beta}) + e(L, g_2^{\gamma}) + e(C, g_2^{\delta})$$
+
+that is
+$$e(A, B) = e([\alpha]_1, [\beta]_2) + e(L, [\gamma]_2) + e(C, [\delta]_2)$$
+
+which is checking that $a(\tau) \cdot b(\tau) = c(\tau) + h(\tau) \cdot t(\tau)$.
+
+
+\vspace{1.0cm}
+
+\section{Powers of tau (SRS - trusted setup)}
 \subsection{Main idea}
-% TODO. mention "SRS" concept
+% TODO. mention "SRS" (Structured Reference String) concept
 
 \subsection{Participant contribution}
 In the context of SRS (Structured Reference String), the powers of tau consist of an array containing the scalar multiplication of the generator point by each power of tau, eg. $\tau^0 \cdot G,~\tau^1 \cdot G,~\tau^2 \cdot G,~\tau^3 \cdot G \ldots$
