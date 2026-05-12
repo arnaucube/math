@@ -2351,10 +2351,47 @@ Usually $l=1$; if $n=q^m-1$ (ie. $\beta$ a primitive element of $\mathbb{F}_q^m$
   the minimum distnce of a BCH code with designed distance $d$ is $\geq d$.
 \end{thm}
 \begin{proof}
-  wlog. take $l=1$. By Lemma \ref{6.5.4}, the degree of the Mattson-Solomon polynomial of a codeword $c$ is $\leq n-d$.
+  wlog. take $l=1$. By Lemma \ref{6.5.4}, the degree of the Mattson-Solomon polynomial $A$ of a codeword $c$ is $deg(A) \leq n-d$.
 
   Therefore, in theorem \ref{6.5.5} we have $r \leq n-d$, ie. $w(c) \geq d$.
+
+  (recall: $r$ is the amount of n-th roots of unity which are zeros of the M-S polynomial $A$)
 \end{proof}
+
+
+\begin{defn}{}[Defining set]
+  If $A = \{ \alpha^{i_1}, \ldots, \alpha^{i_l} \}$ is a set of n-th roots of unity such that
+  $$c(x) \in C \Longleftrightarrow \forall \zeta \in A ~ c(\zeta)=0$$
+  we say that $A$ is the \emph{defining set} for $C$.
+  
+  If $A$ is the \emph{maximal} defining set for $C$, we call $A$ \emph{complete}.
+\end{defn}
+
+\begin{defn}{6.6.3}
+  $M(A)$ or $M(\alpha^{i_1}, \ldots, \alpha^{i_l})$: matrix $l \times n$ that has $1, \alpha^{i_k}, \alpha^{2 i_k}, \ldots, \alpha^{(n-1)i_k}$ as its k-th rows, ie.
+
+  $$M(A) = \begin{bmatrix}
+    1 & \alpha^{i_1} & \alpha^{2 i_1} & \cdots & \alpha^{(n-1) i_1}\\
+    1 & \alpha^{i_2} & \alpha^{2 i_2} & \cdots & \alpha^{(n-1) i_2}\\
+    \vdots & & & & \vdots\\
+    1 & \alpha^{i_l} & \alpha^{2 i_l} & \cdots & \alpha^{(n-1) i_l}\\
+  \end{bmatrix}
+  $$
+
+  $M(A)$ is the PCM corresponding to $A$.
+\end{defn}
+
+
+
+\begin{thm}{6.6.13}
+  The primitive binary BCH code $C$ of length $n=2^m-1$ and designed distance $\delta = 2^l -1$ has minimum distance $\delta$.
+\end{thm}
+\begin{cor}{6.6.14}
+  a primitive BCH code of designed distance $\delta$ has distance $d \leq 2 \delta -1$.
+\end{cor}
+\begin{cor}{6.6.16}
+  the minimum weight of a primitive binary BCH code is odd.
+\end{cor}
 
 
 \bibliographystyle{unsrt}
