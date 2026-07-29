@@ -1,0 +1,226 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+% \usepackage{yfonts} % WIP
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{tikz} % diagram
+\usepackage{changepage} % for adjustwidth
+
+\begin{filecontents}[overwrite]{lattices.bib}
+@misc{chris-peikert,
+  author = {Chris Peikert},
+  title = {{A decade of lattice cryptography}},
+  year = {2016}
+}
+@misc{slides-micciano,
+  author = {Daniele Micciancio},
+  title = {{Introduction to Lattices}},
+  year = {2024}
+}
+@misc{micciano-regev,
+  author = {Daniele Micciancio and Oded Regev},
+  title = {{Lattice-based Cryptography}},
+  year = {2008}
+}
+@misc{matan,
+  author = {Matan Prasma},
+  title = {{Lattices, an elementary and rigurous account}},
+  year = {2024}
+}
+@misc{menezes,
+  author = {Alfred Menezes},
+  title = {{A Gentle Introduction to Lattice-Based Cryptography}},
+  year = {2026}
+}
+@misc{cynthia-dwork,
+  author = {Cynthia Dwork},
+  title = {{Lattices and Their Application to Cryptography}},
+  year = {1998}
+}
+\end{filecontents}
+\nocite{*}
+
+
+\theoremstyle{definition}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{remark}[thm]{Remark}
+\newtheorem{ex}[thm]{Example}
+
+\newcommand{\Rr}{\mathbb{R}}
+\newcommand{\Zz}{\mathbb{Z}}
+\newcommand{\Ll}{\mathcal{L}}
+
+\title{Notes on Lattices}
+\author{arnaucube}
+\date{2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Notes taken while studying lattice-based cryptography.
+
+    Usually while reading books and papers I take handwritten notes in paper notebooks, this document contains some of them re-written to $LaTeX$.
+\end{abstract}
+
+\tableofcontents
+
+\section{Lattices}
+\subsection{Hard problems}
+
+\begin{defn}[SVP (Shortest Vector Problem)]
+find a shortest non-zero vector $x \in \Ll$, ie. that minimizes the Euclidean norm $||x||$, that is $\lambda_1(\Ll)=||x||$.
+\end{defn}
+
+\begin{defn}[CVP (Closest Vector Problem)]
+given a vector $y \in \Rr^n$ with $y \not\in \Ll$, find a nonzero vector $x \in \Ll$ that is closest to $y$, ie. that minimizes the Euclidean norm $||y-x||$.
+\end{defn}
+
+\begin{defn}[NTRU key recovery problem]
+Given $h(x)$, find ternary polynomials $f, g \in \mathcal{T}$ satisfying
+$$f(x) \cdot h(x) = g(x) \pmod q \in R_q$$
+Where $R_q = \Zz_q[X]/(X^n-1)$.
+\end{defn}
+
+\begin{defn}[SIS (Short Integer Solution)]
+Given $q \in \Zz$ and matrix $A \in \Zz_q^{m \times n}$, find a non-zero short $z \in \Zz^n$ s.th.
+$$A \cdot z = 0 \pmod q$$
+
+\small{"short": $z \in \{B, B\}^n$ for some bound $B$, often $z \in \{-1, 0, 1 \}^n$.}
+\end{defn}
+
+The set of all solutions to the SIS problem forms the (q-ary) lattice
+$$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
+where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
+
+\begin{itemize}
+\item LLL algorithm is used to solve SVP and CVP.
+
+  \item Both SVP and CVP become computationally difficult (NP hard*) as the lattice dimension $n$ grows.
+\end{itemize}
+
+
+\begin{defn}[Ring SIS (Ring Short Integer Solution)]
+given a uniformly random matrix $A \in^R R_q^n$, with elements $a_i \in R_q$, find a non-zero integer vector $z \in R^n$ of norm $||z|| \leq \beta$ such that
+
+$$A z = \sum_i a_i \cdot z_i = 0 \in R_q$$
+\end{defn}
+
+\begin{defn}[MSIS (Module Short Integer Solution)]
+given a uniformly random matrix $A \in^R R_q^{m \times n}$, with columns $a_i \in R_q^m$, find a non-zero integer vector $z \in R^n$ of norm $||z|| \leq \beta$ such that
+
+$$A z = 0 \in R_q^m$$
+$$ie.~ \sum_i a_{ij} \cdot z_j = 0 \in R_q, ~~for~ i=1, \ldots, m$$
+\end{defn}
+
+Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
+
+\subsection{Dual lattices}
+
+\begin{defn}[Dual of a lattice] \label{dual}
+    For a lattice $\Ll$, its dual is
+    $$\Ll^* = \{ y \in \Rr^m ~|~ \langle y, x \rangle \in \Zz ~\forall~ x \in \Ll \}$$
+\end{defn}
+
+\begin{lemma}
+    $$\Ll = q \Ll^{\perp *} ~\text{ie.}~ \frac{1}{q} \Ll = \Ll^{\perp *}$$
+\end{lemma}
+\begin{proof}
+    \begin{enumerate}[i.]
+    \item
+    Take $y \in \frac{1}{q} \Ll$, then $\exists s \in \Zz^n, z \in \Zz^m$ such that
+    $$y = \frac{1}{q} (A^Ts + qz) = \frac{1}{q} A^T s +z$$
+
+    Let $x \in \Ll^\perp$. By definition $Ax=0 \pmod q$, therefore $\exists~ k \in \Zz^n$ such that $Ax = qk$.
+
+    Compute
+    \begin{align*}
+	\langle y, x \rangle &= \langle \frac{1}{q} A^T s + z, x \rangle\\
+			     &= \frac{1}{q} \langle A^T s, x \rangle + \langle z, x \rangle\\
+			     &= \frac{1}{q} \langle s, Ax \rangle + \langle z, x \rangle\\
+			     &= \frac{1}{q} \langle s, qk \rangle + \langle z, x \rangle\\
+			     &= \langle s, k \rangle + \langle z, x \rangle
+    \end{align*}
+    and $\langle s, k \rangle + \langle z, x \rangle \in \Zz$, since each of $s, k, z, x \in \Zz$.
+
+    Thus $\langle y, x \rangle \in \Zz$, hence by \ref{dual}, $y \in \Ll^{\perp *}$.
+
+    We started from $y \in \frac{1}{q}\Ll$, so, now we have
+    $$y \in \Ll^{\perp *} ~\forall~ y \in \frac{1}{q} \Ll$$
+    therefore
+    $$\Ll^{\perp *} \supseteq \frac{1}{q} \Ll$$
+    
+    \item
+    Now we prove the reverse inclusion. Take $y \in \Ll^{\perp *}$.
+
+    Observe that $q \Zz \subseteq \Ll^\perp$, because
+    $$\forall z \in \Zz^m,~ A(qz) = qAz = q 0 = 0 \pmod q$$
+
+    Since $y \in \Ll^{\perp *}$, we must have $\langle y, qz \rangle \in \Zz ~\forall~ z \in \Zz^m$.
+
+    Let $e_i \in \Zz^m$ be the $i-th$ standard basis vector, ie. $e_i=(0, \ldots, 0, 1, 0, \ldots, 0)$ (where one is at the i-th position).
+
+    We know that $\langle y, qz \rangle \in \Zz ~\forall z \in \Zz^m$ (including $z=e_i$), thus\\
+    $q e_i = (0, \ldots, 0, q, 0, \ldots, 0)$. Therefore,
+    $$\langle y, q e_i \rangle = q \langle y, e_i \rangle = q \cdot y_i$$
+    since $\langle y, e_i \rangle = y_i$ (extracts the i-th position from $y$).
+
+    So, since $\langle y, qz \rangle \in \Zz ~\forall z \in \Zz^m$, and $\langle y, q e_i \rangle = q y_i$, then $q y_i \in \Zz$
+
+    This argument works $\forall i \in [m]$, that is, $q y_1, \ldots, q y_m \in \Zz$. Therefore
+    $$qy \in \Zz^m ~\forall~ y \in \Ll^{\perp *}$$
+
+    $qy \pmod q$ is orthogonal to $ker(A)$.  %TODO
+
+    Let $\hat{x} \in ker(A) \subseteq \Zz_q^m$.
+    Since $A \hat{x}=0$, then $Ax =0 \pmod q$, thus $x \in \Ll^\perp$.
+
+    Since $y \in \Ll^{\perp *}$, $\langle y, x \rangle \in \Zz$. Multiply it by $q$,
+    $$\langle qy, x \rangle = q \langle y, x \rangle \in q \Zz$$
+    hence $\langle qy, x \rangle = 0 \pmod q$, thus $qy \pmod q \in ker(A)^\perp$.
+
+    \begin{adjustwidth}{2em}{0pt}
+	Observe: $ker(A)^\perp = im(A^T)$, proof:
+	let $A: \Zz_q^m \longrightarrow \Zz_q^n$, define
+	$$ker(A) = \{ x \in \Zz_q^m ~|~ Ax=0 \} = \Ll^\perp(A)$$
+
+	Define the orthogonal complement
+	$$(ker(A))^\perp = \{ y \in \Zz_q^m ~|~ \langle y, x \rangle =0 \pmod q ~\forall~ x \in ker(A) \}$$
+	$$im(A^T) = \{ A^T s ~|~ s \in \Zz_q^n \}$$
+
+	Then, $(ker(A))^\perp = im(A^T)$.
+    \end{adjustwidth}
+
+    Continuing from $qy \pmod q \in (ker(A))^\perp$, we've just seen that $(ker(A))^\perp = im(A^T)$, thus
+    $$\exists s \in \Zz^n ~\text{s.th.}~ qy=A^Ts \pmod q$$
+
+    Therefore, for some
+    $$z \in \Zz^m, ~ qy=A^Ts +qz$$
+    which means that $qy \in \Ll$ (by definition of $\Ll$). Divide that by $q$, obtaining
+    $$y \in \frac{1}{q} \Ll$$
+
+    Thus, $\forall y \in \Ll^{\perp *}$, we have $y \in \frac{1}{q} \Ll$.
+
+    Hence $\Ll^{\perp *} \subseteq \frac{1}{q} \Ll$.
+    \end{enumerate}
+
+    \vspace{0.6cm}
+    Putting together $(i).~ \Ll^{\perp *} \supseteq \frac{1}{q} \Ll$, and $(ii).~ \Ll^{\perp *} \subseteq \frac{1}{q} \Ll$, we have
+    $$\Ll^{\perp *} = \frac{1}{q} \Ll$$
+\end{proof}
+
+
+\bibliographystyle{unsrt}
+\bibliography{lattices.bib}
+
+\end{document}
