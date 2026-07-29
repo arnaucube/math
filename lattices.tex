@@ -127,6 +127,21 @@ Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 
 \subsection{Dual lattices}
 
+From previous section, we have LWE-Lattice and SIS-Lattice:
+\begin{defn}[LWE Lattice] \label{lwe-lattice}
+  A LWE-Lattice $\Ll$ is defined
+  \begin{align*}
+    \Ll &= \{ A^T s ~|~ s \in \Zz_q^n \} + q \Zz^m\\
+	&= \{ A^T s + qz ~|~ s \in \Zz_q^n, z \in \Zz^m \}
+  \end{align*}
+\end{defn}
+
+\begin{defn}[SIS-Lattice] \label{sis-lattice}
+  A SIS-Lattice $\Ll$ is defined
+$$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
+\end{defn}
+
+
 \begin{defn}[Dual of a lattice] \label{dual}
     For a lattice $\Ll$, its dual is
     $$\Ll^* = \{ y \in \Rr^m ~|~ \langle y, x \rangle \in \Zz ~\forall~ x \in \Ll \}$$
@@ -141,7 +156,7 @@ Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
     Take $y \in \frac{1}{q} \Ll$, then $\exists s \in \Zz^n, z \in \Zz^m$ such that
     $$y = \frac{1}{q} (A^Ts + qz) = \frac{1}{q} A^T s +z$$
 
-    Let $x \in \Ll^\perp$. By definition $Ax=0 \pmod q$, therefore $\exists~ k \in \Zz^n$ such that $Ax = qk$.
+    Let $x \in \Ll^\perp$. By definition (\ref{sis-lattice}) $Ax=0 \pmod q$, therefore $\exists~ k \in \Zz^n$ such that $Ax = qk$.
 
     Compute
     \begin{align*}
@@ -182,14 +197,14 @@ Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 
     $qy \pmod q$ is orthogonal to $ker(A)$.  %TODO
 
-    Let $\hat{x} \in ker(A) \subseteq \Zz_q^m$.
-    Since $A \hat{x}=0$, then $Ax =0 \pmod q$, thus $x \in \Ll^\perp$.
+    Let $\overline{x} \in ker(A) \subseteq \Zz_q^m$.
+    Since $A \overline{x}=0$, then $Ax =0 \pmod q$, thus $x \in \Ll^\perp$.
 
-    Since $y \in \Ll^{\perp *}$, $\langle y, x \rangle \in \Zz$. Multiply it by $q$,
-    $$\langle qy, x \rangle = q \langle y, x \rangle \in q \Zz$$
+    Since $y \in \Ll^{\perp *}$, by the definition of $\Ll^{\perp *}$, $\langle y, x \rangle \in \Zz$. Multiply it by $q$,
+    $$ q \langle y, x \rangle = \langle qy, x \rangle \in q \Zz$$
     hence $\langle qy, x \rangle = 0 \pmod q$, thus $qy \pmod q \in ker(A)^\perp$.
 
-    \begin{adjustwidth}{2em}{0pt}
+    \begin{adjustwidth}{4em}{0pt}
 	Observe: $ker(A)^\perp = im(A^T)$, proof:
 	let $A: \Zz_q^m \longrightarrow \Zz_q^n$, define
 	$$ker(A) = \{ x \in \Zz_q^m ~|~ Ax=0 \} = \Ll^\perp(A)$$
@@ -206,7 +221,7 @@ Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 
     Therefore, for some
     $$z \in \Zz^m, ~ qy=A^Ts +qz$$
-    which means that $qy \in \Ll$ (by definition of $\Ll$). Divide that by $q$, obtaining
+    which means that $qy \in \Ll$, by definition of $\Ll$ (\ref{lwe-lattice}). Divide that by $q$, obtaining
     $$y \in \frac{1}{q} \Ll$$
 
     Thus, $\forall y \in \Ll^{\perp *}$, we have $y \in \frac{1}{q} \Ll$.
