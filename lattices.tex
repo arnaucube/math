@@ -1,7 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsfonts}
-% \usepackage{yfonts} % WIP
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usepackage{enumerate}
@@ -16,6 +15,11 @@
   title = {{A decade of lattice cryptography}},
   year = {2016}
 }
+@misc{matan,
+  author = {Matan Prasma},
+  title = {{Lattices, an elementary and rigurous account}},
+  year = {2024}
+}
 @misc{slides-micciano,
   author = {Daniele Micciancio},
   title = {{Introduction to Lattices}},
@@ -25,11 +29,6 @@
   author = {Daniele Micciancio and Oded Regev},
   title = {{Lattice-based Cryptography}},
   year = {2008}
-}
-@misc{matan,
-  author = {Matan Prasma},
-  title = {{Lattices, an elementary and rigurous account}},
-  year = {2024}
 }
 @misc{menezes,
   author = {Alfred Menezes},
@@ -100,13 +99,13 @@ $$A \cdot z = 0 \pmod q$$
 \end{defn}
 
 The set of all solutions to the SIS problem forms the (q-ary) lattice
-$$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
+$$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A z = 0 \in \Zz_q^m \} \supseteq \Zz_q^n$$
 where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
 
 \begin{itemize}
 \item LLL algorithm is used to solve SVP and CVP.
 
-  \item Both SVP and CVP become computationally difficult (NP hard*) as the lattice dimension $n$ grows.
+  \item Both SVP and CVP become computationally difficult (NP hard) as the lattice dimension $n$ grows.
 \end{itemize}
 
 
@@ -125,6 +124,8 @@ $$ie.~ \sum_i a_{ij} \cdot z_j = 0 \in R_q, ~~for~ i=1, \ldots, m$$
 
 Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 
+
+
 \subsection{Dual lattices}
 
 From previous section, we have LWE-Lattice and SIS-Lattice:
@@ -142,7 +143,7 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
 \end{defn}
 
 
-\begin{defn}[Dual of a lattice] \label{dual}
+\begin{defn}[Dual of a lattice] \label{dual-lattice}
     For a lattice $\Ll$, its dual is
     $$\Ll^* = \{ y \in \Rr^m ~|~ \langle y, x \rangle \in \Zz ~\forall~ x \in \Ll \}$$
 \end{defn}
@@ -153,7 +154,7 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
 \begin{proof}
     \begin{enumerate}[i.]
     \item
-    Take $y \in \frac{1}{q} \Ll$, then $\exists s \in \Zz^n, z \in \Zz^m$ such that
+      Take $y \in \frac{1}{q} \Ll$, then by \ref{lwe-lattice}, $\exists~ s \in \Zz^n, z \in \Zz^m$ such that
     $$y = \frac{1}{q} (A^Ts + qz) = \frac{1}{q} A^T s +z$$
 
     Let $x \in \Ll^\perp$. By definition (\ref{sis-lattice}) $Ax=0 \pmod q$, therefore $\exists~ k \in \Zz^n$ such that $Ax = qk$.
@@ -166,9 +167,9 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
 			     &= \frac{1}{q} \langle s, qk \rangle + \langle z, x \rangle\\
 			     &= \langle s, k \rangle + \langle z, x \rangle
     \end{align*}
-    and $\langle s, k \rangle + \langle z, x \rangle \in \Zz$, since each of $s, k, z, x \in \Zz$.
+    and $\langle s, k \rangle + \langle z, x \rangle \in \Zz$, since each of $s, k, z, x \in \Zz$ separately.
 
-    Thus $\langle y, x \rangle \in \Zz$, hence by \ref{dual}, $y \in \Ll^{\perp *}$.
+    Thus $\langle y, x \rangle \in \Zz$, hence by \ref{dual-lattice}, $y \in \Ll^{\perp *}$.
 
     We started from $y \in \frac{1}{q}\Ll$, so, now we have
     $$y \in \Ll^{\perp *} ~\forall~ y \in \frac{1}{q} \Ll$$
@@ -178,15 +179,15 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
     \item
     Now we prove the reverse inclusion. Take $y \in \Ll^{\perp *}$.
 
-    Observe that $q \Zz \subseteq \Ll^\perp$, because
+    Observe that $q \Zz^m \subseteq \Ll^\perp$, because
     $$\forall z \in \Zz^m,~ A(qz) = qAz = q 0 = 0 \pmod q$$
 
     Since $y \in \Ll^{\perp *}$, we must have $\langle y, qz \rangle \in \Zz ~\forall~ z \in \Zz^m$.
 
     Let $e_i \in \Zz^m$ be the $i-th$ standard basis vector, ie. $e_i=(0, \ldots, 0, 1, 0, \ldots, 0)$ (where one is at the i-th position).
 
-    We know that $\langle y, qz \rangle \in \Zz ~\forall z \in \Zz^m$ (including $z=e_i$), thus\\
-    $q e_i = (0, \ldots, 0, q, 0, \ldots, 0)$. Therefore,
+    We know that $\langle y, qz \rangle \in \Zz ~\forall z \in \Zz^m$ (including $z=e_i$), thus, for
+    $q e_i = (0, \ldots, 0, q, 0, \ldots, 0)$,
     $$\langle y, q e_i \rangle = q \langle y, e_i \rangle = q \cdot y_i$$
     since $\langle y, e_i \rangle = y_i$ (extracts the i-th position from $y$).
 
@@ -195,25 +196,43 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
     This argument works $\forall i \in [m]$, that is, $q y_1, \ldots, q y_m \in \Zz$. Therefore
     $$qy \in \Zz^m ~\forall~ y \in \Ll^{\perp *}$$
 
-    $qy \pmod q$ is orthogonal to $ker(A)$.  %TODO
+    For $\overline{x} \in ker(A) \subseteq \Zz_q^m$, since $A \overline{x}=0$, then $Ax =0 \pmod q$, thus $x \in \Ll^\perp$ (by its definition \ref{sis-lattice}).
 
-    Let $\overline{x} \in ker(A) \subseteq \Zz_q^m$.
-    Since $A \overline{x}=0$, then $Ax =0 \pmod q$, thus $x \in \Ll^\perp$.
-
-    Since $y \in \Ll^{\perp *}$, by the definition of $\Ll^{\perp *}$, $\langle y, x \rangle \in \Zz$. Multiply it by $q$,
+    Since $y \in \Ll^{\perp *}$, by the definition of $\Ll^{\perp *}$ (\ref{dual-lattice}), $\langle y, x \rangle \in \Zz$. Multiply it by $q$,
     $$ q \langle y, x \rangle = \langle qy, x \rangle \in q \Zz$$
     hence $\langle qy, x \rangle = 0 \pmod q$, thus $qy \pmod q \in ker(A)^\perp$.
 
     \begin{adjustwidth}{4em}{0pt}
-	Observe: $ker(A)^\perp = im(A^T)$, proof:
-	let $A: \Zz_q^m \longrightarrow \Zz_q^n$, define
-	$$ker(A) = \{ x \in \Zz_q^m ~|~ Ax=0 \} = \Ll^\perp(A)$$
+      We'll now prove the following identity, valid for every integer $q\geq 2$, which we will use later:
+      $$(\ker A)^\perp=im(A^T)$$
+      where $A:\Zz_q^m \to \Zz_q^n$.
 
-	Define the orthogonal complement
-	$$(ker(A))^\perp = \{ y \in \Zz_q^m ~|~ \langle y, x \rangle =0 \pmod q ~\forall~ x \in ker(A) \}$$
-	$$im(A^T) = \{ A^T s ~|~ s \in \Zz_q^n \}$$
+      Let $y \in im(A^T)$. Then $\exists~ s \in \Zz_q^n$ such that $y=A^Ts$.
 
-	Then, $(ker(A))^\perp = im(A^T)$.
+      Then, $\forall~ x \in \ker(A)$, by definition of the kernel, $Ax=0$. Want to prove that $y$ is orthogonal to every $x \in \ker(A)$:
+      $$\langle y,x\rangle = \langle A^Ts,x\rangle = \langle s,Ax\rangle = 0$$
+
+      thus, $\langle y,x\rangle =0 ~\forall~ x \in \ker(A)$, hence $y$ is orthogonal to every $x$, that is, $y \in (\ker(A))^\perp$.
+
+      Therefore,
+      $$im(A^T) \subseteq (\ker(A))^\perp$$
+
+      For the reverse inclusion, it suffices to show that both sets have the same number of elements:
+
+      By the First Isomorphism Theorem,
+      $$|im(A)| = \frac{ |\Zz_q^m|}{|\ker(A)|} = \frac{q^m}{|\ker(A)|}$$
+
+      Notice that for every subgroup $K \subseteq \Zz_q^m$, the dot product on $\Zz_q^m$ is nondegenerate, therefore
+      $$|K^\perp| = \frac{q^m}{|K|}$$
+
+      so, applied to $\ker(A)$,
+      $$|\ker(A)^\perp| = \frac{q^m}{|\ker(A)|}= |im(A)|$$
+
+      which, by transposition properties, $|im(A)|=|im(A^T)|$, thus
+      $$|\ker(A)^\perp| = |im(A^T)|$$
+
+      hence,
+      $$(\ker(A)^\perp) = im(A^T)$$
     \end{adjustwidth}
 
     Continuing from $qy \pmod q \in (ker(A))^\perp$, we've just seen that $(ker(A))^\perp = im(A^T)$, thus
