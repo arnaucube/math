@@ -109,6 +109,7 @@ where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
 \end{itemize}
 
 
+
 \begin{defn}[Ring SIS (Ring Short Integer Solution)]
 given a uniformly random matrix $A \in^R R_q^n$, with elements $a_i \in R_q$, find a non-zero integer vector $z \in R^n$ of norm $||z|| \leq \beta$ such that
 
@@ -124,11 +125,38 @@ $$ie.~ \sum_i a_{ij} \cdot z_j = 0 \in R_q, ~~for~ i=1, \ldots, m$$
 
 Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 
+The next form is useful to compress the size of a SIS matrix by $n$ columns: 
+\begin{defn}[Hermite Normal Form (HNF)]
+  Assume the leftmost $n$ columns $A_1 \in \Zz_q^{n \times n}$ of $A=[A_1|A_2] \in \Zz_q^{n \times m}$ form an invertible matrix.
+
+  Then replace $A$ by
+  $$A_1^{-1} \cdot A = [ I_n ~|~ \overline{A} = A_1^{-1} \cdot A_2]$$
+  and threat the $I_n$ submatrix as implicit.
+
+  Then, $A$ and $[I_n ~|~ \overline{A}]$ have exactly the same set of short SIS solutions.
+\end{defn}
+
+\begin{defn}[LWE distribution]
+  $s \in \Zz_q^n$ (secret), $a \in \Zz_q^n$, $e \in \Xi$, output
+  $$(a, b= \langle s, a \rangle + e \pmod q) \in (\Zz_q^n \times \Zz_q)$$
+\end{defn}
+
+\begin{defn}[Search-LWE]
+  given $m$ independent samples $(a_i, b_i) \in \Zz_q^n \times \Zz_q$, for a uniform $s \in \Zz_q^n$ (fixed for all samples), find $s$.
+\end{defn}
+\begin{defn}[Decision-LWE]
+  given $m$ independent samples $(a_i, b_i) \in \Zz_q^n \times \Zz_q$, distinguish which one is not random and it is an actual instance.
+\end{defn}
+
 
 
 \subsection{Dual lattices}
 
 From previous section, we have LWE-Lattice and SIS-Lattice:
+
+
+Search-LWE can be seen as a Bounded-Distance Decoding (BDD) problem on q-ary m-dimensional integer lattices:\\
+for LWE samples, vector $b$ is relatively close to exactly one vector in the LWE lattice:
 \begin{defn}[LWE Lattice] \label{lwe-lattice}
   A LWE-Lattice $\Ll$ is defined
   \begin{align*}
@@ -137,6 +165,7 @@ From previous section, we have LWE-Lattice and SIS-Lattice:
   \end{align*}
 \end{defn}
 
+SIS can be seen as a SVP on q-ary m-dimensional lattices:
 \begin{defn}[SIS-Lattice] \label{sis-lattice}
   A SIS-Lattice $\Ll$ is defined
 $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
@@ -147,6 +176,20 @@ $$\Ll^\perp = \{ z \in \Zz^m ~|~ Az=0 \in \Zz_q^n \} \supseteq q \Zz^m$$
     For a lattice $\Ll$, its dual is
     $$\Ll^* = \{ y \in \Rr^m ~|~ \langle y, x \rangle \in \Zz ~\forall~ x \in \Ll \}$$
 \end{defn}
+The dual lattice consists of all vectors that measure lattice points with integer-valued linear measurements.
+
+\begin{remark}
+  For a lattice basis $B=(b_1, \ldots, b_n)$, the dual basis $B^*=(b_1^*, \ldots, b_n^*)$ is the unique basis satisfying
+  $$
+    \langle b_i^*, b_j \rangle
+    = \delta_{ij} =
+      \begin{cases}
+	1, & \text{if } i = j, \\
+	0, & \text{if } i \neq j
+      \end{cases}
+  $$
+  where $\delta_{ij}$ is the Kronecker delta.
+\end{remark}
 
 \begin{lemma}
     $$\Ll = q \Ll^{\perp *} ~\text{ie.}~ \frac{1}{q} \Ll = \Ll^{\perp *}$$
