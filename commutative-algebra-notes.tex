@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{tikz} % diagram
+\usepackage{changepage} % for adjustwidth
 
 \begin{filecontents}[overwrite]{commutative-algebra-notes.bib}
 @misc{am,
@@ -1894,26 +1895,28 @@ Since $x_i - a_i \in m ~~\Longrightarrow~~ J=(X_1 - a_1, \ldots, X_n -a_n) \subs
 
 since $J$ is the kernel of the evaluation map at point $(a_1, \ldots, a_n)$, then $J$ is a maximal ideal.
 
-(Corollary \ref{5.2}) Thus $J=m$, ie. $m=(X_1 - a_1, \ldots, X_n -a_n)$, with $a_i \in k$.
+    \begin{adjustwidth}{4em}{0pt}
+  (Corollary \ref{5.2}) Thus $J=m$, ie. $m=(X_1 - a_1, \ldots, X_n -a_n)$, with $a_i \in k$.
 
-\vspace{0.4cm}
-We had $k \stackrel{iso}{\cong} \frac{K}{m} = \frac{k[X_1, \ldots, X_n]}{m}$.
+  \vspace{0.4cm}
+  We had $k \stackrel{iso}{\cong} \frac{K}{m} = \frac{k[X_1, \ldots, X_n]}{m}$.
 
-We have the quotient map
-\begin{align*}
-  \phi: k[X_1, \ldots, X_n] &\longrightarrow \frac{k[X_1, \ldots, X_n]}{m} \cong k\\
-  x_i &\mapsto a_i \in k
-\end{align*}
-which is the natural evaluation map $f(X_1, \ldots, X_n) \longrightarrow f(a_1, \ldots, a_n)$.
+  We have the quotient map
+  \begin{align*}
+    \phi: k[X_1, \ldots, X_n] &\longrightarrow \frac{k[X_1, \ldots, X_n]}{m} \cong k\\
+    x_i &\mapsto a_i \in k
+  \end{align*}
+  which is the natural evaluation map $f(X_1, \ldots, X_n) \longrightarrow f(a_1, \ldots, a_n)$.
 
-Since $\phi$ is a $k$-algebra homomorphism, then
-$$\forall~ f \in K,~ \phi(f(X_1, \ldots, X_n)) = f(\phi(x_1), \ldots, \phi(x_n)) = f(a_1, \ldots, a_n)$$
+  Since $\phi$ is a $k$-algebra homomorphism, then
+  $$\forall~ f \in K,~ \phi(f(X_1, \ldots, X_n)) = f(\phi(x_1), \ldots, \phi(x_n)) = f(a_1, \ldots, a_n)$$
 
-Thus, $\exists$ a one-to-one correspondence:
-\begin{align*}
-  \text{points in}~ k^n ~~~ &\longleftrightarrow~~~ m-Spec~ A, ~\text{maximal ideals in}~ k[X_1, \ldots, X_n]\\
-  (a_1, \ldots, a_n) ~~~&\longleftrightarrow~~~ (X_1 - a_1, \ldots, X_n - a_n)
-\end{align*}
+  Thus, $\exists$ a one-to-one correspondence:
+  \begin{align*}
+    \text{points in}~ k^n ~~~ &\longleftrightarrow~~~ m-Spec~ A, ~\text{maximal ideals in}~ k[X_1, \ldots, X_n]\\
+    (a_1, \ldots, a_n) ~~~&\longleftrightarrow~~~ (X_1 - a_1, \ldots, X_n - a_n)
+  \end{align*}
+    \end{adjustwidth}
 
 \vspace{0.5cm}
 Observe: $x_i - a_i \in ker(\psi) =m~ \forall~ i \in [n]$.
@@ -1927,6 +1930,7 @@ Since $J \subseteq m$, $P$ is also a zero for every polynomial in $J$; ie. every
 
 $\Longrightarrow~ P \in V(J)$, and thus $V(J) \neq \emptyset$. This is what the Nullstellensatz first part states:
 \begin{thm}{5.6}[Nullstellensatz] \label{nullstellensatz}
+  Let $k$ be an algebraically closed field, and let $J\subseteq k[X_1,\ldots,X_n]$ be an ideal.
   \begin{enumerate}[a.]
     \item if $J \subsetneq k[X_1, \ldots, X_n]$ then $V(J) \neq \emptyset$
     \item $I(V(J)) = rad J$, in other words, for $f \in k[X_1, \ldots, X_n]$,
