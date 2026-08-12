@@ -13,6 +13,7 @@ extenaion = "extension"
 
 # strings that are not a typo:
 thm = "thm"
+MSIS = "MSIS"
 
 # equations stuff
 ba = "ba"
