@@ -1888,22 +1888,36 @@ And since $k$ is algebraically closed $\Longrightarrow~ \frac{A}{m}\cong k$.
 
 Let
 $$\pi:A\longrightarrow \frac{A}{m}$$
-be the quotient map, and let
-$$\theta:\frac{A}{m}\stackrel{iso}{\longrightarrow} k$$
-be the $k$-algebra isomorphism.
+be the quotient map. By definition, $\pi$ is the surjective homomorphism that sends each polynomial to its coset modulo $m$, and the kernel of this map is exactly $ker(\pi)=m$.
 
-Define
+By Zariski's lemma, $\frac{A}{m}$ is a finite field extension of $k$, and since $k$ is algebraically closed, by Zariski's lemma, this extension must be $k$ itself; denote this relation by
+$$\theta:\frac{A}{m}\stackrel{iso}{\longrightarrow} k$$
+the $k$-algebra isomorphism.
+
+Define the composite map
 $$\phi=\theta\circ\pi:A\longrightarrow k.$$
+which is a $k$-algebra homomorphism.
 
 Thus, $\forall~ i\in[n]$, define
 $$a_i=\phi(X_i)\in k.$$
 
-Since $\theta$ is injective,
+Since $\phi$ is a $k$-algebra homomorphism, it must map any scalar $c \in k$ to itself, ie. $\phi(c) = c$. Therefore
+$$\phi(X_i - a_i) = \phi(X_i) - \phi(a_i) = a_i - a_i = 0$$
+
+Since $\phi = \theta \circ \pi$, and $\theta$ is an isomorphism (by definition injective), the only way for $\phi(f)$ to be $0$ is if $\pi(f)=0$:
 \begin{align*}
-  \phi(X_i-a_i)=0
+  &\phi(X_i-a_i)=\theta(\pi(X_i - a_i)) = 0\\
   &\Longrightarrow \pi(X_i-a_i)=0\\
-  &\Longrightarrow X_i-a_i\in m.
 \end{align*}
+
+Since $ker(\pi)=m$, any element that maps to $0$ under $\pi$ must belong to $m$, thus
+$$\pi(X_i - a_i) =0 ~~\Longrightarrow~ X_i-a_i\in m$$
+
+Alternative way: by definition of a quotient ring, and elements of $\frac{A}{m}$ are cosets of the form $f+m$. $\pi(x_i)$ sends $X_i$ to the coset $X_i+m$, ie. $\pi(x_i)=X_i+m$. Thus, if $a_i$ is the image of $X_i$, then
+$$X_i \equiv a_i \pmod m,$$
+which by the definition of congruence modulo ideal, this means $X_i -a_i \in m$.
+
+\vspace{0.5cm}
 
 Since $X_i - a_i \in m ~~\Longrightarrow~~ J=(X_1 - a_1, \ldots, X_n -a_n) \subseteq m$,
 
