@@ -1,6 +1,8 @@
 # math/cryptography
 
-Usually while studying papers and books I take handwritten notes, this section contains some of them re-written to LaTeX. The notes are not complete, don’t include all the steps neither the explanations neither most of the proofs. I use these notes to revisit the concepts after some time of reading the paper.
+> Note: this repo is human-written, no AI generated content.
+
+Usually while studying papers and books I take handwritten notes, this section contains some of them re-written to LaTeX. I use these notes to revisit the concepts after some time of reading the paper.
 
 ## mathematics
 
@@ -16,6 +18,7 @@ In-between math & crypto:
 - [Notes on the DFT & FFT](fft-notes.pdf)
 - [Notes on NTT](notes_ntt.pdf)
 - [Notes on Reed-Solomon codes](notes_reed-solomon.pdf)
+- [Notes on Lattices](lattices.pdf)
 
 ## cryptography
 
