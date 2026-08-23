@@ -2323,6 +2323,227 @@ $\longleftrightarrow$ can take the quotient $A/I$ and then localize to get $T^{-
 
 
 
+\section{Tensor Product of Modules}
+
+\subsection{Constructing the Tensor Product}
+We use vector spaces but the same applies for modules.
+
+Let $Z$ be the vector space with basis $\{ e_{v,w} \} ~\forall~ (v,w) \in V \times W$.
+
+Want to introduce the relation $a = b \in Z$. Consider the element $a-b \in Z$; take the span $Span\{a-b\}$, that is, all of multiples of $a-b$.
+
+Consider the quotient space $\frac{Z}{Span\{a-b\}}$.
+Anything in the span of $a-b$ is equal to zero.
+
+$\Longrightarrow$ This is how we use relations to get vector spaces out of $Z$.
+
+\paragraph{Direct Sum, $V \oplus W$}.
+
+Want
+\begin{enumerate}[i.]
+  \item $(v_1, w_1) + (v_2, w_2) = (v_1 + v_2, w_1 + w_2)$
+  \item $\lambda (v, w) = (\lambda v, \lambda w)$
+\end{enumerate}
+
+Take the quotient
+$$Z / Span
+\left\{
+\substack{
+(v_1,w_1)+(v_2,w_2)-(v_1+v_2,w_1+w_2)\\
+\lambda(v,w)-(\lambda v,\lambda w)
+}
+\right\}
+$$
+
+\paragraph{Tensor Product, $V \otimes W$}
+relations:
+\begin{enumerate}[i.]
+  \item distribuitivity law:
+    $$a (b+c) = ab + ac$$
+    $$(a+b)c =  ac + bc$$
+  \item scalar multiplication:
+    $$\lambda(a \cdot b) = (\lambda a) b = a (\lambda b)$$
+\end{enumerate}
+
+$\Longrightarrow$
+  \begin{align*}
+    &a (b+c) = ab + ac\\
+    &(a+b)c =  ac + bc\\
+    &\lambda (a \cdot b) = (\lambda a) b\\
+    &\lambda (a \cdot b)= a (\lambda b)
+  \end{align*}
+
+  then we can define the tensor product as
+$$V \otimes W = Z / Span
+\left\{
+\substack{
+    a \otimes (b+c) - a \otimes b - a \otimes c\\
+    (a+b) \otimes c -  a \otimes c - b \otimes c\\
+    \lambda (a \otimes b) - (\lambda a) \otimes b\\
+    \lambda (a \otimes b) - a \otimes (\lambda b)
+}
+\right\}
+$$
+
+
+
+\subsection{Universal Property of Tensor Products}
+\begin{prop}{}[Universal Property of Tensor Products]
+  For every bilinear map $g: V \times W \longrightarrow U$, $\exists !$ linear map $f: T \longrightarrow U$ such that $f \circ \tau = g$.
+
+  \begin{tikzpicture}[node distance=2.5cm, auto]
+    \node (VW)    {$V \times W$};
+    \node (T) [right of=VW] {$T = V \otimes W$};
+    \node (U) [below of=VW] {$U$};
+
+    \draw[->] (VW) to node {$\tau$} (T);
+    \draw[->] (VW) to node [swap] {$g$} (U);
+    \draw[->, dashed] (T) to node [swap] {$f$} (U);
+  \end{tikzpicture}
+\end{prop}
+
+\begin{proof}
+  \begin{enumerate}[i.]
+    \item uniqueness:\\
+
+    suppose we have two different T.P., $(T, \tau)$ and $(T', \tau')$. Want to prove $T \stackrel{iso}{\cong} T'$.
+
+
+
+    On the right is the same relation as on the left, but switching $T$ by $T'$:
+
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[node distance=2.0cm, auto]
+      \node (VW)    {$V \times W$};
+      \node (T) [right of=VW] {$T$};
+      \node (T2) [below of=VW] {$T'$};
+
+      \draw[->] (VW) to node {$\tau$} (T);
+      \draw[->] (VW) to node [swap] {$\tau'$} (T2);
+      \draw[->, dashed] (T) to node [swap] {$f$} (T2);
+    \end{tikzpicture}
+
+    \vspace{0.5em}
+
+    by the U.P., $f \circ \tau = \tau'$.
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \begin{tikzpicture}[node distance=2.0cm, auto]
+      \node (VW)    {$V \times W$};
+      \node (T) [right of=VW] {$T$};
+      \node (T2) [below of=VW] {$T'$};
+
+      \draw[->] (VW) to node {$\tau$} (T);
+      \draw[->] (VW) to node [swap] {$\tau'$} (T2);
+      \draw[->, dashed] (T) to node [swap] {$f$} (T2);
+    \end{tikzpicture}
+
+    \vspace{0.5em}
+
+    by the U.P., $f \circ \tau = \tau'$.
+  \end{minipage}
+
+  \vspace{0.3cm}
+  $$\text{thus,}~~ f \circ f' \circ \tau' = \tau'$$
+
+  Want to show that $f$ has an inverse, so that it is an isomorphism $T \stackrel{iso}{\cong} T'$.
+
+  we just saw that
+  $$f \circ f' \circ \tau' = \tau'$$
+  also we can get it the other way
+  $$f' \circ f \circ \tau = \tau$$
+
+  we can see that $f \circ f'$ seems to be the identity, need more info to prove it.
+
+  What if we apply the U.P. to the same module on both sides?
+
+    \begin{tikzpicture}[node distance=2.0cm, auto]
+      \node (VW)    {$V \times W$};
+      \node (T) [right of=VW] {$T$};
+      \node (T2) [below of=VW] {$T$};
+
+      \draw[->] (VW) to node {$\tau$} (T);
+      \draw[->] (VW) to node [swap] {$\tau$} (T2);
+      \draw[->, dashed] (T) to node {$? = id_T$} (T2);
+    \end{tikzpicture}
+
+    thus, $id_T \circ \tau = \tau$, hence
+
+    \begin{tikzpicture}[node distance=2.0cm, auto]
+      \node (VW)    {$V \times W$};
+      \node (T) [right of=VW] {$T$};
+      \node (T2) [below of=VW] {$T$};
+
+      \draw[->] (VW) to node {$\tau$} (T);
+      \draw[->] (VW) to node [swap] {$\tau$} (T2);
+      \draw[->, dashed] (T) to node {$id_T,~ f' \circ f$} (T2);
+    \end{tikzpicture}
+
+    and by uniqueness of the U.P., we can not have two different functions ($id_T$ and $f' \circ f$) and must be that $f' \circ f = id_T$.
+
+    Similarly for $f \circ f' = id_{T'}$.
+
+    Therefore, $f'$ is the inverse of $f$, and $T \stackrel{iso}{\cong} T'$, which means that the tensor prodduct is unique.
+
+    % TODO (ii.) existence
+  \end{enumerate}
+
+
+  \vspace{1.0cm}
+  This is stated in the Atiyah and MacDonald book (\cite{am}) for mulitple nodes and multilinear maps:
+
+  \begin{prop}{2.12}
+    Let $M_1, \ldots, M_r$ be $A$-modules. Then $\exists ~ (T, g)$ with $T$ an $A$-module, and $g$ a multilinear map $g: M_1 \times \ldots \times M_r \longrightarrow T$, with the following property:
+
+    Given any $A$-module $P$ and any $A$-multilinear map $f: M_1 \times \ldots \times M_r \longrightarrow T$, $\exists !$ an $A$-homomorphism $f': T \longrightarrow P$ such that $f' \circ g = f$.
+
+    Moreover, if $(T,g)$ and $(T',g')$ are two pairs with this property, then $\exists !~ j: T \stackrel{iso}{\longrightarrow} T'$ such that $j \circ g = g'$.
+  \end{prop}
+
+  \subsection{Usefullness of Tensor Product's Universal Property}
+  Anytime we define a function on the T.P. we need to know that it is well defined and linear. This is hard in general because of all the relations of the elements of the T.P..
+
+  But using the U.P. of T.P. we can remove all of the extra work and just look at a bilinear map on the cartesian product, which is a much easier object to work with.
+
+  \paragraph{Using the U.P. to show that a function on the T.P. is well defined and linear:}
+  \begin{enumerate}[i.]
+    \item define a map $\phi$ on the Cartesian product
+      $$(x,y) \in M \times N$$
+      
+    \item prove bilinearity of $\phi$:\\
+      show that $\phi$ is $A$-linear in each variable separately.
+
+      ie. check
+      \begin{align*}
+        \phi(x + x', y) &= \phi(x, y) + \phi(x', y)\\
+        \phi(x, y + y') &= \phi(x, y) + \phi(x, y')\\
+        \phi(ax, y) &= a \phi(x, y) = \phi(x, ay)
+      \end{align*}
+
+    \item invoke the Universal Property.\\\
+
+      Once bilinearity is proven on $\phi$, the U.P. guarantees the existence of a unique map $f$ on the tensor product $M \otimes N$
+
+    \item automatic well-definedness and linearity: $f$ is linear by definition.
+
+    And since it is a single map originating from the bilinear map $\phi$ on the product, it is automatically well-defined on the tensor product (ie. automatically "respects" the relations that define tensors).
+  \end{enumerate}
+
+
+\end{proof}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%
+%%%%%% end of notes,
+%%%%%% beginning of exercises
+%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
 \newpage
 
 \section{Exercises}
