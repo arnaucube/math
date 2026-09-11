@@ -20,7 +20,7 @@
 \usepackage{color}
 \usepackage{changepage} % for adjustwidth
 
-\graphicspath{ {./} }
+\graphicspath{ {./imgs-lattices} }
 
 \setbeamertemplate{itemize}{$\circ$}
 \setbeamertemplate{itemize items}{$\circ$}
@@ -80,6 +80,9 @@
 % - Lattices math
 % - lattice hard problems are based on the hardness of finding short vectors. SVP, CVP, SIS, etc
 
+% TODO: why lattices are post quantum
+% Lattices are already used in browsers: explain how, dual signautres, etc
+
 \begin{frame}{Motivation}
   \begin{itemize}
     \item till now most cryptography relied on hardness of finding prime factors or finding the discrete logarithm, ie. RSA, Elliptic Curves, etc
@@ -90,7 +93,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Status of the ecosystem}
+\begin{frame}{Post Quantum Cryptography - Status of the ecosystem}
   \begin{itemize}
     \item isogenesis based
     \item hash based
@@ -101,7 +104,7 @@
   TODO
 \end{frame}
 
-\begin{frame}{Motivation}
+\begin{frame}{Motivation (in Ethereum's ecosystem)}
   \begin{itemize}
     \item Ethereum, is going with hash-based signatures for the validators.
       \begin{itemize}
@@ -120,6 +123,17 @@
 \end{frame}
 
 \section[Preliminaries]{Preliminaries}
+\begin{frame}{Preliminaries}
+  Recap of concepts:
+  \begin{itemize}
+    \item Rings
+    \begin{itemize}
+      \item ideals
+    \end{itemize}
+  \item Vector Spaces
+  \item Modules
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Rings}
   \vspace*{-0.5cm}
@@ -316,27 +330,41 @@
   % TODO why q-ary is better? prev.slide says O(n^2) without q-ary, how with q-ary?
 \end{frame}
 
-\begin{frame}{Polynomial ring}
-  At the NTRU paper, they introduced the usage of polynomial rings, which latter was ported over Ajtai work and other lattices, now is the general approach.
+\begin{frame}{Polynomial rings}
+  \small{
+    \begin{itemize}
+      \item The NTRU paper (1996) introduced the usage of polynomial rings, which latter was ported over Ajtai work and other lattices, now is the general approach in Ring-SIS, Ring-LWE, Module-LWE, etc.
 
-  TODO
-  NTRU lattices:
-  \begin{itemize}
-    \item
-  \end{itemize}
+      \item Polynomial rings: represent an $n$-dimensional vector
+      $(a_0,\ldots,a_{n-1}) \in \Zz_q^n$ as a single ring element (polynomial)
+      $$a(X) = a_0 + a_1 X + \cdots + a_{n-1} X^{n-1} \in \Zz_q[X]/(X^n+1)$$
+    \end{itemize}
+  }
 
-  In $R = \Zz_q[X]/(X^n+1)$,
+  \pause
+  \small{
   \begin{itemize}
-    \item Addition:
-      $$a(x) + b(x) = \sum_{i=1}^d (a_i + b_i) X^i$$
-    \item Multiplication:
-      $$a(x) \cdot b(x) = $$ TODO
+    \item[-] Addition:
+      $a(x) + b(x) = \sum_{i=1}^d (a_i + b_i) X^i$
+  \pause
+    \item[-] Multiplication:
+      $$a(X) \cdot b(X)
+        = \left(
+          \sum_{i=0}^{n-1}\sum_{j=0}^{n-1}
+          a_i b_j X^{i+j}
+        \right)
+	\in \Zz_q[X]/(X^n+1)$$
+
+	\hspace*{4em}Since $X^n=-1$ then $X^{n+k} = -X^k$\\
+	  $\Longrightarrow~ \mathcal{O}(n^2)$ naively, $\mathcal{O}(n \log n)$ using NTT.
   \end{itemize}
+  }
 \end{frame}
+
 
 \section[Hard problems]{Hard problems}
 
-\begin{frame}{Timeline}
+\begin{frame}{Incomplete Timeline}
   \begin{timeline}
     1978 \quad Knapsack cryptosystems attacked using lattice methods
 
@@ -356,7 +384,8 @@
   \end{timeline}
 \end{frame}
 
-\begin{frame}{Hard problems in lattices}
+
+\begin{frame}{Hard problems in lattices - SVP and CVP}
   \begin{itemize}
     \item In elliptic curve cryptography, we rely on the hardness of the Discrete Logarithm problem:\\
     \begin{adjustwidth}{2em}{0pt}
@@ -376,6 +405,23 @@
     given a vector $y \in \Rr^n$ with $y \not\in \Ll$, find a nonzero vector $x \in \Ll$ that is closest to $y$, ie. that minimizes the Euclidean norm $||y-x||$.
   \end{defn}
 \end{frame}
+
+\begin{frame}
+  \includegraphics[height=\paperheight]{./cvp_2d}
+\end{frame}
+
+\begin{frame}{Why Lattices?}
+  \begin{itemize}
+    \item LLL algorithm is used to solve SVP and CVP.
+    \begin{itemize}
+      \item LLL (Lenstra–Lenstra–Lovász): polynomial time method used for lattice basis reduction, which transforms a given basis of a lattice into a new basis that is shorter and nearly orthogonal
+    \end{itemize}
+
+      \item Both SVP and CVP become computationally difficult (NP hard*) as the
+	lattice dimension $n$ grows (even on quantum computers)
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}{NTRU}
   
@@ -398,7 +444,7 @@
 
 % TODO diagrams of SVP, CVP, SIS
 
-\begin{frame}{Hard problems in lattices}
+\begin{frame}{Hard problems in lattices - SIS}
   \begin{defn}[SIS (Short Integer Solution)]
     given $q \in \Zz$ and matrix $A \in \Zz_q^{m \times n}$, find a non-zero short $z \in \Zz^n$ s.th.
     $$A \cdot z = 0 \pmod q$$
@@ -411,11 +457,6 @@
   $$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
   where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
 
-  \begin{itemize}
-    \item LLL algorithm is used to solve SVP and CVP.
-
-      \item Both SVP and CVP become computationally difficult (NP hard*) as the lattice dimension $n$ grows.
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{}
@@ -580,7 +621,17 @@
 
 \end{frame}
 
-\section[Signatures]{Signatures}
+\section[Some cryptography]{Some cryptography}
+
+\begin{frame}{ML-KEM (Kyber)}
+  \begin{itemize}
+    \item ML-KEM (Kyber): Key Encapulation Mechanism. ie. Alice encapsulates a (symmetric) key using Bob's public key
+    \item ML-DSA (Dilithium): signature scheme
+    \item Falcon: signature scheme
+    \item LaBRADOR: SNARK scheme
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}{ML-DSA signatures}
 \end{frame}
@@ -589,16 +640,97 @@
 \end{frame}
 
 
-\section[SNARKs]{SNARKs}
-
 \begin{frame}{LaBRADOR SNARK}
 \end{frame}
 
 \section[Conclusions]{Conclusions}
 
 \begin{frame}{Benchmarks}
-  TODO prover and verifier speed, proof/signature size
-  stark, labrador, sphinchs, falcon, ml-dsa, etc
+  \centering
+  \tiny
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.10}
+
+  \textbf{Digital signatures}
+  \vspace{0.05cm}
+
+  \resizebox{0.88\textwidth}{!}{%
+    \begin{tabular}{llll}
+    \toprule
+    \textbf{Scheme} &
+    \textbf{Assumption} &
+    \textbf{Public key size} &
+    \textbf{Signature size} \\
+    \midrule
+
+    Falcon-512
+      & NTRU lattice
+      & $897$ B
+      & $666$ B \\
+
+    ML-DSA-44
+      & Module-LWE / Module-SIS
+      & $1.31$ KB
+      & $2.42$ KB \\
+
+    XMSS-SHA2-10-256
+      & hash based, stateful
+      & $64$ B
+      & $2.50$ KB \\
+
+    SLH-DSA-128s
+      & hash based, stateless
+      & $32$ B
+      & $7.86$ KB \\
+
+    ECDSA-secp256k1
+      & elliptic curves
+      & $33$ B
+      & $64$ B \\
+
+    \bottomrule
+    \end{tabular}%
+  }
+
+  \vspace{0.20cm}
+
+  \textbf{SNARKs / STARKs}
+  \vspace{0.05cm}
+
+  \resizebox{0.87\textwidth}{!}{%
+    \begin{tabular}{lll}
+    \toprule
+    \textbf{Scheme} &
+    \textbf{Assumption / technique} &
+    \textbf{Proof size} \\
+    \midrule
+
+    Groth16
+      & pairings / elliptic curves
+      & $\sim 128$ B \\
+
+    LaBRADOR
+      & Module-SIS
+      & $\sim 50$--$60$ KB \\
+
+    Flock
+      & binary fields + coding theory
+      & $\sim 200$--$400$ KiB \\
+
+    Binius64
+      & binary fields + sumcheck
+      & $\sim 200$--$500$ KiB \\
+
+    Plonky2 & Plonk + FRI
+      & $\sim 40$--$200$ KB \\
+
+    Plonky3 / FRI-STARK
+      & polynomial IOP + FRI
+      & $\sim 1$--$3$ MiB \\
+
+    \bottomrule
+    \end{tabular}
+  }
 \end{frame}
 
 \begin{frame}{Conclusions}
