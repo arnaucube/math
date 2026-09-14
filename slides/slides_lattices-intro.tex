@@ -19,6 +19,8 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{changepage} % for adjustwidth
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
 
 \graphicspath{ {./imgs-lattices} }
 
@@ -29,6 +31,12 @@
 
 \setbeamertemplate{footline}{\hspace*{.1cm}\scriptsize{
 \hspace*{50pt} \hfill\insertframenumber/\inserttotalframenumber\hspace*{.1cm}\vspace*{.1cm}}}
+
+% paint red background to slides that I may end up removing
+\newenvironment{mayberm}[1][red!20]
+  {\setbeamercolor{background canvas}{bg=#1}}
+  {}
+
 
 \setbeamertemplate{caption}[numbered]
 \setbeamerfont{caption}{size=\tiny}
@@ -90,18 +98,13 @@
       \small{
 	$\rightarrow$ given an odd composite $n \in \Zz$, find $d \in \Zz$, such that $1< d <n$ and $d|n$.
       }
+    \item even if quantum computers never reach, the threat is there, so we must prepare
+    \item since 2023/2024 Chrome and Firefox have lattice-based cryptography to the browser for TLS
+    \begin{itemize}
+      \item hybrid: X25519 + ML-KEM to stablish a symmetric encryption key
+      \item protect against \emph{harvest now, decrypt later} attacks
+    \end{itemize}
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Post Quantum Cryptography - Status of the ecosystem}
-  \begin{itemize}
-    \item isogenesis based
-    \item hash based
-    \item codes based
-    \item lattice based
-    \item multivariate based
-  \end{itemize}
-  TODO
 \end{frame}
 
 \begin{frame}{Motivation (in Ethereum's ecosystem)}
@@ -119,7 +122,21 @@
 	\item eg. elliptic curves have algebraic structure, allows for signature aggregation, thresholds, etc
       \end{itemize}
     \item lattice-based schemes have smaller proofs, signatures and public keys
+    \begin{itemize}
+      \item better suited for end-user wallets
+    \end{itemize}
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Post Quantum Cryptography - Status of the ecosystem}
+  \begin{itemize}
+    \item isogenesis based
+    \item hash based
+    \item codes based
+    \item lattice based
+    \item multivariate based
+  \end{itemize}
+  TODO
 \end{frame}
 
 \section[Preliminaries]{Preliminaries}
@@ -132,8 +149,12 @@
     \end{itemize}
   \item Vector Spaces
   \item Modules
+  \item Kernel
   \end{itemize}
 \end{frame}
+
+
+\begin{mayberm}
 
 \begin{frame}{Rings}
   \vspace*{-0.5cm}
@@ -222,6 +243,16 @@
   }
 \end{frame}
 
+\begin{frame}{Kernel}
+  TODO
+
+  \begin{tcolorbox}[colback=gray!15, colframe=gray!15]
+    Intuition: set of inputs that a function completely "erases", ie. they all get mapped to zero.
+  \end{tcolorbox}
+\end{frame}
+
+\end{mayberm}
+
 \section[Lattices]{Lattices}
 
 \begin{frame}{Lattices}
@@ -233,6 +264,12 @@
 
   $$\Ll(B) := B \cdot \Rr^n = \{ \sum_{i=1}^n c_i b_i ~|~ c_i \in \Rr^n \}$$
   \end{defn}
+
+  \pause
+  \begin{tcolorbox}[colback=gray!15, colframe=gray!15]
+    \emph{Intuition: endless grid of dots where you can only move by taking whole-number
+    steps along a fixed set of directions.}
+  \end{tcolorbox}
 
   \pause
   Note: basis of a lattice are not unique.
@@ -247,6 +284,10 @@
 
 \begin{frame}{}
   \includegraphics[width=9.5cm]{./2d-lattice}
+\end{frame}
+
+\begin{frame}{}
+  \includegraphics[width=9.5cm]{./two_bases_lattice}
 \end{frame}
 
 \begin{frame}{Lattice properties}
@@ -271,30 +312,57 @@
   }
 \end{frame}
 
+\begin{frame}{}
+  \includegraphics[width=9.5cm]{./cvp_sphere}
+  % \includegraphics[width=9.5cm]{./sphere_packing} % TODO
+\end{frame}
+
 \begin{frame}{Lattice properties}
+  \small{
   recall, a lattice:
+  \vspace*{-0.7cm}
   $$\Ll(B) := B \cdot \Zz^n = \{ \sum_{i=1}^n z_i b_i ~|~ z_i \in \Zz^n \}$$
 
   \pause
-
+  \vspace*{-0.4cm}
   \begin{itemize}
     \item $B = (b_1, \ldots, b_n) \in \Zz^{n \times n}$: basis matrix, finite description of the lattice (not the lattice itself)
     \item the matrix-vector product $Bz$ maps an integer coordinate vector $z \in \Zz^n$ into a lattice point in $\Zz^n$.
+  \end{itemize}
+  }
 
     \pause
+  
+  \vspace*{-0.4cm}
+\begin{columns}[T]
+  \begin{column}{0.65\textwidth}
+
+  \small{
+  \begin{itemize}
     \item since columns of $B$ are linearly independent (bcs they are a basis), every point of $\Ll(B)$ has a unique integer coordinate vector relative to the basis
     \begin{itemize}
       \item the lattice $\Ll(B)$ is the invariant set of points
       \item the basis $B$ is not unique
     \end{itemize}
 
+  \vspace*{-0.3cm}
   \pause
   \item $B \in \Zz^{n \times n}$, $n$ vectors, each with $n$ coordinates $\Longrightarrow$ requires $\mathcal{O}(n^2)$ integers.
     \begin{itemize}
       \item only if we could have some better lattice structure to represent the lattice with fewer entries...
     \end{itemize}
   \end{itemize}
+  }
+
+  \end{column}
+
+  \begin{column}{0.40\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{./two_bases_lattice}
+  \end{column}
+\end{columns}
 \end{frame}
+
 
 \begin{frame}{q-ary lattice}
   a full-rank lattice is q-ary if $q \Zz^d \subseteq \Ll \subseteq \Zz^d$
@@ -386,6 +454,7 @@
 
 
 \begin{frame}{Hard problems in lattices - SVP and CVP}
+  \small{
   \begin{itemize}
     \item In elliptic curve cryptography, we rely on the hardness of the Discrete Logarithm problem:\\
     \begin{adjustwidth}{2em}{0pt}
@@ -394,16 +463,26 @@
 
     \item In lattice based cryptography, we rely on problems related to finding short vectors in the lattice.
   \end{itemize}
+  }
 
   \pause
   \begin{defn}[SVP (Shortest Vector Problem)]
     find a shortest non-zero vector $x \in \Ll$, ie. that minimizes the Euclidean norm $||x||$, that is $\lambda_1(\Ll)=||x||$.
   \end{defn}
+
+  \colorbox{gray!20}{Intuition:
+    find the shortest possible jump from the origin to another dot
+  }
   
   \pause
   \begin{defn}[CVP (Closest Vector Problem)]
     given a vector $y \in \Rr^n$ with $y \not\in \Ll$, find a nonzero vector $x \in \Ll$ that is closest to $y$, ie. that minimizes the Euclidean norm $||y-x||$.
   \end{defn}
+  
+  \colorbox{gray!20}{Intuition:
+    find the grid dot that is closest to a given point (off the grid)
+  }
+
 \end{frame}
 
 \begin{frame}
@@ -414,10 +493,18 @@
   \begin{itemize}
     \item LLL algorithm is used to solve SVP and CVP.
     \begin{itemize}
-      \item LLL (Lenstra–Lenstra–Lovász): polynomial time method used for lattice basis reduction, which transforms a given basis of a lattice into a new basis that is shorter and nearly orthogonal
+      \item LLL (Lenstra–Lenstra–Lovász): polynomial time method used for lattice basis reduction, which transforms a given basis of a lattice into a new basis that is shorter and nearly orthogonal, which makes SVP and CVP easier to approximate or solve using subsequent algorithms.
+      % \colorbox{gray!20}{Intuition:
+      \begin{tcolorbox}[colback=gray!15, colframe=gray!15] Intuition:
+	make the lattice basis less skewed. Same grid of points, just a simpler
+	basis. We don't change the lattice, we change the coordinate system used to
+	describe it. $\longrightarrow$ easier to solve SVP and CVP.
+      % }
+      \end{tcolorbox}
+    \item improvement: BKZ reduction algorithm
     \end{itemize}
 
-      \item Both SVP and CVP become computationally difficult (NP hard*) as the
+      \item Both SVP and CVP become computationally difficult (NP hard) as the
 	lattice dimension $n$ grows (even on quantum computers)
   \end{itemize}
 \end{frame}
@@ -457,6 +544,12 @@
   $$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
   where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
 
+  \small{
+    \hspace*{2em}\colorbox{gray!20}{Intuition:
+    find a short nonzero vector in the lattice $\Lambda^{\perp}_q(A)$
+    }
+  }
+
 \end{frame}
 
 \begin{frame}{}
@@ -488,7 +581,8 @@
 
   Again: overall when doing lattice-based cryptography, we will be interested into keeping the values \emph{short}, aka. of small norm.
   \pause
-  (example of decomposing values to keep small norms when doing operations in cryptographic protocols)
+  (example of decomposing values to keep small norms when doing operations in
+  cryptographic protocols (eg. in LaBRADOR))
 \end{frame}
 
 \begin{frame}{Hard problems in lattices}
@@ -623,31 +717,89 @@
 
 \section[Some cryptography]{Some cryptography}
 
-\begin{frame}{ML-KEM (Kyber)}
+\begin{frame}{Lattice-based cryptography}
   \begin{itemize}
     \item ML-KEM (Kyber): Key Encapulation Mechanism. ie. Alice encapsulates a (symmetric) key using Bob's public key
     \item ML-DSA (Dilithium): signature scheme
-    \item Falcon: signature scheme
+    \item FN-DSA (Falcon): signature scheme, based on NTRU
     \item LaBRADOR: SNARK scheme
+    \item FHE (BFV, BGV, CKKS, TFHE)
   \end{itemize}
 \end{frame}
+
+\begin{mayberm}
+\begin{frame}{ML-KEM (Kyber)}
+  \scriptsize{
+  \begin{itemize}
+    \item KEM = Key Encapsulation Mechanism
+    \begin{itemize}
+      \item Alice encapsulates a (symmetric) key using Bob's public key
+    \end{itemize}
+  \item based on Module-LWE
+  \end{itemize}
+  }
+
+$$R_q=\mathbb{Z}_q[X]/(X^{256}+1),  A\in R_q^{k\times k}$$
+
+\textbf{Key generation:}
+$$
+\mathbf{s},\mathbf{e}\leftarrow\chi^k,
+\qquad
+\mathbf{t}=A\mathbf{s}+\mathbf{e}
+$$
+
+$$
+pk=(A,\mathbf{t}),\qquad sk=\mathbf{s}
+$$
+
+\textbf{Encapsulation:}
+$$
+\mathbf{u}=A^T\mathbf{r}+\mathbf{e}_1,
+\qquad
+v=\mathbf{t}^T\mathbf{r}+e_2+\operatorname{Encode}(m)
+$$
+
+$$
+c=(\mathbf{u},v),
+\qquad
+K=\operatorname{KDF}(m,c)
+$$
+
+\textbf{Decapsulation:}
+$$
+m'=\operatorname{Decode}\!\left(v-\mathbf{s}^T\mathbf{u}\right)
+$$
+
+Since
+$$
+v-\mathbf{s}^T\mathbf{u}
+=
+\operatorname{Encode}(m)
++\mathbf{e}^T\mathbf{r}
++e_2-\mathbf{s}^T\mathbf{e}_1,
+$$
+the message is recovered up to small noise.
+\end{frame}
+\end{mayberm}
 
 
 \begin{frame}{ML-DSA signatures}
 \end{frame}
 
+\begin{mayberm}
 \begin{frame}{Falcon signatures}
 \end{frame}
 
 
 \begin{frame}{LaBRADOR SNARK}
 \end{frame}
+\end{mayberm}
 
 \section[Conclusions]{Conclusions}
 
 \begin{frame}{Benchmarks}
   \centering
-  \tiny
+  % \small{
   \setlength{\tabcolsep}{4pt}
   \renewcommand{\arraystretch}{1.10}
 
@@ -707,26 +859,26 @@
 
     Groth16
       & pairings / elliptic curves
-      & $\sim 128$ B \\
+      & $128$ B \\
 
     LaBRADOR
       & Module-SIS
-      & $\sim 50$--$60$ KB \\
+      & $50$--$60$ KB \\
 
     Flock
       & binary fields + coding theory
-      & $\sim 200$--$400$ KiB \\
+      & $200$--$400$ KiB \\
 
     Binius64
       & binary fields + sumcheck
-      & $\sim 200$--$500$ KiB \\
+      & $200$--$500$ KiB \\
 
     Plonky2 & Plonk + FRI
-      & $\sim 40$--$200$ KB \\
+      & $40$--$200$ KB \\
 
     Plonky3 / FRI-STARK
       & polynomial IOP + FRI
-      & $\sim 1$--$3$ MiB \\
+      & $1$--$3$ MiB \\
 
     \bottomrule
     \end{tabular}
@@ -734,6 +886,9 @@
 \end{frame}
 
 \begin{frame}{Conclusions}
+  \begin{itemize}
+    \item not a single assumption: NTRU, SIS, R-SIS, M-SIS, LWE, R-LWE, M-LWE, $\ldots$
+  \end{itemize}
 \end{frame}
 
 
