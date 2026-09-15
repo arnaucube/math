@@ -26,6 +26,8 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta}
 
+\usepackage{comment}
+
 \graphicspath{ {./imgs-lattices} }
 
 \setbeamertemplate{itemize}{$\circ$}
@@ -103,8 +105,8 @@
       \small{
 	$\rightarrow$ given an odd composite $n \in \Zz$, find $d \in \Zz$, such that $1< d <n$ and $d|n$.
       }
-    \item even if quantum computers never reach, the threat is there, so we must prepare
-    \item since 2023/2024 Chrome and Firefox have lattice-based cryptography to the browser for TLS
+    \item even if quantum computers never reach, the fact that there is a threat, forces us to prepare for it
+    \item real-world example: since 2023/2024 Chrome and Firefox have lattice-based cryptography to the browser for TLS
     \begin{itemize}
       \item hybrid: X25519 + ML-KEM to stablish a symmetric encryption key
       \item protect against \emph{harvest now, decrypt later} attacks
@@ -121,11 +123,16 @@
 	\item the most conservative choice in terms of security
       \end{itemize}
     \item hash-based simpler to implement, less potential errors. Whereas lattice-based have more subtelties
+      
+      \pause
+
     \item hash-based schemes don't have much algebraic structure
       \begin{itemize}
 	\item good for less attacks, not so fun to build stuff with
 	\item eg. elliptic curves have algebraic structure, allows for signature aggregation, thresholds, etc
       \end{itemize}
+
+    \pause
     \item lattice-based schemes have smaller proofs, signatures and public keys
     \begin{itemize}
       \item better suited for end-user wallets
@@ -144,21 +151,60 @@
   TODO
 \end{frame}
 
-\section[Preliminaries]{Preliminaries}
-\begin{frame}{Preliminaries}
-  Recap of concepts:
-  \begin{itemize}
-    \item Rings
-    \begin{itemize}
-      \item ideals
-    \end{itemize}
-  \item Vector Spaces
-  \item Modules
-  \item Kernel
-  \end{itemize}
+% \section[Preliminaries]{Preliminaries}
+% \begin{frame}{Preliminaries}
+%   Recap of concepts:
+%   \begin{itemize}
+%     \item Rings
+%     \begin{itemize}
+%       \item ideals
+%     \end{itemize}
+%   \item Vector Spaces
+%   \item Modules
+%   \item Kernel
+%   \end{itemize}
+% \end{frame}
+
+%%%
+\begin{frame}{Recap of concepts}
+  \includegraphics[width=8.5cm]{./zelda-dangerous-out-there}
+
+  Ring, Ideal, Module, Kernel.
 \end{frame}
 
+\begin{frame}{Recap of concepts}
+  \begin{itemize}
+    \item \textbf{Ring:} a set with addition and multiplication, where addition forms an abelian group and multiplication is associative and distributive over addition.
+    \begin{itemize}
+      \item \textbf{Ideal:} a subset $I \subseteq R$ closed under addition and under multiplication by arbitrary elements of $R$.
+      \scriptsize{
+      \colorbox{gray!20}{Intuition:
+	$I$ absorbs products in $R$.
+      }}
+    \end{itemize}
 
+    \item \textbf{Vector space:} an abelian group of vectors equipped with scalar multiplication by elements of a field.
+
+    \item \textbf{Module:} a generalization of a vector space where the scalars come from a ring instead of necessarily a field.
+      \scriptsize{
+    \begin{tcolorbox}[colback=gray!15, colframe=gray!15]Intuition:
+	Vector Spaces are defined over fields, a Module is the generalization of a vector space where the scalars come from a ring instead of a field.
+    \end{tcolorbox}}
+
+    \item \textbf{Kernel:} for a homomorphism $f:A\to B$, the subset
+    $\ker(f)=\{x\in A:f(x)=0\}$ of elements mapped to zero.
+      \scriptsize{
+      \colorbox{gray!20}{Intuition:
+       inputs that a function completely "erases", ie. turns into zero.
+      }}
+
+  \end{itemize}
+\end{frame}
+%%%
+
+
+
+\begin{comment}
 \begin{mayberm}
 
 \begin{frame}{Rings}
@@ -257,6 +303,7 @@
 \end{frame}
 
 \end{mayberm}
+\end{comment}
 
 \section[Lattices]{Lattices}
 
@@ -318,8 +365,8 @@
 \end{frame}
 
 \begin{frame}{}
-  \includegraphics[width=9.5cm]{./cvp_sphere}
-  % \includegraphics[width=9.5cm]{./sphere_packing} % TODO
+  % \includegraphics[width=9.5cm]{./cvp_sphere}
+  \includegraphics[width=9.5cm]{./sphere_packing} % TODO
 \end{frame}
 
 \begin{frame}{Lattice properties}
@@ -507,6 +554,9 @@
 \begin{frame}
   \includegraphics[height=\paperheight]{./cvp_2d}
 \end{frame}
+\begin{frame}
+  \includegraphics[width=9.5cm]{./cvp_sphere}
+\end{frame}
 
 \begin{frame}{Why Lattices?}
   \begin{itemize}
@@ -604,7 +654,7 @@
   cryptographic protocols (eg. in LaBRADOR))
 \end{frame}
 
-\begin{frame}{Hard problems in lattices}
+\begin{frame}{Hard problems - LWE}
   \begin{defn}[LWE (Learning With Errors)]
     choose a matrix $A \in^R \Zz_q^{m \times n}$, a secret vector $s \in^R \Zz_q^n$, and an error vector $e \in^R [-B, B]^m$. Let $b = As +e \pmod q \in \Zz_q^m$.
 
@@ -690,7 +740,6 @@
   $$
 }
 
-
 \end{frame}
 
 \begin{frame}{Dual lattices}
@@ -715,12 +764,21 @@
   SIS lattices and LWE lattices are dual to each other
   $$\Ll(A) = q \Ll^{\perp *}(A) ~~~\text{ie.}~~~ \frac{1}{q} \Ll(A) = \Ll^{\perp *}(A)$$
 
+  \small{(duality is interesting, because it lets security proofs transfer geometric properties)}
+
 \end{frame}
 
+\begin{comment}
+\begin{mayberm}
 \begin{frame}
   \hspace*{-0.8cm}
   \includegraphics[width=\paperwidth]{./lattice_examples}
 \end{frame}
+\end{mayberm}
+\end{comment}
+
+
+\section[Some cryptography]{Some cryptography}
 
 \begin{frame}{Ajtai commitments}
 
@@ -734,9 +792,8 @@
 
 \end{frame}
 
-\section[Some cryptography]{Some cryptography}
-
 \begin{frame}{Lattice-based cryptography}
+  Some examples
   \begin{itemize}
     \item ML-KEM (Kyber): Key Encapulation Mechanism. ie. Alice encapsulates a (symmetric) key using Bob's public key
     \item ML-DSA (Dilithium): signature scheme
@@ -744,6 +801,10 @@
     \item LaBRADOR: SNARK scheme
     \item FHE (BFV, BGV, CKKS, TFHE)
   \end{itemize}
+
+  \vspace{1.0cm}
+  \pause
+  Let's do a quick overview of ML-DSA (Dilithium)...
 \end{frame}
 
 % \begin{mayberm}
@@ -943,7 +1004,8 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 \vspace*{2.5cm}
   \begin{align*}
     w &\stackrel{?}{=} Az_1+z_2-ct \\
-    &= A(y_1+cs_1)+(y_2+cs_2) \\
+      &\text{indeed,}\\
+      &= A(y_1+cs_1)+(y_2+cs_2) \\
     &~-c(As_1+s_2) \\
     =A &y_1 +c A s_1 +y_2 +c s_2-cAs_1-cs_2\\
     &= Ay_1+y_2 = w
@@ -1079,6 +1141,7 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 % 
 % \end{frame}
 
+\begin{comment}
 \begin{mayberm}
 \begin{frame}{Falcon signatures}
 \end{frame}
@@ -1087,8 +1150,7 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 \begin{frame}{LaBRADOR SNARK}
 \end{frame}
 \end{mayberm}
-
-\section[Conclusions]{Conclusions}
+\end{comment}
 
 \begin{frame}{Benchmarks}
   % TODO review benchmarks
@@ -1180,9 +1242,18 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
   }
 \end{frame}
 
-\begin{frame}{Conclusions}
+
+\section[Conclusions]{Conclusions}
+
+\begin{frame}{Conclusions - Key Takeaways}
   \begin{itemize}
-    \item not a single assumption: NTRU, SIS, R-SIS, M-SIS, LWE, R-LWE, M-LWE, $\ldots$
+    \item lattice-based cryptography:
+    \begin{itemize}
+      \item not a single assumption on all schemes: NTRU, SIS, R-SIS, M-SIS, LWE, R-LWE, M-LWE, $\ldots$
+      \item actual operations (implementation) are over polynomial rings
+      \item smaller proofs and keys than hash-based
+      \item often we're interested in 'short' values $\longrightarrow$ trick: decompose bigger values before operate on them
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
