@@ -95,7 +95,7 @@
 % - lattice hard problems are based on the hardness of finding short vectors. SVP, CVP, SIS, etc
 
 % TODO: why lattices are post quantum
-% [done] Lattices are already used in browsers: explain how, dual signautres, etc
+% [done] Lattices are already used in browsers: explain how, hybrid signautres, etc
 % clarify L^\perp notation, is it q-ary?
 
 \begin{frame}{Motivation}
@@ -191,6 +191,7 @@
 	Vector Spaces are defined over fields, a Module is the generalization of a vector space where the scalars come from a ring instead of a field.
     \end{tcolorbox}}
 
+    \normalsize
     \item \textbf{Kernel:} for a homomorphism $f:A\to B$, the subset
     $\ker(f)=\{x\in A:f(x)=0\}$ of elements mapped to zero.
       \scriptsize{
@@ -462,6 +463,11 @@
   \end{tcolorbox}
   }
   % TODO why q-ary is better? prev.slide says O(n^2) without q-ary, how with q-ary?
+  % - modular takes less bits than full integer
+  % - usually A \in \Zz_1^{n \times m} with n<m
+  % - membership is extremely simple (Ax (mod q))
+  %
+  % Notation: \perp ddenotes that the vectors are orthogonal to the rows of \(A\) modulo \(q\), i.e. they lie in the modular kernel.
 \end{frame}
 
 \begin{frame}{Polynomial rings}
@@ -579,6 +585,7 @@
 \end{frame}
 
 
+\begin{comment}
 \begin{frame}{NTRU}
   
   \begin{defn}[NTRU key recovery problem]
@@ -597,6 +604,7 @@
     \item following the approach, in 2002, Micciano modified Ajtai's function to work over polynomial rings getting efficiency improvements
   \end{itemize}
 \end{frame}
+\end{comment}
 
 % TODO diagrams of SVP, CVP, SIS
 
@@ -605,18 +613,18 @@
     given $q \in \Zz$ and matrix $A \in \Zz_q^{m \times n}$, find a non-zero short $z \in \Zz^n$ s.th.
     $$A \cdot z = 0 \pmod q$$
 
-    \small{"short": $z \in \{B, B\}^n$ for some bound $B$, often $z \in \{-1, 0, 1 \}^n$.}
+    \small{"short": $z \in \{\beta, \beta\}^n$ for some bound $\beta$, often $z \in \{-1, 0, 1 \}^n$.}
   \end{defn}
 
   \pause
   The set of all solutions to the SIS problem forms the (q-ary) lattice
   $$\Lambda^{\perp}_q(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
-  where the SIS problem becomes the SVP for $\Lambda_q^{\perp}(A)$
+  where the SIS problem becomes almost the SVP for $\Lambda_q^{\perp}(A)$
 
   \small{
-    \hspace*{2em}\colorbox{gray!20}{Intuition:
-    find a short nonzero vector in the lattice $\Lambda^{\perp}_q(A)$
-    }
+    \begin{tcolorbox}[colback=gray!15, colframe=gray!15]Intuition:
+    find a short nonzero vector (not the shortest as in SVP) in the lattice $\Lambda^{\perp}_q(A)$
+    \end{tcolorbox}
   }
 
 \end{frame}
@@ -640,13 +648,17 @@
   Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}{On the shortness of $z$}
   % TODO maybe rm these remarks
   \begin{itemize}
     \item without $||z|| \leq \beta$, it is easy to find a solution via \emph{Gaussian elimination}.
     \item $\beta < q$, because otherwise $z=(q, 0, \ldots, 0) \in R^m$ would always be a valid solution.
     \item $\beta$ and $m$ must be large enough so that a solution is guaranteed to exist, usually $\beta \geq \sqrt{\hat{m}}$ and $m \geq \hat{m}$ where $\hat{m}$ is the smallest integer greater than $n \log q$.
   \end{itemize}
+
+    \begin{tcolorbox}[colback=gray!15, colframe=gray!15]
+      TL;DR: $z$ must be small enough for security reasons.
+    \end{tcolorbox}
 
   Again: overall when doing lattice-based cryptography, we will be interested into keeping the values \emph{short}, aka. of small norm.
   \pause
@@ -742,7 +754,11 @@
 
 \end{frame}
 
+% TODO maybe remove dual lattices slide
+\begin{comment}
+\begin{mayberm}
 \begin{frame}{Dual lattices}
+  \small
   SIS lattice:
   $$\Ll^{\perp}(A) = \{ z \in \Zz^n ~|~ A \cdot z = 0 \pmod q \}$$
 
@@ -766,7 +782,16 @@
 
   \small{(duality is interesting, because it lets security proofs transfer geometric properties)}
 
+  % TODO add intuition explainer on dual lattices
+  % TODO fix fitting everything
+    \scriptsize{
+  \begin{tcolorbox}[colback=gray!15, colframe=gray!15]Intuition:
+    A lattice tells you where points are allowed to sit; the dual lattice tells you which periodic directions “fit perfectly” with that grid.
+    Original lattice describes the spacing of points, while the dual lattice describes the spacing of compatible frequencies. Wide spacing in the original means tighter spacing in the dual, and vice versa.
+  \end{tcolorbox}}
 \end{frame}
+\end{mayberm}
+\end{comment}
 
 \begin{comment}
 \begin{mayberm}
