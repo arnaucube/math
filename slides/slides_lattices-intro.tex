@@ -18,6 +18,7 @@
 }
 \usepackage{graphicx}
 \usepackage{color}
+\usepackage{xcolor}
 \usepackage{changepage} % for adjustwidth
 \usepackage{xcolor}
 \usepackage[most]{tcolorbox}
@@ -711,6 +712,11 @@
   Similarly as with SIS, we also have Ring-LWE and Module-LWE variants of LWE.
 \end{frame}
 
+\begin{frame}
+  \centering
+  \includegraphics[width=8.5cm]{./lwe-sphere-error}
+\end{frame}
+
 \begin{frame}{Plain - Module - Ring}
   $$R_q = \mathbb{Z}_q[x]/(x^n+1)$$
 
@@ -943,10 +949,10 @@ $$
 \begin{column}{0.27\textwidth}
 
 \vspace*{-1.8cm}
-$$x \in \mathbb{Z}_q, ~ Y=xG$$
-$$r \leftarrow \mathbb{Z}_q, ~~ R=rG$$
+$$\textcolor{red}{x} \in \mathbb{Z}_q, ~ \textcolor{blue}{Y}=\textcolor{red}{x}G$$
+$$\textcolor{red}{r} \leftarrow \mathbb{Z}_q, ~~ \textcolor{blue}{R}=\textcolor{red}{r}G$$
 
-$$z=r+cx \pmod q$$
+$$\textcolor{blue}{z} =\textcolor{red}{r}+c\textcolor{red}{x} \pmod q$$
 
 \end{column}
 
@@ -959,8 +965,10 @@ $$z=r+cx \pmod q$$
     \newinst[1]{a}{Prover}
     \newinst[2]{b}{Verifier}
 
+    % \mess[0]{a}{$\textcolor{blue}{R}$}{b}
     \mess[0]{a}{$R$}{b}
     \mess[2]{b}{$c$}{a}
+    % \mess[2]{a}{$\textcolor{blue}{z}$}{b}
     \mess[2]{a}{$z$}{b}
     \mess[0]{b}{$ok$}{a}
 \end{sequencediagram}
@@ -979,13 +987,13 @@ $$z=r+cx \pmod q$$
 
 
 \vspace*{2.5cm}
-$$zG \stackrel{?}{=} R+cY$$
+$$\textcolor{blue}{z}G \stackrel{?}{=} \textcolor{blue}{R}+c\textcolor{blue}{Y}$$
 
 indeed,
 \begin{align*}
-zG &= (r+cx)G \\
-   &= rG+c(xG) \\
-   &= R+cY
+  \textcolor{blue}{z}G &= (\textcolor{red}{r}+c\textcolor{red}{x})G \\
+   &= \textcolor{red}{r}G+c(\textcolor{red}{x}G) \\
+   &= \textcolor{blue}{R}+c\textcolor{blue}{Y}
 \end{align*}
 
 \end{column}
@@ -1000,13 +1008,13 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 \begin{columns}[c,onlytextwidth]
 
 \begin{column}{0.27\textwidth}
-% \vspace*{-1.8cm}
-  $$s_1 \leftarrow S^\ell,~ s_2 \leftarrow S^k$$
-  $$\text{public:}~A \leftarrow R_q^{k\times\ell},~ t = As_1+s_2$$
-  $$y_1\leftarrow Y^\ell,~ y_2\leftarrow Y^k$$
-  $$w = Ay_1+y_2$$
+\vspace*{-1.8cm}
+$$\textcolor{red}{s_1} \leftarrow S^\ell,~ \textcolor{red}{s_2} \leftarrow S^k$$
+  $$\textcolor{blue}{A} \leftarrow R_q^{k\times\ell},~ \textcolor{blue}{t} = \textcolor{blue}{A}s_1+s_2$$
+  $$\textcolor{red}{y_1}\leftarrow Y^\ell,~ \textcolor{red}{y_2}\leftarrow Y^k$$
+  $$\textcolor{blue}{w} = \textcolor{blue}{A}\textcolor{red}{y_1}+\textcolor{red}{y_2}$$
 
-  $$z_1=y_1+cs_1,~ z_2=y_2+cs_2$$
+  $$\textcolor{blue}{z_1}=\textcolor{red}{y_1}+c\textcolor{red}{s_1},~ \textcolor{blue}{z_2}=\textcolor{red}{y_2}+c\textcolor{red}{s_2}$$
   Reject if $z_1,z_2$ are not short.
 \end{column}
 
@@ -1051,12 +1059,12 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 
 \vspace*{2.5cm}
   \begin{align*}
-    w &\stackrel{?}{=} Az_1+z_2-ct \\
+  \textcolor{blue}{w} &\stackrel{?}{=} \textcolor{blue}{Az_1}+\textcolor{blue}{z_2}-c \textcolor{blue}{t} \\
       &\text{indeed,}\\
-      &= A(y_1+cs_1)+(y_2+cs_2) \\
-    &~-c(As_1+s_2) \\
-    =A &y_1 +c A s_1 +y_2 +c s_2-cAs_1-cs_2\\
-    &= Ay_1+y_2 = w
+      &= \textcolor{blue}{A}(\textcolor{red}{y_1}+c\textcolor{red}{s_1})+(\textcolor{red}{y_2}+c\textcolor{red}{s_2}) \\
+      &~-c(\textcolor{blue}{A} \textcolor{red}{s_1}+\textcolor{red}{s_2}) \\
+    =\textcolor{blue}{A} &\textcolor{red}{y_1} +c \textcolor{blue}{A} \textcolor{red}{s_1} +\textcolor{red}{y_2} +c \textcolor{red}{s_2}-c\textcolor{blue}{A} \textcolor{red}{s_1}-c\textcolor{red}{s_2}\\
+			 &= \textcolor{blue}{A} \textcolor{red}{y_1}+\textcolor{red}{y_2} = \textcolor{blue}{w}
   \end{align*}
   Accept if $z_1,z_2$ are short.
 
@@ -1236,7 +1244,7 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
       & $2.42$ KB \\
 
     XMSS-SHA2-10-256
-      & hash based, stateful
+      & hash based, stateful*
       & $64$ B
       & $2.50$ KB \\
 
@@ -1288,21 +1296,39 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
     \bottomrule
     \end{tabular}
   }
+
+  \vspace*{0.5cm}
+  \tiny{\emph{*stateful: signer needs to keep a state, keeping track of the leaves already used. Fine for validator nodes, potential trouble for wallets.}}
 \end{frame}
 
 
 \section[Takeaways]{Takeaways}
 
-\begin{frame}{Conclusions - Key Takeaways}
+{
+% \setbeamersize{text margin left=0.1cm,text margin right=0.1cm}
+\setlength{\leftmargini}{0.2em}
+\setlength{\leftmarginii}{1.2em}
+
+\begin{frame}{}
+  \small
+  % \vspace*{-0.2cm}
+
   \begin{itemize}
-    \item no tool for all use cases (eg. Ethereum validators vs wallets)
+    \item quantum thread forces us to prepare for it. Most companies are already preparing for migration to post-quantum
+    \item no tool (scheme) for all use cases (eg. Ethereum validators vs wallets)
     \item lattice-based cryptography:
+
+    \scriptsize{
     \begin{itemize}
-      \item not a single assumption on all schemes: NTRU, SIS, R-SIS, M-SIS, LWE, R-LWE, M-LWE, $\ldots$
+      \item not a single assumption on all schemes: NTRU, R-SIS, M-SIS, R-LWE
       \item actual operations (implementation) are over polynomial rings
-      \item smaller proofs and keys than hash-based
-      \item often we're interested in 'short' values $\longrightarrow$ trick: decompose bigger values before operate on them
+      % \item smaller proofs and keys than hash-based
+      \item often significantly smaller signatures/proofs than hash-based alternatives, at the cost of more algebraic complexity
+      \item often we're interested in 'short' values $\longrightarrow$ typical trick: decompose bigger values before operate on them
     \end{itemize}
+    }
+    \small
+
     \pause
     \item what to read from here
     \begin{itemize}
@@ -1311,12 +1337,13 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
     \end{itemize}
   \end{itemize}
 
-  \vspace{1.0cm}
+  \vspace{0.4cm}
   \centering
-  -\\
+  % -\\
   \href{https://arnaucube.com}{arnaucube.com}\\
-  $\mathbb{X}$ \href{https://x.com/arnaucube}{$@$arnaucube}
+  \href{https://x.com/arnaucube}{$@$arnaucube}
 \end{frame}
+}
 
 
 \end{document}
