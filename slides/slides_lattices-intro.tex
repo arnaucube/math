@@ -74,8 +74,15 @@
 \newcommand{\Ll}{\mathcal{L}}
 
 \title{Introduction to lattice based cryptography}
-\author{arnaucube}
-\date{\scriptsize{September 2026, Barcelona}}
+\author{
+\scriptsize{September 2026, Barcelona}
+}
+\date{
+  \scriptsize{
+  \href{https://arnaucube.com}{arnaucube.com}\\
+  \href{https://x.com/arnaucube}{$@$arnaucube}
+}
+}
 
 \begin{document}
 
@@ -114,6 +121,18 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Post Quantum Cryptography - Status of the ecosystem}
+  \begin{itemize}
+    \item isogenesis based
+    \item hash based
+    \item codes based
+    \item lattice based
+    \item multivariate based
+  \end{itemize}
+  % TODO
+\end{frame}
+
+
 \begin{frame}{Motivation (in Ethereum's ecosystem)}
   \begin{itemize}
     \item Ethereum, is going with hash-based signatures for the validators.
@@ -140,36 +159,11 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Post Quantum Cryptography - Status of the ecosystem}
-  \begin{itemize}
-    \item isogenesis based
-    \item hash based
-    \item codes based
-    \item lattice based
-    \item multivariate based
-  \end{itemize}
-  TODO
-\end{frame}
+\begin{frame}{First, some tools}
+  \centering
+  \includegraphics[width=8.0cm]{./zelda-dangerous-out-there}
 
-% \section[Preliminaries]{Preliminaries}
-% \begin{frame}{Preliminaries}
-%   Recap of concepts:
-%   \begin{itemize}
-%     \item Rings
-%     \begin{itemize}
-%       \item ideals
-%     \end{itemize}
-%   \item Vector Spaces
-%   \item Modules
-%   \item Kernel
-%   \end{itemize}
-% \end{frame}
-
-%%%
-\begin{frame}{Recap of concepts}
-  \includegraphics[width=8.5cm]{./zelda-dangerous-out-there}
-
-  Ring, Ideal, Module, Kernel.
+  Rings, Ideals, Modules, Kernels, $\ldots$
 \end{frame}
 
 \begin{frame}{Recap of concepts}
@@ -184,12 +178,20 @@
     \end{itemize}
 
     \item \textbf{Vector space:} an abelian group of vectors equipped with scalar multiplication by elements of a field.
-
-    \item \textbf{Module:} a generalization of a vector space where the scalars come from a ring instead of necessarily a field.
       \scriptsize{
-    \begin{tcolorbox}[colback=gray!15, colframe=gray!15]Intuition:
-	Vector Spaces are defined over fields, a Module is the generalization of a vector space where the scalars come from a ring instead of a field.
-    \end{tcolorbox}}
+      \begin{itemize}
+	\item \textbf{basis}: linearly independent vectors that span the vector space\\
+	  ie. for $b_1, \ldots, b_n$ a basis of $V$, then $\forall v \in V$,
+	  $$v=v_1 b_1 + \ldots + v_n b_n \in V$$
+      \end{itemize}
+      }
+
+    \normalsize
+    \item \textbf{Module:} a generalization of a vector space where the scalars come from a ring instead of necessarily a field.
+    %   \scriptsize{
+    % \begin{tcolorbox}[colback=gray!15, colframe=gray!15]Intuition:
+    %     Vector Spaces are defined over fields, a Module is the generalization of a vector space where the scalars come from a ring instead of a field.
+    % \end{tcolorbox}}
 
     \normalsize
     \item \textbf{Kernel:} for a homomorphism $f:A\to B$, the subset
@@ -201,12 +203,25 @@
 
   \end{itemize}
 \end{frame}
-%%%
 
 
 
 \begin{comment}
 \begin{mayberm}
+
+\section[Preliminaries]{Preliminaries}
+\begin{frame}{Preliminaries}
+  Recap of concepts:
+  \begin{itemize}
+    \item Rings
+    \begin{itemize}
+      \item ideals
+    \end{itemize}
+  \item Vector Spaces
+  \item Modules
+  \item Kernel
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{Rings}
   \vspace*{-0.5cm}
@@ -472,13 +487,19 @@
 
 \begin{frame}{Polynomial rings}
   \small{
-    \begin{itemize}
-      \item The NTRU paper (1996) introduced the usage of polynomial rings, which latter was ported over Ajtai work and other lattices, now is the general approach in Ring-SIS, Ring-LWE, Module-LWE, etc.
-
-      \item Polynomial rings: represent an $n$-dimensional vector
-      $(a_0,\ldots,a_{n-1}) \in \Zz_q^n$ as a single ring element (polynomial)
-      $$a(X) = a_0 + a_1 X + \cdots + a_{n-1} X^{n-1} \in \Zz_q[X]/(X^n+1)$$
-    \end{itemize}
+    % \begin{itemize}
+      % \item the NTRU paper (1996) was one of the first lattice-based cryptography using polynomial quotient rings, which later same general idea was ported over Ajtai/SIS-style and LWE, leading to Ring-SIS, Ring-LWE, and later on Module-LWE, etc.
+      % 
+      % \item Polynomial rings: represent an $n$-dimensional vector
+      % $(a_0,\ldots,a_{n-1}) \in \Zz_q^n$ as a single ring element (polynomial)
+      % $$a(X) = a_0 + a_1 X + \cdots + a_{n-1} X^{n-1} \in \Zz_q[X]/(X^n+1)$$
+    % \end{itemize}
+      NTRU paper (1996), first usage of polynomial quotient rings for lattice-based cryptography. Later ported over Ajtai/SIS-style and LWE, leading to Ring-SIS, Ring-LWE, and later on Module-LWE, etc.
+      
+	$$
+	(a_0,\ldots,a_{n-1}) \in \Zz_q^n ~~\Longleftrightarrow~~
+	a(X) = a_0 + \cdots + a_{n-1} X^{n-1} \in \Zz_q[X]/(X^n+1)
+	$$
   }
 
   \pause
@@ -508,7 +529,7 @@
   \begin{timeline}
     1978 \quad Knapsack cryptosystems attacked using lattice methods
 
-    1996 \quad NTRU encryption
+    1996 \quad NTRU encryption, & Ajtai
 
     2005 \quad Learning With Errors (LWE)
 
@@ -518,7 +539,7 @@
 
     2016 \quad NewHope (Ring-LWE KEM)
 
-    2017 \quad Kyber (Module-LWE based) & Dilithium  (Module-LWE & Module-SIS based)
+    2017 \quad Kyber (Module-LWE based), & Dilithium  (Module-LWE & Module-SIS based), & Falcon (NTRU based)
 
     2020s \quad standardiszation: ML-KEM (Kyber) and ML-DSA (Dilithium)
   \end{timeline}
@@ -629,6 +650,7 @@
 
 \end{frame}
 
+\begin{comment}
 \begin{frame}{}
   \begin{defn}[Ring SIS (Ring Short Integer Solution)]
     given a uniformly random matrix $A \in^R R_q^n$, with elements $a_i \in R_q$, find a non-zero integer vector $z \in R^n$ of norm $||z|| \leq \beta$ such that
@@ -647,6 +669,7 @@
   \pause
   Notice that Module-SIS is a Ring-SIS with $rank=1$ ($m=1$).
 \end{frame}
+\end{comment}
 
 \begin{frame}{On the shortness of $z$}
   % TODO maybe rm these remarks
@@ -805,17 +828,17 @@
 
 \section[Some cryptography]{Some cryptography}
 
-\begin{frame}{Ajtai commitments}
-
-  \begin{defn}[Ajtai commitemnt]
-    For a public random matrix $A \in \Zz_q^{m \times n}$, embedding matrix $G \in \Zz_q^{m \times l}$ and a short random vector $r \in \{-B, B\}^n$ (for bound $B$), an Ajtai commitment to the message $x \in \Zz_q^l$ (bounded to $B$) is
-    $$c = A r + G x \pmod q \in \Zz_q^n$$
-  \end{defn}
-
-  Observe that this is closely related to the SIS problem ($Az=0 \pmod q$), and it relies on its hardness.
-
-
-\end{frame}
+% \begin{frame}{Ajtai commitments}
+% 
+%   \begin{defn}[Ajtai commitemnt]
+%     For a public random matrix $A \in \Zz_q^{m \times n}$, embedding matrix $G \in \Zz_q^{m \times l}$ and a short random vector $r \in \{-B, B\}^n$ (for bound $B$), an Ajtai commitment to the message $x \in \Zz_q^l$ (bounded to $B$) is
+%     $$c = A r + G x \pmod q \in \Zz_q^n$$
+%   \end{defn}
+% 
+%   Observe that this is closely related to the SIS problem ($Az=0 \pmod q$), and it relies on its hardness.
+% 
+% 
+% \end{frame}
 
 \begin{frame}{Lattice-based cryptography}
   Some examples
@@ -1217,7 +1240,7 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
       & $64$ B
       & $2.50$ KB \\
 
-    SLH-DSA-128s
+    SLH-DSA-128s (SPHINCS+)
       & hash based, stateless
       & $32$ B
       & $7.86$ KB \\
@@ -1268,10 +1291,11 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
 \end{frame}
 
 
-\section[Conclusions]{Conclusions}
+\section[Takeaways]{Takeaways}
 
 \begin{frame}{Conclusions - Key Takeaways}
   \begin{itemize}
+    \item no tool for all use cases (eg. Ethereum validators vs wallets)
     \item lattice-based cryptography:
     \begin{itemize}
       \item not a single assumption on all schemes: NTRU, SIS, R-SIS, M-SIS, LWE, R-LWE, M-LWE, $\ldots$
@@ -1279,7 +1303,19 @@ $$R_q = \mathbb{Z}_q[X]/(X^n+1)$$
       \item smaller proofs and keys than hash-based
       \item often we're interested in 'short' values $\longrightarrow$ trick: decompose bigger values before operate on them
     \end{itemize}
+    \pause
+    \item what to read from here
+    \begin{itemize}
+      \item \emph{A Decade of Lattice Cryptography}, Chris Peikert \href{https://eprint.iacr.org/2015/939}{https://eprint.iacr.org/2015/939}
+      \item \emph{A gentle introduction to lattice-based cryptography}, Alfred Menezes \href{https://eprint.iacr.org/2026/1098}{https://eprint.iacr.org/2026/1098}
+    \end{itemize}
   \end{itemize}
+
+  \vspace{1.0cm}
+  \centering
+  -\\
+  \href{https://arnaucube.com}{arnaucube.com}\\
+  $\mathbb{X}$ \href{https://x.com/arnaucube}{$@$arnaucube}
 \end{frame}
 
 
