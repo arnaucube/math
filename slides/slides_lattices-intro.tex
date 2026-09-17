@@ -148,7 +148,7 @@
 
     \item hash-based schemes don't have much algebraic structure
       \begin{itemize}
-	\item good for less attacks, not so fun to build stuff with
+	\item good for less attacks, not so fun to build stuff with (less room to compose)
 	\item eg. elliptic curves have algebraic structure, allows for signature aggregation, thresholds, etc
       \end{itemize}
 
@@ -163,8 +163,6 @@
 \begin{frame}{First, some tools}
   \centering
   \includegraphics[width=8.0cm]{./zelda-dangerous-out-there}
-
-  Rings, Ideals, Modules, Kernels, $\ldots$
 \end{frame}
 
 \begin{frame}{Recap of concepts}
@@ -329,11 +327,12 @@
     A lattice $\Ll$ in $\Rr^n$ is the set of all integer linear combinations of $m$ linearly independent vectors $b_1, \ldots, b_m \in \Rr^n$, with $m \leq n$.
 
   \pause
-  $B = b_1, \ldots, b_m \in \Rr^n$ is the \emph{basis} of $\Ll$. We denote it $\Ll=\Ll(B)$.
-
-  $$\Ll(B) := B \cdot \Rr^n = \{ \sum_{i=1}^n c_i b_i ~|~ c_i \in \Rr^n \}$$
+  $B = \{b_1, \ldots, b_m\} \in \Rr^{n \times m}$ is the \emph{basis} of $\Ll$. We denote it $\Ll=\Ll(B)$.
+  \vspace*{-0.3cm}
+  $$\Ll(B) := B \cdot \Zz^n = \{ \sum_{i=1}^n c_i b_i ~|~ c_i \in \Zz^n \}$$
   \end{defn}
 
+  \small
   \pause
   \begin{tcolorbox}[colback=gray!15, colframe=gray!15]
     \emph{Intuition: endless grid of dots where you can only move by taking whole-number
@@ -438,6 +437,7 @@
 \end{frame}
 
 
+\begin{comment}
 \begin{frame}{q-ary lattice}
   \vspace{-0.4cm}
   a full-rank lattice is q-ary if $q \Zz^d \subseteq \Ll \subseteq \Zz^d$
@@ -485,6 +485,7 @@
   %
   % Notation: \perp ddenotes that the vectors are orthogonal to the rows of \(A\) modulo \(q\), i.e. they lie in the modular kernel.
 \end{frame}
+\end{comment}
 
 \begin{frame}{Polynomial rings}
   \small{
@@ -517,7 +518,7 @@
         \right)
 	\in \Zz_q[X]/(X^n+1)$$
 
-	\hspace*{4em}Since $X^n=-1$ then $X^{n+k} = -X^k$\\
+	\hspace*{4em}Since $X^n=-1$ then $X^{n+k} = X^n \cdot X^k= -1 \cdot X^k = -X^k$\\
 	  $\Longrightarrow~ \mathcal{O}(n^2)$ naively, $\mathcal{O}(n \log n)$ using NTT.
   \end{itemize}
   }
@@ -631,12 +632,21 @@
 % TODO diagrams of SVP, CVP, SIS
 
 \begin{frame}{Hard problems in lattices - SIS}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{0.76\textwidth}
   \begin{defn}[SIS (Short Integer Solution)]
     given $q \in \Zz$ and matrix $A \in \Zz_q^{m \times n}$, find a non-zero short $z \in \Zz^n$ s.th.
     $$A \cdot z = 0 \pmod q$$
 
     \small{"short": $z \in \{\beta, \beta\}^n$ for some bound $\beta$, often $z \in \{-1, 0, 1 \}^n$.}
   \end{defn}
+\end{column}
+\begin{column}{0.34\textwidth}
+  \pause
+  \includegraphics[width=\linewidth]{./sis-equation}
+\end{column}
+\end{columns}
+\vspace{0.2cm}
 
   \pause
   The set of all solutions to the SIS problem forms the (q-ary) lattice
@@ -691,11 +701,25 @@
 \end{frame}
 
 \begin{frame}{Hard problems - LWE}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{0.76\textwidth}
   \begin{defn}[LWE (Learning With Errors)]
-    choose a matrix $A \in^R \Zz_q^{m \times n}$, a secret vector $s \in^R \Zz_q^n$, and an error vector $e \in^R [-B, B]^m$. Let $b = As +e \pmod q \in \Zz_q^m$.
+    choose a matrix $A \in^R \Zz_q^{m \times n}$, a secret vector $s \in^R \Zz_q^n$, and an error vector $e \in^R [-B, B]^m$. Let
+    $$b = As +e \pmod q \in \Zz_q^m$$
 
     Given the pair $(A, b)$, the goal is to recover $s$.
   \end{defn}
+\end{column}
+\begin{column}{0.34\textwidth}
+  \pause
+  \includegraphics[width=\linewidth]{./lwe-equation}
+\end{column}
+\end{columns}
+
+  \vspace{0.2cm}
+
+  \pause
+  \small
   Search-LWE \& Decisional-LWE problems.
 
   \pause
@@ -706,10 +730,9 @@
   \end{align*}
 
   \pause
+
   Observe: if $e=0$, is a system of linear equations, which can be efficiently determined using Gaussian elimination over $\Zz_q$. Hardness comes from the noise/error term $e \neq 0$ (and the norm bound).
 
-  \pause
-  Similarly as with SIS, we also have Ring-LWE and Module-LWE variants of LWE.
 \end{frame}
 
 \begin{frame}
@@ -1311,11 +1334,14 @@ $$\textcolor{red}{s_1} \leftarrow S^\ell,~ \textcolor{red}{s_2} \leftarrow S^k$$
 
 \begin{frame}{}
   \small
+  \textbf{Takeaways}
   % \vspace*{-0.2cm}
 
   \begin{itemize}
     \item quantum thread forces us to prepare for it. Most companies are already preparing for migration to post-quantum
+      \pause
     \item no tool (scheme) for all use cases (eg. Ethereum validators vs wallets)
+      \pause
     \item lattice-based cryptography:
 
     \scriptsize{
